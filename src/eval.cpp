@@ -11,10 +11,10 @@ void Evaluator::eval_expr(Container op, Container c1, Container c2)
 
 	switch (op.value.op) 
 	{
-		case BinaryOpType::Add : num = c1.value.i + c2.value.i;
-		case BinaryOpType::Sub : num = c1.value.i - c2.value.i;
-		case BinaryOpType::Mul : num = c1.value.i * c2.value.i;
-		case BinaryOpType::Div : num = c1.value.i / c2.value.i;
+		case BinaryOpType::Add : num = c1.value.i + c2.value.i; break;
+		case BinaryOpType::Sub : num = c1.value.i - c2.value.i; break;
+		case BinaryOpType::Mul : num = c1.value.i * c2.value.i; break;
+		case BinaryOpType::Div : num = c1.value.i / c2.value.i; break;
 		default: return;
 	}
 
@@ -37,11 +37,11 @@ void Evaluator::evaluate(ContainerVec* containers)
 
 		if (con.type == ContainerType::BinaryOp)
 		{
-			Container c2 = containers->back();
-			containers->pop_back();
+			Container c2 = result_stack.back();
+			result_stack.pop_back();
 
-			Container c1 = containers->back();
-			containers->pop_back();
+			Container c1 = result_stack.back();
+			result_stack.pop_back();
 
 			eval_expr(con, c1, c2);
 		}
