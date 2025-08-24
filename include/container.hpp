@@ -6,7 +6,8 @@
 enum ContainerType
 {
 	Int,
-	BinaryOp
+	BinaryOp,
+	Void
 };
 
 enum BinaryOpType {
@@ -25,6 +26,7 @@ struct Container
 		BinaryOpType op;
 	} value;
 
+	Container() {type = ContainerType::Void;}
 	Container(int i) {type = ContainerType::Int, value.i = i;}
 	Container(BinaryOpType op) {type = ContainerType::BinaryOp, value.op = op;}
 };
