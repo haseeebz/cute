@@ -1,5 +1,6 @@
 #include <cctype>
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <vector>
 #include "../include/container.hpp"
@@ -14,6 +15,8 @@ ContainerVec* Tokenizer::tokenize(std::string str)
 
 	for (int i = 0; i < str.length(); i++)
 	{
+		c = str[i];
+		
 		if (std::isspace(c)) {continue;}
 
 		if (std::isdigit(c))
@@ -47,8 +50,9 @@ ContainerVec* Tokenizer::tokenize(std::string str)
 
 		Container con = Container(op);
 		tokenized_containers->push_back(con);
+		prev_container = con;
 	}
-
+	print_containers(tokenized_containers);
 	return tokenized_containers;
 }
 
@@ -71,9 +75,8 @@ void print_containers(ContainerVec* containers)
 			std::cout << "[BinaryOp " << binaryOp_to_char(current.value.op) << "] ";
 		}
 
-		std::cout << std::endl;
-
 	}
+	std::cout << std::endl;
 }
 
 char binaryOp_to_char(BinaryOpType op)

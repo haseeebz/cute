@@ -6,10 +6,9 @@
 
 void Interpreter::run()
 {
-	ContainerVec* cons = tokenizer.tokenize("1+ 5 / 6");
-	print_containers(cons);
+	ContainerVec* cons = tokenizer.tokenize("12121 + 59 / 6");
 	delete cons;
-	
+
 	ContainerVec containers;
 	containers.push_back(Container(3));
 	containers.push_back(Container(4));
