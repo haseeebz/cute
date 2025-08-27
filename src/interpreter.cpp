@@ -6,6 +6,10 @@
 
 void Interpreter::run()
 {
+	ContainerVec* cons = tokenizer.tokenize("1+ 5 / 6");
+	print_containers(cons);
+	delete cons;
+	
 	ContainerVec containers;
 	containers.push_back(Container(3));
 	containers.push_back(Container(4));
@@ -15,8 +19,8 @@ void Interpreter::run()
 	containers.push_back(Container(2));
 	containers.push_back(Container(BinaryOpType::Sub));
 
-	eval.evaluate(&containers);
-	int result = eval.yield();
+	evaluator.evaluate(&containers);
+	int result = evaluator.yield();
 
 	std::cout << "Result: " << result << std::endl;
 }

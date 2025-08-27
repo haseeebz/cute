@@ -1,10 +1,13 @@
 #include "container.hpp"
+#include "tokenizer.hpp"
 #include "eval.hpp"
 
 
 class Interpreter
 {
-	Evaluator eval;
+
+	Evaluator evaluator;
+	Tokenizer tokenizer;
 
 	public:
 

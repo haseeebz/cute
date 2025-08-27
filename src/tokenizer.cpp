@@ -39,9 +39,9 @@ ContainerVec* Tokenizer::tokenize(std::string str)
 		switch (c) 
 		{
 		case '+' : op = BinaryOpType::Add; break;
-		case '-' : op = BinaryOpType::Add; break;
-		case '*' : op = BinaryOpType::Add; break;
-		case '/' : op = BinaryOpType::Add; break;
+		case '-' : op = BinaryOpType::Sub; break;
+		case '*' : op = BinaryOpType::Mul; break;
+		case '/' : op = BinaryOpType::Div; break;
 		default: continue;
 		}
 
@@ -53,3 +53,37 @@ ContainerVec* Tokenizer::tokenize(std::string str)
 }
 
 
+void print_containers(ContainerVec* containers)
+{
+	Container current;
+	for (int i = 0; i < containers->size(); i++)
+	{
+		current = containers->at(i);
+
+		if (current.type == ContainerType::Int)
+		{
+			std::cout << "[Int " << current.value.i << "] ";
+			continue;
+		}
+
+		if (current.type == ContainerType::BinaryOp)
+		{
+			std::cout << "[BinaryOp " << binaryOp_to_char(current.value.op) << "] ";
+		}
+
+		std::cout << std::endl;
+
+	}
+}
+
+char binaryOp_to_char(BinaryOpType op)
+{
+	switch (op) 
+	{
+		case BinaryOpType::Add : return '+'; break;
+		case BinaryOpType::Sub : return '-'; break;
+		case BinaryOpType::Mul : return '*'; break;
+		case BinaryOpType::Div : return '/'; break;
+		default: return '?';
+	}
+}
