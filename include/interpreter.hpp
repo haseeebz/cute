@@ -13,5 +13,5 @@ class Interpreter
 
 	public:
 
-	void run();
+	void run(std::string expr);
 };
