@@ -23,7 +23,8 @@ ContainerVec* Parser::parse(ContainerVec* containers)
 
 		if (current.type == ContainerType::BinaryOp)
 		{
-			if (op_containers_stack.size() > 0)
+
+			while (op_containers_stack.size() > 0)
 			{
 				Container prev_op = op_containers_stack.back();
 
@@ -34,8 +35,14 @@ ContainerVec* Parser::parse(ContainerVec* containers)
 					parsed_containers->push_back(prev_op);
 					op_containers_stack.pop_back();
 				}
+				else
+				{
+					break;
+				}
 			}
+
 			op_containers_stack.push_back(current);
+
 			continue;
 		}
 	}
@@ -51,7 +58,7 @@ ContainerVec* Parser::parse(ContainerVec* containers)
 
 bool Parser::precedence(BinaryOpType op1, BinaryOpType op2)
 {
-	if (op1 >= op2) 
+	if (op1 > op2) 
 	{
 		return false;
 	}

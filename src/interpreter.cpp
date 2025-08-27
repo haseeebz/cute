@@ -6,7 +6,7 @@
 
 void Interpreter::run()
 {
-	std::string str = "2 + (2 + 2) * 2";
+	std::string str = "4- 5  *  5 -12";
 
 	ContainerVec* cons = tokenizer.tokenize(str);
 	ContainerVec* parsed_cons = parser.parse(cons);
