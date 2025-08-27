@@ -38,21 +38,28 @@ ContainerVec* Tokenizer::tokenize(std::string str)
 			continue;
 		}
 
-		BinaryOpType op;
+		Container con;
+		
 		switch (c) 
 		{
-		case '+' : op = BinaryOpType::Add; break;
-		case '-' : op = BinaryOpType::Sub; break;
-		case '*' : op = BinaryOpType::Mul; break;
-		case '/' : op = BinaryOpType::Div; break;
+
+		case '+' : con = Container(BinaryOpType::Add); break;
+		case '-' : con = Container(BinaryOpType::Sub); break;
+		case '*' : con = Container(BinaryOpType::Mul); break;
+		case '/' : con = Container(BinaryOpType::Div); break;
+			
+		case '(' : con = Container(ParanType::Left); break;
+		case ')' : con = Container(ParanType::Right); break;
+
 		default: continue;
 		}
 
-		Container con = Container(op);
+		if (con.type == ContainerType::Void) {continue;} //Error raising here.
+
 		tokenized_containers->push_back(con);
 		prev_container = con;
 	}
-	print_containers(tokenized_containers);
+
 	return tokenized_containers;
 }
 
@@ -66,13 +73,21 @@ void print_containers(ContainerVec* containers)
 
 		if (current.type == ContainerType::Int)
 		{
-			std::cout << "[Int " << current.value.i << "] ";
+			std::cout << "[ Int " << current.value.i << " ] ";
 			continue;
 		}
 
 		if (current.type == ContainerType::BinaryOp)
 		{
-			std::cout << "[BinaryOp " << binaryOp_to_char(current.value.op) << "] ";
+			std::cout << "[ BinaryOp " << binaryOp_to_char(current.value.op) << " ] ";
+			continue;
+		}
+
+		if (current.type == ContainerType::Paran)
+		{
+			char paran = (current.value.paran == ParanType::Left) ? '(' : ')';
+			std::cout << "[ Paran " << paran << " ] ";
+			continue;
 		}
 
 	}

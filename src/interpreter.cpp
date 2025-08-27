@@ -6,11 +6,17 @@
 
 void Interpreter::run()
 {
-	ContainerVec* cons = tokenizer.tokenize("2 + 2 + 2 * 2");
+	std::string str = "2 + (2 + 2) * 2";
+
+	ContainerVec* cons = tokenizer.tokenize(str);
 	ContainerVec* parsed_cons = parser.parse(cons);
 	
 	evaluator.evaluate(parsed_cons);
 	int result = evaluator.yield();
+
+	std::cout << str << std::endl;
+	print_containers(cons);
+	print_containers(parsed_cons);
 	std::cout << "Result: " << result << std::endl;
 
 	delete cons;
