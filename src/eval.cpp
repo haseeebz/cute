@@ -4,7 +4,7 @@
 #include "../include/eval.hpp"
 
 
-void Evaluator::eval_expr(Container op, Container c1, Container c2)
+void Evaluator::eval_expr(Container& op, Container& c1, Container& c2)
 {
 
 	int num;
