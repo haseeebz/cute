@@ -47,6 +47,7 @@ ContainerVec* Tokenizer::tokenize(std::string str)
 		case '-' : con = Container(BinaryOpType::Sub); break;
 		case '*' : con = Container(BinaryOpType::Mul); break;
 		case '/' : con = Container(BinaryOpType::Div); break;
+		case '^' : con = Container(BinaryOpType::Pow); break;
 			
 		case '(' : con = Container(ParanType::Left); break;
 		case ')' : con = Container(ParanType::Right); break;
@@ -108,6 +109,7 @@ char binaryOp_to_char(BinaryOpType op)
 		case BinaryOpType::Sub : return '-'; break;
 		case BinaryOpType::Mul : return '*'; break;
 		case BinaryOpType::Div : return '/'; break;
+		case BinaryOpType::Pow : return '^'; break;
 		default: return '?';
 	}
 }

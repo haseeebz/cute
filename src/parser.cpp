@@ -89,21 +89,21 @@ void Parser::parse_paran(Container& current)
 
 	if (current.value.paran == ParanType::Right)
 	{
-		Container top = op_containers_stack.back();
+		Container top_op = op_containers_stack.back();
 
 		while (true)
 		{
-			if (top.type == ContainerType::Paran)
+			if (top_op.type == ContainerType::Paran)
 			{
-				if (top.value.paran != ParanType::Left) {continue;}
+				if (top_op.value.paran != ParanType::Left) {continue;}
 
 				op_containers_stack.pop_back();
 				break;
 			}
 
-			parsed_containers->push_back(top);
+			parsed_containers->push_back(top_op);
 			op_containers_stack.pop_back();
-			top = op_containers_stack.back();
+			top_op = op_containers_stack.back();
 		}
 	}
 }

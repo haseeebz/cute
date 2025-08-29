@@ -14,8 +14,9 @@ enum ContainerType
 enum BinaryOpType {
 	Add,
 	Sub,
+	Mul,
 	Div,
-	Mul
+	Pow
 };
 
 enum ParanType {

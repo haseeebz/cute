@@ -1,5 +1,7 @@
 #include <iostream>
+#include <math.h>
 #include <vector>
+#include <cmath>
 #include "../include/container.hpp"
 #include "../include/eval.hpp"
 
@@ -15,6 +17,7 @@ void Evaluator::eval_expr(Container& op, Container& c1, Container& c2)
 		case BinaryOpType::Sub : num = c1.value.i - c2.value.i; break;
 		case BinaryOpType::Mul : num = c1.value.i * c2.value.i; break;
 		case BinaryOpType::Div : num = c1.value.i / c2.value.i; break;
+		case BinaryOpType::Pow : num = pow(c1.value.i, c2.value.i); break;
 		default: return;
 	}
 
