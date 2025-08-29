@@ -45,6 +45,31 @@ ContainerVec* Parser::parse(ContainerVec* containers)
 
 			continue;
 		}
+
+		if (current.type == ContainerType::Paran)
+		{
+			if (current.value.paran == ParanType::Left)
+			{
+				op_containers_stack.push_back(current);
+				continue;
+			}
+
+			if (current.value.paran == ParanType::Right)
+			{
+				Container top = op_containers_stack.back();
+
+				while (top.type != ContainerType::Paran && top.value.paran != ParanType::Left)
+				{
+					parsed_containers->push_back(top);
+					op_containers_stack.pop_back();
+					top = op_containers_stack.back();
+				}
+				op_containers_stack.pop_back(); // removing the left paran
+
+			}
+
+		}
+
 	}
 
 	while (op_containers_stack.size() > 0)
