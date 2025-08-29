@@ -4,6 +4,6 @@
 int main()
 {
 	Interpreter interpreter;
-	interpreter.run(" (10 + 10 * ( 4 - 5 ) -10 ) + 45");
+	interpreter.run("(10 + 10) * (10 - 5) - 10 / 5");
 	return 0;
 }

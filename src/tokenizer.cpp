@@ -64,7 +64,7 @@ ContainerVec* Tokenizer::tokenize(std::string str)
 }
 
 
-void print_container(Container& container, bool endline = true)
+void print_container(Container& container, bool endline)
 {
 	if (container.type == ContainerType::Int)
 	{
@@ -83,7 +83,7 @@ void print_container(Container& container, bool endline = true)
 	}
 
 	if (endline) {std::cout << std::endl;}
-	
+
 }
 
 

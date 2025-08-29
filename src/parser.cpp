@@ -26,7 +26,10 @@ ContainerVec* Parser::parse(ContainerVec* containers)
 
 			while (op_containers_stack.size() > 0)
 			{
+
 				Container prev_op = op_containers_stack.back();
+
+				if (prev_op.type == ContainerType::Paran) {break;}
 
 				bool precedes = precedence(current.value.op, prev_op.value.op);
 
@@ -58,14 +61,21 @@ ContainerVec* Parser::parse(ContainerVec* containers)
 			{
 				Container top = op_containers_stack.back();
 
-				while (top.type != ContainerType::Paran && top.value.paran != ParanType::Left)
+				while (true)
 				{
+					if (top.type == ContainerType::Paran)
+					{
+						if (top.value.paran != ParanType::Left) {continue;}
+
+						op_containers_stack.pop_back();
+						break;
+					}
+
 					parsed_containers->push_back(top);
 					op_containers_stack.pop_back();
 					top = op_containers_stack.back();
 				}
-				op_containers_stack.pop_back(); // removing the left paran
-
+				continue;
 			}
 
 		}
