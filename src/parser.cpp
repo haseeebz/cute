@@ -17,67 +17,20 @@ ContainerVec* Parser::parse(ContainerVec* containers)
 
 		if (current.type == ContainerType::Int)
 		{
-			parsed_containers->push_back(current);
+			parse_int(current);
 			continue;
 		}
 
 		if (current.type == ContainerType::BinaryOp)
 		{
-
-			while (op_containers_stack.size() > 0)
-			{
-
-				Container prev_op = op_containers_stack.back();
-
-				if (prev_op.type == ContainerType::Paran) {break;}
-
-				bool precedes = precedence(current.value.op, prev_op.value.op);
-
-				if (precedes)
-				{
-					parsed_containers->push_back(prev_op);
-					op_containers_stack.pop_back();
-				}
-				else
-				{
-					break;
-				}
-			}
-
-			op_containers_stack.push_back(current);
-
+			parse_binaryOp(current);
 			continue;
 		}
 
 		if (current.type == ContainerType::Paran)
 		{
-			if (current.value.paran == ParanType::Left)
-			{
-				op_containers_stack.push_back(current);
-				continue;
-			}
-
-			if (current.value.paran == ParanType::Right)
-			{
-				Container top = op_containers_stack.back();
-
-				while (true)
-				{
-					if (top.type == ContainerType::Paran)
-					{
-						if (top.value.paran != ParanType::Left) {continue;}
-
-						op_containers_stack.pop_back();
-						break;
-					}
-
-					parsed_containers->push_back(top);
-					op_containers_stack.pop_back();
-					top = op_containers_stack.back();
-				}
-				continue;
-			}
-
+			parse_paran(current);
+			continue;
 		}
 
 	}
@@ -90,6 +43,71 @@ ContainerVec* Parser::parse(ContainerVec* containers)
 
 	return parsed_containers;
 }
+
+
+void Parser::parse_int(Container& current)
+{
+	parsed_containers->push_back(current);
+}
+
+
+void Parser::parse_binaryOp(Container& current)
+{
+
+	while (op_containers_stack.size() > 0)
+	{
+
+		Container prev_op = op_containers_stack.back();
+
+		if (prev_op.type == ContainerType::Paran) {break;}
+
+		bool precedes = precedence(current.value.op, prev_op.value.op);
+
+		if (precedes)
+		{
+			parsed_containers->push_back(prev_op);
+			op_containers_stack.pop_back();
+		}
+		else {
+			break;
+		}
+
+	}
+
+	op_containers_stack.push_back(current);
+
+}
+
+
+void Parser::parse_paran(Container& current)
+{
+	if (current.value.paran == ParanType::Left)
+	{
+		op_containers_stack.push_back(current);
+		return;
+	}
+
+	if (current.value.paran == ParanType::Right)
+	{
+		Container top = op_containers_stack.back();
+
+		while (true)
+		{
+			if (top.type == ContainerType::Paran)
+			{
+				if (top.value.paran != ParanType::Left) {continue;}
+
+				op_containers_stack.pop_back();
+				break;
+			}
+
+			parsed_containers->push_back(top);
+			op_containers_stack.pop_back();
+			top = op_containers_stack.back();
+		}
+	}
+}
+
 
 bool Parser::precedence(BinaryOpType op1, BinaryOpType op2)
 {
