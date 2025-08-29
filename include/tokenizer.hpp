@@ -16,5 +16,6 @@ class Tokenizer
 	ContainerVec* tokenize(std::string str);
 };
 
+void print_container(Container* container, bool endline);
 void print_containers(ContainerVec* containers);
 char binaryOp_to_char(BinaryOpType op);
