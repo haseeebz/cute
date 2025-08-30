@@ -9,6 +9,6 @@ include_directories(include)
 
 file(GLOB SOURCES "src/*.cpp")
 
-add_executable(math main.cpp ${SOURCES})
+add_executable(mathz main.cpp ${SOURCES})
 target_compile_options(math PRIVATE -g -Wall -Wextra -O2)
 
