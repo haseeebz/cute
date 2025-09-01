@@ -10,14 +10,12 @@ void Evaluator::evalExpr(Container& op, Container& c1, Container& c2)
 {
 	Container result;
 
-
 	switch (op.value.op) 
 	{
 		case BinaryOpType::Add : result = add(c1, c2); break;
-		case BinaryOpType::Sub : result = c1.value.i - c2.value.i; break;
-		case BinaryOpType::Mul : result = c1.value.i * c2.value.i; break;
-		case BinaryOpType::Div : result = c1.value.i / c2.value.i; break;
-		case BinaryOpType::Pow : result = pow(c1.value.i, c2.value.i); break;
+		case BinaryOpType::Sub : result = subtract(c1, c2); break;
+		case BinaryOpType::Mul : result = multiply(c1, c2); break;
+		case BinaryOpType::Div : result = divide(c1, c2); break;
 		default: return;
 	}
 

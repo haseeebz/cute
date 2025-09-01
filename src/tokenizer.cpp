@@ -93,7 +93,6 @@ void Tokenizer::tokenizeOp(char c)
 	case '-' : con = Container(BinaryOpType::Sub); break;
 	case '*' : con = Container(BinaryOpType::Mul); break;
 	case '/' : con = Container(BinaryOpType::Div); break;
-	case '^' : con = Container(BinaryOpType::Pow); break;
 		
 	case '(' : con = Container(ParanType::Left); break;
 	case ')' : con = Container(ParanType::Right); break;
