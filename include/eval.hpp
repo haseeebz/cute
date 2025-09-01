@@ -9,7 +9,15 @@ class Evaluator
 {
 	std::vector<Container>result_stack;
 
-	void eval_expr(Container& op, Container& c1, Container& c2);
+	void evalExpr(Container& op, Container& c1, Container& c2);
+
+	Container add(Container& c1, Container& c2);
+	Container subtract(Container& c1, Container& c2);
+	Container multiply(Container& c1, Container& c2);
+	Container divide(Container& c1, Container& c2);
+	Container power(Container& c1, Container& c2);
+	
+
 	public:
 
 	void evaluate(ContainerVec* containers);

@@ -6,22 +6,21 @@
 #include "../include/eval.hpp"
 
 
-void Evaluator::eval_expr(Container& op, Container& c1, Container& c2)
+void Evaluator::evalExpr(Container& op, Container& c1, Container& c2)
 {
+	Container result;
 
-	int num;
 
 	switch (op.value.op) 
 	{
-		case BinaryOpType::Add : num = c1.value.i + c2.value.i; break;
-		case BinaryOpType::Sub : num = c1.value.i - c2.value.i; break;
-		case BinaryOpType::Mul : num = c1.value.i * c2.value.i; break;
-		case BinaryOpType::Div : num = c1.value.i / c2.value.i; break;
-		case BinaryOpType::Pow : num = pow(c1.value.i, c2.value.i); break;
+		case BinaryOpType::Add : result = add(c1, c2); break;
+		case BinaryOpType::Sub : result = c1.value.i - c2.value.i; break;
+		case BinaryOpType::Mul : result = c1.value.i * c2.value.i; break;
+		case BinaryOpType::Div : result = c1.value.i / c2.value.i; break;
+		case BinaryOpType::Pow : result = pow(c1.value.i, c2.value.i); break;
 		default: return;
 	}
 
-	Container result(num);
 	result_stack.push_back(result);
 }
 
@@ -46,7 +45,7 @@ void Evaluator::evaluate(ContainerVec* containers)
 			Container c1 = result_stack.back();
 			result_stack.pop_back();
 
-			eval_expr(con, c1, c2);
+			evalExpr(con, c1, c2);
 		}
 	}
 }
@@ -58,3 +57,54 @@ int Evaluator::yield()
 	result_stack.pop_back();
 	return num;
 }
+
+
+Container Evaluator::add(Container& c1, Container& c2)
+{
+	if (c1.type == ContainerType::Int && c2.type == ContainerType::Int)
+	{
+		return Container(c1.value.i + c2.value.i);
+	} else 
+	{
+		double a = (c1.type == ContainerType::Double) ? c1.value.d : (double) c1.value.i;
+		double b = (c2.type == ContainerType::Double) ? c2.value.d : (double) c2.value.i;
+		return Container(a + b);
+	}
+}
+
+
+Container Evaluator::subtract(Container& c1, Container& c2)
+{
+		if (c1.type == ContainerType::Int && c2.type == ContainerType::Int)
+	{
+		return Container(c1.value.i - c2.value.i);
+	} else 
+	{
+		double a = (c1.type == ContainerType::Double) ? c1.value.d : (double) c1.value.i;
+		double b = (c2.type == ContainerType::Double) ? c2.value.d : (double) c2.value.i;
+		return Container(a - b);
+	}
+}
+
+
+Container Evaluator::multiply(Container& c1, Container& c2)
+{
+	if (c1.type == ContainerType::Int && c2.type == ContainerType::Int)
+	{
+		return Container(c1.value.i * c2.value.i);
+	} else 
+	{
+		double a = (c1.type == ContainerType::Double) ? c1.value.d : (double) c1.value.i;
+		double b = (c2.type == ContainerType::Double) ? c2.value.d : (double) c2.value.i;
+		return Container(a * b);
+	}
+}
+
+
+Container Evaluator::divide(Container& c1, Container& c2)
+{
+	double a = (c1.type == ContainerType::Double) ? c1.value.d : (double) c1.value.i;
+	double b = (c2.type == ContainerType::Double) ? c2.value.d : (double) c2.value.i;
+	return Container(a / b);
+}
+
