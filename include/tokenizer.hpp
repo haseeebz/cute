@@ -11,6 +11,9 @@ class Tokenizer
 	ContainerVec* tokenized_containers;
 	Container prev_container = Container();
 
+	void tokenize_digit(char c);
+	void tokenize_op(char c);
+
 	public:
 
 	ContainerVec* tokenize(std::string str);

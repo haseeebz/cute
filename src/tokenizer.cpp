@@ -21,23 +21,38 @@ ContainerVec* Tokenizer::tokenize(std::string str)
 
 		if (std::isdigit(c))
 		{
-			int num = std::atoi(&c);
-
-			if (prev_container.type == ContainerType::Int)
-			{
-				Container con = Container(prev_container.value.i * 10 + num);
-				tokenized_containers->pop_back();
-				tokenized_containers->push_back(con);
-				prev_container = con;
-				continue;
-			}
-
-			Container con = Container(num);
-			tokenized_containers->push_back(con);
-			prev_container = con;
+			tokenize_digit(c);
 			continue;
 		}
 
+		tokenize_op(c);
+	}
+
+	return tokenized_containers;
+}
+
+
+void Tokenizer::tokenize_digit(char c)
+{
+	int num = std::atoi(&c);
+
+	if (prev_container.type == ContainerType::Int)
+	{
+		Container con = Container(prev_container.value.i * 10 + num);
+		tokenized_containers->pop_back();
+		tokenized_containers->push_back(con);
+		prev_container = con;
+		return;
+	}
+
+	Container con = Container(num);
+	tokenized_containers->push_back(con);
+	prev_container = con;
+}
+
+
+void Tokenizer::tokenize_op(char c)
+{
 		Container con;
 		
 		switch (c) 
@@ -52,15 +67,11 @@ ContainerVec* Tokenizer::tokenize(std::string str)
 		case '(' : con = Container(ParanType::Left); break;
 		case ')' : con = Container(ParanType::Right); break;
 
-		default: continue;
+		default: return;
 		}
 
-		if (con.type == ContainerType::Void) {continue;} //Error raising here.
+		if (con.type == ContainerType::Void) {return;} //Error raising here.
 
 		tokenized_containers->push_back(con);
 		prev_container = con;
-	}
-
-	return tokenized_containers;
 }
-
