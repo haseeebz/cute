@@ -14,6 +14,11 @@ void print_container(Container& container, bool endline)
 		std::cout << "[ Int " << container.value.i << " ] ";
 	}
 
+	if (container.type == ContainerType::Double)
+	{
+		std::cout << "[ Double " << container.value.d << " ] ";
+	}
+
 	if (container.type == ContainerType::BinaryOp)
 	{
 		std::cout << "[ BinaryOp " << binaryOp_to_char(container.value.op) << " ] ";

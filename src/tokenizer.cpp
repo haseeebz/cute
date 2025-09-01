@@ -44,7 +44,10 @@ char Tokenizer::nextChar()
 
 void Tokenizer::tokenizeDigit(char c)
 {
-	int num = std::atoi(&c);
+	int integar = std::atoi(&c);
+	double decimal;
+	double decimal_multiplier = 10;
+	bool is_decimal = false;
 
 	while (true)
 	{
@@ -52,17 +55,30 @@ void Tokenizer::tokenizeDigit(char c)
 		
 		if (std::isdigit(c))
 		{
-			num = num * 10 + std::atoi(&c);
+			if (is_decimal)
+			{
+				decimal = decimal + (std::atoi(&c) / decimal_multiplier);
+				decimal_multiplier = decimal_multiplier * 10;
+				continue;
+			}
+
+			integar = integar * 10 + std::atoi(&c);
+			continue;
+		}
+
+		if (c == '.')
+		{
+			decimal = (double) integar;
+			is_decimal = true;
 			continue;
 		}
 
 		break;
 	}
 
-	Container con(num);
+	Container con = is_decimal ? Container(decimal) : Container(integar);
 	tokenized_containers->push_back(con);
 	prev_container = con;
-
 }
 
 
