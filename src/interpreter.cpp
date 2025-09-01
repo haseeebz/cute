@@ -8,10 +8,6 @@
 
 void Interpreter::run(int argc, char* argv[])
 {
-	std::cout << "argc = " << argc << "\n";
-    for (int i = 0; i < argc; ++i) {
-        std::cout << "argv[" << i << "] = " << argv[i] << "\n";
-    }
 
 	if (argc <= 1)
 	{
@@ -33,7 +29,7 @@ void Interpreter::interpretREPL()
 		std::getline(std::cin, line);
 
 		if (line == "quit") {break;}
-		std::cout << line << std::endl;
+
 		interpretString(line);
 		printResult();
 	}
@@ -42,10 +38,8 @@ void Interpreter::interpretREPL()
 
 void Interpreter::interpretString(std::string expr)
 {
-	ContainerVec* cons = tokenizer.tokenize("2+ 2");
+	ContainerVec* cons = tokenizer.tokenize(expr);
 	ContainerVec* parsed_cons = parser.parse(cons);
-	print_containers(cons);
-	print_containers(parsed_cons);
 	evaluator.evaluate(parsed_cons);
 	delete cons;
 	delete parsed_cons;

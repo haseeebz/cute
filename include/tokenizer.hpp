@@ -13,6 +13,7 @@ class Tokenizer
 	Container prev_container = Container();
 
 	char nextChar();
+	void backtrack();
 
 	char tokenizeSpace();
 	void tokenizeDigit(char c);

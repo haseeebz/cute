@@ -40,6 +40,10 @@ char Tokenizer::nextChar()
 	return c;
 }
 
+void Tokenizer::backtrack()
+{
+	index--;
+}
 
 
 void Tokenizer::tokenizeDigit(char c)
@@ -73,6 +77,7 @@ void Tokenizer::tokenizeDigit(char c)
 			continue;
 		}
 
+		backtrack();
 		break;
 	}
 
