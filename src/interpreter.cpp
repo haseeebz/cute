@@ -36,4 +36,5 @@ void Interpreter::interpretREPL()
 void Interpreter::printResult()
 {
 	Container result = evaluator.yield();
+	print_container_value(result);
 }

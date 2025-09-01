@@ -35,6 +35,33 @@ void print_container(Container& container, bool endline)
 }
 
 
+void print_container_value(Container& container)
+{
+	if (container.type == ContainerType::Int)
+	{
+		std::cout << container.value.i;
+	}
+
+	if (container.type == ContainerType::Double)
+	{
+		std::cout <<  container.value.d;
+	}
+
+	if (container.type == ContainerType::BinaryOp)
+	{
+		std::cout << binaryOp_to_char(container.value.op);
+	}
+
+	if (container.type == ContainerType::Paran)
+	{
+		char paran = (container.value.paran == ParanType::Left) ? '(' : ')';
+		std::cout << paran;
+	}
+
+}
+
+
+
 void print_containers(ContainerVec* containers)
 {
 	Container current;
