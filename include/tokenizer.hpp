@@ -7,12 +7,17 @@
 
 class Tokenizer
 {
+	int index;
 	std::string current_string;
 	ContainerVec* tokenized_containers;
 	Container prev_container = Container();
 
-	void tokenize_digit(char c);
-	void tokenize_op(char c);
+	char nextChar();
+
+	char tokenizeSpace();
+	void tokenizeDigit(char c);
+	void tokenizeOp(char c);
+	void tokenizePoint();
 
 	public:
 
