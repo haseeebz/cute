@@ -1,9 +1,9 @@
 #include <iostream>
 #include "./include/interpreter.hpp"
 
-int main()
+int main(int argc, char* args[])
 {
 	Interpreter interpreter;
-	interpreter.run("(10 / 4) * 9.9 - 90");
+	interpreter.run(argc, args);
 	return 0;
 }

@@ -1,25 +1,39 @@
 #include <iostream>
+#include <string>
 #include <vector>
 #include "../include/container.hpp"
 #include "../include/interpreter.hpp"
 
 
-void Interpreter::run(std::string expr)
+void Interpreter::run(int argc, char* args[])
 {
-	std::cout << expr << std::endl;
+	if (argc < 1)
+	{
+		interpretREPL();
+		return;
+	}
 
-	ContainerVec* cons = tokenizer.tokenize(expr);
-	print_containers(cons);
-	
-	ContainerVec* parsed_cons = parser.parse(cons);
-	print_containers(parsed_cons);
+}
 
-	evaluator.evaluate(parsed_cons);
+void Interpreter::interpretREPL()
+{
+	std::cout << "Running mathz in REPL mode." << std::endl;
+
+	while (true)
+	{
+		std::string line;
+
+		std::cout << ">>> ";
+		std::getline(std::cin, line);
+
+		if (line == "quit") {break;}
+		
+		interpretString(line);
+		printResult();
+	}
+}
+
+void Interpreter::printResult()
+{
 	Container result = evaluator.yield();
-	
-	std::cout << "Result: ";
-	print_container(result, true);
-
-	delete cons;
-	delete parsed_cons;
 }
