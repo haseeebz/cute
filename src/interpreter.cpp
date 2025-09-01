@@ -10,10 +10,10 @@ void Interpreter::run(std::string expr)
 
 	ContainerVec* cons = tokenizer.tokenize(expr);
 	print_containers(cons);
-	return;
+	
 	ContainerVec* parsed_cons = parser.parse(cons);
 	print_containers(parsed_cons);
-	
+	return;
 	evaluator.evaluate(parsed_cons);
 	int result = evaluator.yield();
 	

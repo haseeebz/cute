@@ -15,21 +15,21 @@ ContainerVec* Parser::parse(ContainerVec* containers)
 	{
 		current = tokenized_containers->at(i);
 
-		if (current.type == ContainerType::Int)
+		if (current.type == ContainerType::Int || current.type == ContainerType::Double)
 		{
-			parse_int(current);
+			parseDigit(current);
 			continue;
 		}
 
 		if (current.type == ContainerType::BinaryOp)
 		{
-			parse_binaryOp(current);
+			parseBinaryOp(current);
 			continue;
 		}
 
 		if (current.type == ContainerType::Paran)
 		{
-			parse_paran(current);
+			parseParan(current);
 			continue;
 		}
 
@@ -45,13 +45,13 @@ ContainerVec* Parser::parse(ContainerVec* containers)
 }
 
 
-void Parser::parse_int(Container& current)
+void Parser::parseDigit(Container& current)
 {
 	parsed_containers->push_back(current);
 }
 
 
-void Parser::parse_binaryOp(Container& current)
+void Parser::parseBinaryOp(Container& current)
 {
 
 	while (op_containers_stack.size() > 0)
@@ -79,7 +79,7 @@ void Parser::parse_binaryOp(Container& current)
 }
 
 
-void Parser::parse_paran(Container& current)
+void Parser::parseParan(Container& current)
 {
 	if (current.value.paran == ParanType::Left)
 	{
