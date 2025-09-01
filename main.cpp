@@ -4,6 +4,6 @@
 int main()
 {
 	Interpreter interpreter;
-	interpreter.run("2 ^ (6 - 2)");
+	interpreter.run("2000 + 1 - 1999");
 	return 0;
 }
