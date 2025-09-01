@@ -21,5 +21,5 @@ class Evaluator
 	public:
 
 	void evaluate(ContainerVec* containers);
-	int yield();
+	Container yield();
 };

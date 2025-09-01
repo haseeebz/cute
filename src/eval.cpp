@@ -29,7 +29,7 @@ void Evaluator::evaluate(ContainerVec* containers)
 	{
 		Container con = containers->at(i);
 
-		if (con.type == ContainerType::Int)
+		if (con.type == ContainerType::Int || con.type == ContainerType::Double)
 		{
 			result_stack.push_back(con);
 			continue;
@@ -49,11 +49,11 @@ void Evaluator::evaluate(ContainerVec* containers)
 }
 
 
-int Evaluator::yield()
+Container Evaluator::yield()
 {
-	int num = result_stack.back().value.i;
+	Container result = result_stack.back();
 	result_stack.pop_back();
-	return num;
+	return result;
 }
 
 

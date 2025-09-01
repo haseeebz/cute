@@ -13,11 +13,12 @@ void Interpreter::run(std::string expr)
 	
 	ContainerVec* parsed_cons = parser.parse(cons);
 	print_containers(parsed_cons);
-	return;
+
 	evaluator.evaluate(parsed_cons);
-	int result = evaluator.yield();
+	Container result = evaluator.yield();
 	
-	std::cout << "Result: " << result << std::endl;
+	std::cout << "Result: ";
+	print_container(result, true);
 
 	delete cons;
 	delete parsed_cons;

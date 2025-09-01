@@ -4,6 +4,6 @@
 int main()
 {
 	Interpreter interpreter;
-	interpreter.run("2000 + 1 - 19.9999");
+	interpreter.run("(10 / 4) * 9.9 - 90");
 	return 0;
 }
