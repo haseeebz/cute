@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/mathz.dir/main.cpp.o CMakeFiles/mathz.dir/src/container.cpp.o CMakeFiles/mathz.dir/src/eval.cpp.o CMakeFiles/mathz.dir/src/interpreter.cpp.o CMakeFiles/mathz.dir/src/parser.cpp.o CMakeFiles/mathz.dir/src/tokenizer.cpp.o -o mathz 

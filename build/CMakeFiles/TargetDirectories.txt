@@ -1,3 +1,0 @@
-/home/haseeb/Code/mathz/build/CMakeFiles/mathz.dir
-/home/haseeb/Code/mathz/build/CMakeFiles/edit_cache.dir
-/home/haseeb/Code/mathz/build/CMakeFiles/rebuild_cache.dir
