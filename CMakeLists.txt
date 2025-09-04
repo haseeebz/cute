@@ -4,7 +4,7 @@ project(cute C)
 
 file(GLOB_RECURSE SRC_FILES "${CMAKE_SOURCE_DIR}/cute/src/*.c")
 
-add_executable(cute ${SRC_FILES})
+add_executable(cute ${CMAKE_SOURCE_DIR}/cute/main.c ${SRC_FILES})
 
 target_compile_options(cute PRIVATE -Wall -Wextra -Wpedantic -g)
 
