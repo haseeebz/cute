@@ -31,6 +31,7 @@ typedef struct {
 
 void printContainer(Container* con, bool endline);
 
+Container newVoidContainer();
 Container newIntContainer(int i);
 Container newBinaryOpContainer(BinaryOpType op);
 

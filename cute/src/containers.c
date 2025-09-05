@@ -21,6 +21,14 @@ void printContainer(Container* con, bool endline)
 }
 
 
+Container newVoidContainer()
+{
+	Container con;
+	con.type = Void;
+	return con;
+}
+
+
 Container newIntContainer(int i)
 {
 	Container con;
