@@ -3,7 +3,12 @@
 
 int main()
 {
-	Container con = newBinaryOpContainer(Sub);
-	printContainer(&con, true);
+	ContainerStack* stack = newContainerStack(10);
+
+	ContainerStack_push(stack, newIntContainer(10));
+	ContainerStack_push(stack, newIntContainer(8));
+	ContainerStack_push(stack, newBinaryOpContainer(Add));
+
+	printContainerStack(stack);
 	return 0;
 }

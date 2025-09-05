@@ -51,21 +51,74 @@ ContainerStack* newContainerStack(int capacity)
 }
 
 
-Container ContainerStack_resize(ContainerStack* stack);
+void ContainerStack_resize(ContainerStack* stack, int capacity)
+{
+	if (stack->capacity >= capacity) {return;}
 
+	Container* copied_cons = malloc(sizeof(Container) * capacity);
 
+	for (int i = 0; i < stack->size; i++)
+	{
+		copied_cons[i] = stack->cons[i];
+	}
+
+	free(stack->cons);
+	stack->cons = copied_cons;
+	stack->capacity = capacity;
+}
 
 
 void ContainerStack_push(ContainerStack* stack, Container con)
 {
+	if (stack->size >= stack->capacity)
+	{
+		ContainerStack_resize(stack, stack->capacity*2);
+	}
 	stack->cons[stack->size] = con;
 	stack->size++;
 }
 
 
+Container ContainerStack_pop(ContainerStack* stack)
+{
+	if (stack->size < 1) 
+	{
+		Container con = {.type = Void};
+		return con;
+	}
+
+	Container con = stack->cons[stack->size--];
+	return con;
+}
 
 
-Container ContainerStack_pop(ContainerStack* stack);
-Container ContainerStack_peek(ContainerStack* stack);
-void delContainerStack(ContainerStack* stack);
-void printContainerStack(ContainerStack* stack);
+Container ContainerStack_peek(ContainerStack* stack)
+{
+	if (stack->size < 1) 
+	{
+		Container con = {.type = Void};
+		return con;
+	}
+
+	Container con = stack->cons[stack->size-1];
+	return con;	
+}
+
+
+void delContainerStack(ContainerStack* stack)
+{
+	free(stack->cons);
+	free(stack);
+}
+
+
+void printContainerStack(ContainerStack* stack)
+{
+	Container current;
+	for (int i = 0; i < stack->size; i++)
+	{
+		current = stack->cons[i];
+		printContainer(&current, false);
+	}
+	printf("\n");
+}

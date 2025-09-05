@@ -42,7 +42,7 @@ typedef struct {
 } ContainerStack;
 
 ContainerStack* newContainerStack(int capacity);
-Container ContainerStack_resize(ContainerStack* stack);
+void ContainerStack_resize(ContainerStack* stack, int capacity);
 void ContainerStack_push(ContainerStack* stack, Container con);
 Container ContainerStack_pop(ContainerStack* stack);
 Container ContainerStack_peek(ContainerStack* stack);
