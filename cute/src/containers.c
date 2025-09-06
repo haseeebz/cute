@@ -82,20 +82,19 @@ void ContainerStack_push(ContainerStack* stack, Container con)
 	{
 		ContainerStack_resize(stack, stack->capacity*2);
 	}
-	stack->cons[stack->size] = con;
-	stack->size++;
+	stack->cons[stack->size++] = con;
 }
 
 
 Container ContainerStack_pop(ContainerStack* stack)
 {
-	if (stack->size < 1) 
+	if (stack->size <= 0) 
 	{
 		Container con = {.type = Void};
 		return con;
 	}
-
-	Container con = stack->cons[stack->size--];
+	stack->size--;
+	Container con = stack->cons[stack->size];
 	return con;
 }
 
