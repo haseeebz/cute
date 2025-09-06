@@ -47,12 +47,10 @@ void backtrackToken(TokenizerContext* tokenizer)
 }
 
 
-
 ContainerStack* tokenize(char* string)
 {
 	TokenizerContext* tokenizer = newTokenizerContext(string);
 	
-
 	while (tokenizer->index <= tokenizer->string_size) {
 
 		char c = nextToken(tokenizer);
@@ -64,6 +62,8 @@ ContainerStack* tokenize(char* string)
 			tokenizeNumber(tokenizer, c);
 			continue;
 		}
+
+		tokenizeOperator(tokenizer, c);
 	}
 
 	return tokenizer->stack;
@@ -89,4 +89,21 @@ void tokenizeNumber(TokenizerContext* tokenizer, char c)
 	}
 
 	ContainerStack_push(tokenizer->stack, newIntContainer(integar));
+}
+
+
+void tokenizeOperator(TokenizerContext* tokenizer, char c)
+{
+	Container con;
+
+	switch (c) 
+	{
+		case '+' : con = newBinaryOpContainer(Add); break;
+		case '-' : con = newBinaryOpContainer(Sub); break;
+		case '*' : con = newBinaryOpContainer(Mul); break;
+		case '/' : con = newBinaryOpContainer(Div); break;
+		default  : return;
+	}
+
+	ContainerStack_push(tokenizer->stack, con);
 }

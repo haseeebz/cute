@@ -21,3 +21,5 @@ void backtrackToken(TokenizerContext* tokenizer);
 
 ContainerStack* tokenize(char* string);
 void tokenizeNumber(TokenizerContext* tokenizer, char c);
+void tokenizeOperator(TokenizerContext* tokenizer, char c);
+

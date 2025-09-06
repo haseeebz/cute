@@ -4,7 +4,7 @@
 
 int main()
 {
-	ContainerStack* stack = tokenize("12 14 900");
+	ContainerStack* stack = tokenize("12+14/900");
 	printContainerStack(stack);
 	return 0;
 }
