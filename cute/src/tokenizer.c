@@ -34,7 +34,6 @@ void delTokenizerContext(TokenizerContext* tokenizer)
 }
 
 
-
 char nextToken(TokenizerContext* tokenizer)
 {
 	char c = tokenizer->current_string[tokenizer->index];
