@@ -8,7 +8,6 @@ typedef struct {
 	int index;
 	int string_size;
 	ContainerStack* stack;
-	Container previous_token;
 } TokenizerContext;
 
 

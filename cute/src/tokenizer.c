@@ -23,7 +23,6 @@ void initTokenizerContext(TokenizerContext* tokenizer, char* string)
 	strcpy(tokenizer->current_string, string);
 
 	tokenizer->stack = newContainerStack(tokenizer->string_size);
-	tokenizer->previous_token = newVoidContainer();
 }
 
 
