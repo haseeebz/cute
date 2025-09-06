@@ -13,13 +13,14 @@ typedef struct {
 
 
 
-TokenizerContext* newTokenizerContext(char* string);
+TokenizerContext* newTokenizerContext();
+void initTokenizerContext(TokenizerContext* tokenizer, char* string);
 void delTokenizerContext(TokenizerContext* tokenizer);
 
 char nextToken(TokenizerContext* tokenizer);
 void backtrackToken(TokenizerContext* tokenizer);
 
-ContainerStack* tokenize(char* string);
+ContainerStack* tokenize(TokenizerContext* tokenizer, char* string);
 void tokenizeNumber(TokenizerContext* tokenizer, char c);
 void tokenizeOperator(TokenizerContext* tokenizer, char c);
 

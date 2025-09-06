@@ -7,10 +7,15 @@
 
 
 
-TokenizerContext* newTokenizerContext(char* string)
+TokenizerContext* newTokenizerContext()
 {
 	TokenizerContext* tokenizer = malloc(sizeof(TokenizerContext));
+	return tokenizer;
+}
 
+
+void initTokenizerContext(TokenizerContext* tokenizer, char* string)
+{	
 	tokenizer->index = 0;
 	tokenizer->string_size = strlen(string);
 
@@ -19,8 +24,6 @@ TokenizerContext* newTokenizerContext(char* string)
 
 	tokenizer->stack = newContainerStack(tokenizer->string_size);
 	tokenizer->previous_token = newVoidContainer();
-
-	return tokenizer;
 }
 
 
@@ -47,9 +50,9 @@ void backtrackToken(TokenizerContext* tokenizer)
 }
 
 
-ContainerStack* tokenize(char* string)
+ContainerStack* tokenize(TokenizerContext* tokenizer, char* string)
 {
-	TokenizerContext* tokenizer = newTokenizerContext(string);
+	initTokenizerContext(tokenizer, string);
 	
 	while (tokenizer->index <= tokenizer->string_size) {
 
