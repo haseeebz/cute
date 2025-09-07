@@ -12,5 +12,6 @@ EvaluatorContext* newEvaluatorContext();
 void initEvaluatorContext(EvaluatorContext* evaluator, ContainerStack* parsed_cons);
 void delEvaluatorContext(EvaluatorContext* evaluator);
 
-void evaluate(EvaluatorContext* evaluator, ContainerStack* parsed_cons);
-Container EvaluatorContext_yield(EvaluatorContext* evaluate);
+void EvaluatorContext_evaluate(EvaluatorContext* evaluator, ContainerStack* parsed_cons);
+void EvaluatorContext_evalExpr(EvaluatorContext* evaluator, Container op, Container c1, Container c2);
+Container EvaluatorContext_yield(EvaluatorContext* evaluator);
