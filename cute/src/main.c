@@ -1,9 +1,9 @@
 #include "../include/cute.h"
 
-int main()
+int main(int argc, char *argv[])
 {
 	Cute* cute = Cute_init();
-	Cute_run(cute, "12 + 12");
+	Cute_run(cute, argc, argv);
 	Cute_end(cute);
 	return 0;
 }

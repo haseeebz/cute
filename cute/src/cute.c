@@ -7,6 +7,9 @@
 #include "../include/eval.h"
 
 
+char CUTE_VERSION[] = "0.1.0";
+char CUTE_NAME[] = "cute cat";
+
 Cute* Cute_init()
 {
 	Cute* cute = malloc(sizeof(Cute));
@@ -26,7 +29,30 @@ void Cute_end(Cute* cute)
 }
 
 
-void Cute_run(Cute* cute, char* string)
+void Cute_run(Cute* cute, int argc, char *argv[])
+{
+	if (argc <= 1) 
+	{
+		Cute_invokeREPL(cute);
+	}
+}
+
+
+void Cute_invokeREPL(Cute* cute)
+{
+	printf("Cute Interactive Shell (%s) [%s]\n", CUTE_VERSION, CUTE_NAME);
+
+	char buffer[256];
+	while (true)
+	{
+		printf(">> ");
+		fgets(buffer, sizeof(buffer), stdin);
+		Cute_interpretString(cute, buffer);
+	}
+}
+
+
+void Cute_interpretString(Cute* cute, char* string)
 {
 	ContainerStack* tokenized_cons = TokenizerContext_tokenize(cute->tokenizer, string);
 
@@ -41,4 +67,3 @@ void Cute_run(Cute* cute, char* string)
 	ContainerStack_del(tokenized_cons);
 	ContainerStack_del(parsed_cons);
 }
-
