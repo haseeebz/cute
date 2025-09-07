@@ -11,7 +11,7 @@ int main()
 	ParserContext* parser = newParserContext();
 	EvaluatorContext* evaluator = newEvaluatorContext();
 
-	ContainerStack* tokenized_cons = TokenizerContext_tokenize(tokenizer, "12 + 8 - 90 * 78 * 45");
+	ContainerStack* tokenized_cons = TokenizerContext_tokenize(tokenizer, "12 + 8 - 90 * 45");
 	printContainerStack(tokenized_cons);
 	ContainerStack* parsed_cons = ParserContext_parse(parser, tokenized_cons);
 	printContainerStack(parsed_cons);
