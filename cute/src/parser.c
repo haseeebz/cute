@@ -26,10 +26,6 @@ void ParserContext_init(ParserContext* parser, ContainerStack* tokenized_cons)
 void ParserContext_del(ParserContext* parser)
 {
 	ContainerStack_del(parser->operator_stack);
-	// These two will be freed by the interpreter, but just in case.
-	ContainerStack_del(parser->parsed_cons);
-	ContainerStack_del(parser->tokenized_cons);
-
 	free(parser);
 }
 

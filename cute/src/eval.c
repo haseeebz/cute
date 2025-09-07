@@ -22,8 +22,6 @@ void EvaluatorContext_init(EvaluatorContext* evaluator, ContainerStack* parsed_c
 
 void EvaluatorContext_del(EvaluatorContext* evaluator)
 {
-	ContainerStack_del(evaluator->parsed_cons);
-
 	ContainerStack_del(evaluator->result_stack);
 	free(evaluator);
 }

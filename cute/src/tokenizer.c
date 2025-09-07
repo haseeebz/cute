@@ -29,7 +29,6 @@ void TokenizerContext_init(TokenizerContext* tokenizer, char* string)
 void TokenizerContext_del(TokenizerContext* tokenizer)
 {
 	free(tokenizer->current_string);
-	ContainerStack_del(tokenizer->stack);
 	free(tokenizer);
 }
 

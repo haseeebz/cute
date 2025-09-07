@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/cute.h"
 #include "../include/containers.h"
+#include "../include/cute.h"
 #include "../include/tokenizer.h"
 #include "../include/parser.h"
 #include "../include/eval.h"
 
 
-Cute* initCute()
+Cute* Cute_init()
 {
 	Cute* cute = malloc(sizeof(Cute));
 	cute->tokenizer = TokenizerContext_new();
@@ -17,11 +17,28 @@ Cute* initCute()
 }
 
 
-void endCute(Cute* cute)
+void Cute_end(Cute* cute)
 {
 	TokenizerContext_del(cute->tokenizer);
 	ParserContext_del(cute->parser);
 	EvaluatorContext_del(cute->evaluator);
 	free(cute);
+}
+
+
+void Cute_run(Cute* cute, char* string)
+{
+	ContainerStack* tokenized_cons = TokenizerContext_tokenize(cute->tokenizer, string);
+
+	ContainerStack* parsed_cons = ParserContext_parse(cute->parser, tokenized_cons);
+
+	EvaluatorContext_evaluate(cute->evaluator, parsed_cons);
+
+	Container result = EvaluatorContext_yield(cute->evaluator);
+
+	Container_print(&result, true);
+
+	ContainerStack_del(tokenized_cons);
+	ContainerStack_del(parsed_cons);
 }
 

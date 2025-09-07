@@ -115,14 +115,14 @@ Container ContainerStack_peek(ContainerStack* stack)
 }
 
 
-void delContainerStack(ContainerStack* stack)
+void ContainerStack_del(ContainerStack* stack)
 {
 	free(stack->cons);
 	free(stack);
 }
 
 
-void printContainerStack(ContainerStack* stack)
+void ContainerStack_print(ContainerStack* stack)
 {
 	Container current;
 	for (int i = 0; i < stack->size; i++)
