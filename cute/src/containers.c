@@ -9,12 +9,15 @@ void printContainer(Container* con, bool endline)
 
 	if (con->type == Int)
 	{
-		printf("[Int %d]", con->value.i);
+		printf("[ Int %d ]", con->value.i);
 	}
 	else if (con->type == BinaryOp)
 	{
-		printf("[BinaryOp %d]", con->value.bop);
-		
+		printf("[ BinaryOp %d ]", con->value.bop);
+	}
+	else if (con->type == Void)
+	{
+		printf("[ Void ]");
 	}
 
 	if (endline) {printf("\n");}
