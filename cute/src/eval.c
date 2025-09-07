@@ -41,6 +41,7 @@ void EvaluatorContext_evaluate(EvaluatorContext* evaluator, ContainerStack* pars
 		if (current.type == Int)
 		{
 			ContainerStack_push(evaluator->result_stack, current);
+			continue;
 		}
 
 		if (current.type == BinaryOp)
@@ -59,10 +60,10 @@ void EvaluatorContext_evalExpr(EvaluatorContext* evaluator, Container op, Contai
 
 	switch (op.value.bop) 
 	{
-		case Add: result = newIntContainer(c1.value.i + c1.value.i); break;
-		case Sub: result = newIntContainer(c1.value.i - c1.value.i); break;
-		case Mul: result = newIntContainer(c1.value.i * c1.value.i); break;
-		case Div: result = newIntContainer(c1.value.i / c1.value.i); break;
+		case Add: result = newIntContainer(c1.value.i + c2.value.i); break;
+		case Sub: result = newIntContainer(c1.value.i - c2.value.i); break;
+		case Mul: result = newIntContainer(c1.value.i * c2.value.i); break;
+		case Div: result = newIntContainer(c1.value.i / c2.value.i); break;
 		default : return;
 	}
 

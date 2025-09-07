@@ -71,7 +71,6 @@ ContainerStack* ParserContext_parse(ParserContext* parser, ContainerStack* token
 	while (parser->operator_stack->size > 0) 
 	{
 		Container con = ContainerStack_pop(parser->operator_stack);
-		printContainer(&con, true);
 		ContainerStack_push(parser->parsed_cons, con);
 	}
 
