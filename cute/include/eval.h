@@ -8,9 +8,9 @@ typedef struct {
 	ContainerStack* result_stack;
 } EvaluatorContext;
 
-EvaluatorContext* newEvaluatorContext();
-void initEvaluatorContext(EvaluatorContext* evaluator, ContainerStack* parsed_cons);
-void delEvaluatorContext(EvaluatorContext* evaluator);
+EvaluatorContext* EvaluatorContext_new();
+void EvaluatorContext_init(EvaluatorContext* evaluator, ContainerStack* parsed_cons);
+void EvaluatorContext_del(EvaluatorContext* evaluator);
 
 void EvaluatorContext_evaluate(EvaluatorContext* evaluator, ContainerStack* parsed_cons);
 void EvaluatorContext_evalExpr(EvaluatorContext* evaluator, Container op, Container c1, Container c2);

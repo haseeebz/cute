@@ -10,9 +10,9 @@ typedef struct {
 	int index;
 } ParserContext;
 
-ParserContext* newParserContext();
-void initParserContext(ParserContext* parser, ContainerStack* tokenized_cons);
-void delParserContext(ParserContext* parser);
+ParserContext* ParserContext_new();
+void ParserContext_init(ParserContext* parser, ContainerStack* tokenized_cons);
+void ParserContext_del(ParserContext* parser);
 
 ContainerStack* ParserContext_parse(ParserContext* parser, ContainerStack* tokenized_cons);
 bool binaryOpPrecedence(BinaryOpType op1, BinaryOpType op2);

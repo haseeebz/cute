@@ -29,11 +29,11 @@ typedef struct {
 } Container;
 
 
-void printContainer(Container* con, bool endline);
+void Container_print(Container* con, bool endline);
 
-Container newVoidContainer();
-Container newIntContainer(int i);
-Container newBinaryOpContainer(BinaryOpType op);
+Container Container_makeVoid();
+Container Container_makeInt(int i);
+Container Container_makeBinaryOp(BinaryOpType op);
 
 
 typedef struct {
@@ -42,10 +42,10 @@ typedef struct {
 	int capacity;
 } ContainerStack;
 
-ContainerStack* newContainerStack(int capacity);
+ContainerStack* ContainerStack_new(int capacity);
 void ContainerStack_resize(ContainerStack* stack, int capacity);
 void ContainerStack_push(ContainerStack* stack, Container con);
 Container ContainerStack_pop(ContainerStack* stack);
 Container ContainerStack_peek(ContainerStack* stack);
-void delContainerStack(ContainerStack* stack);
-void printContainerStack(ContainerStack* stack);
+void ContainerStack_del(ContainerStack* stack);
+void ContainerStack_print(ContainerStack* stack);

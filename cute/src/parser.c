@@ -7,28 +7,28 @@
 
 
 
-ParserContext* newParserContext()
+ParserContext* ParserContext_new()
 {
 	ParserContext* parser = malloc(sizeof(ParserContext));
 	return parser;
 }
 
 
-void initParserContext(ParserContext* parser, ContainerStack* tokenized_cons)
+void ParserContext_init(ParserContext* parser, ContainerStack* tokenized_cons)
 {
 	parser->tokenized_cons = tokenized_cons;
-	parser->parsed_cons = newContainerStack(tokenized_cons->size);
-	parser->operator_stack = newContainerStack(tokenized_cons->size);
+	parser->parsed_cons = ContainerStack_new(tokenized_cons->size);
+	parser->operator_stack = ContainerStack_new(tokenized_cons->size);
 	parser->index = 0;
 }
 
 
-void delParserContext(ParserContext* parser)
+void ParserContext_del(ParserContext* parser)
 {
-	delContainerStack(parser->operator_stack);
+	ContainerStack_del(parser->operator_stack);
 	// These two will be freed by the interpreter, but just in case.
-	delContainerStack(parser->parsed_cons);
-	delContainerStack(parser->tokenized_cons);
+	ContainerStack_del(parser->parsed_cons);
+	ContainerStack_del(parser->tokenized_cons);
 
 	free(parser);
 }
@@ -36,7 +36,7 @@ void delParserContext(ParserContext* parser)
 
 ContainerStack* ParserContext_parse(ParserContext* parser, ContainerStack* tokenized_cons)
 {
-	initParserContext(parser, tokenized_cons);
+	ParserContext_init(parser, tokenized_cons);
 	Container current;
 
 	for (parser->index = 0; parser->index <= tokenized_cons->size; parser->index++)

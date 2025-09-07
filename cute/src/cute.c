@@ -10,17 +10,18 @@
 Cute* initCute()
 {
 	Cute* cute = malloc(sizeof(Cute));
-	cute->tokenizer = newTokenizerContext();
-	cute->parser = newParserContext();
-	cute->evaluator = newEvaluatorContext();
+	cute->tokenizer = TokenizerContext_new();
+	cute->parser = ParserContext_new();
+	cute->evaluator = EvaluatorContext_new();
 	return cute;
 }
 
 
 void endCute(Cute* cute)
 {
-	delTokenizerContext(cute->tokenizer);
-	delParserContext(cute->parser);
-	delEvaluatorContext(cute->evaluator);
+	TokenizerContext_del(cute->tokenizer);
+	ParserContext_del(cute->parser);
+	EvaluatorContext_del(cute->evaluator);
 	free(cute);
 }
+

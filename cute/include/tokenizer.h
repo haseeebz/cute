@@ -12,9 +12,9 @@ typedef struct {
 
 
 
-TokenizerContext* newTokenizerContext();
-void initTokenizerContext(TokenizerContext* tokenizer, char* string);
-void delTokenizerContext(TokenizerContext* tokenizer);
+TokenizerContext* TokenizerContext_new();
+void TokenizerContext_init(TokenizerContext* tokenizer, char* string);
+void TokenizerContext_del(TokenizerContext* tokenizer);
 
 char TokenizerContext_nextToken(TokenizerContext* tokenizer);
 void TokenizerContext_backtrackToken(TokenizerContext* tokenizer);

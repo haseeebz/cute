@@ -7,14 +7,14 @@
 
 
 
-TokenizerContext* newTokenizerContext()
+TokenizerContext* TokenizerContext_new()
 {
 	TokenizerContext* tokenizer = malloc(sizeof(TokenizerContext));
 	return tokenizer;
 }
 
 
-void initTokenizerContext(TokenizerContext* tokenizer, char* string)
+void TokenizerContext_init(TokenizerContext* tokenizer, char* string)
 {	
 	tokenizer->index = 0;
 	tokenizer->string_size = strlen(string);
@@ -22,14 +22,14 @@ void initTokenizerContext(TokenizerContext* tokenizer, char* string)
 	tokenizer->current_string = malloc(sizeof(char) * tokenizer->string_size);
 	strcpy(tokenizer->current_string, string);
 
-	tokenizer->stack = newContainerStack(tokenizer->string_size);
+	tokenizer->stack = ContainerStack_new(tokenizer->string_size);
 }
 
 
-void delTokenizerContext(TokenizerContext* tokenizer)
+void TokenizerContext_del(TokenizerContext* tokenizer)
 {
 	free(tokenizer->current_string);
-	delContainerStack(tokenizer->stack);
+	ContainerStack_del(tokenizer->stack);
 	free(tokenizer);
 }
 
@@ -50,7 +50,7 @@ void TokenizerContext_backtrackToken(TokenizerContext* tokenizer)
 
 ContainerStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* string)
 {
-	initTokenizerContext(tokenizer, string);
+	TokenizerContext_init(tokenizer, string);
 	
 	while (tokenizer->index <= tokenizer->string_size) {
 
@@ -89,7 +89,7 @@ void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c)
 		break;
 	}
 
-	ContainerStack_push(tokenizer->stack, newIntContainer(integar));
+	ContainerStack_push(tokenizer->stack, Container_makeInt(integar));
 }
 
 
@@ -99,10 +99,10 @@ void TokenizerContext_tokenizeOperator(TokenizerContext* tokenizer, char c)
 
 	switch (c) 
 	{
-		case '+' : con = newBinaryOpContainer(Add); break;
-		case '-' : con = newBinaryOpContainer(Sub); break;
-		case '*' : con = newBinaryOpContainer(Mul); break;
-		case '/' : con = newBinaryOpContainer(Div); break;
+		case '+' : con = Container_makeBinaryOp(Add); break;
+		case '-' : con = Container_makeBinaryOp(Sub); break;
+		case '*' : con = Container_makeBinaryOp(Mul); break;
+		case '/' : con = Container_makeBinaryOp(Div); break;
 		default  : return;
 	}
 

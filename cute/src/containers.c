@@ -4,7 +4,7 @@
 #include "../include/containers.h"
 
 
-void printContainer(Container* con, bool endline)
+void Container_print(Container* con, bool endline)
 {
 
 	if (con->type == Int)
@@ -24,7 +24,7 @@ void printContainer(Container* con, bool endline)
 }
 
 
-Container newVoidContainer()
+Container Container_makeVoid()
 {
 	Container con;
 	con.type = Void;
@@ -32,7 +32,7 @@ Container newVoidContainer()
 }
 
 
-Container newIntContainer(int i)
+Container Container_makeInt(int i)
 {
 	Container con;
 	con.type = Int;
@@ -41,7 +41,7 @@ Container newIntContainer(int i)
 }
 
 
-Container newBinaryOpContainer(BinaryOpType op)
+Container Container_makeBinaryOp(BinaryOpType op)
 {
 	Container con;
 	con.type = BinaryOp;
@@ -50,7 +50,7 @@ Container newBinaryOpContainer(BinaryOpType op)
 }
 
 
-ContainerStack* newContainerStack(int capacity)
+ContainerStack* ContainerStack_new(int capacity)
 {
 	ContainerStack* stack = malloc(sizeof(ContainerStack));
 	stack->capacity = capacity;
@@ -128,7 +128,7 @@ void printContainerStack(ContainerStack* stack)
 	for (int i = 0; i < stack->size; i++)
 	{
 		current = stack->cons[i];
-		printContainer(&current, false);
+		Container_print(&current, false);
 	}
 	printf("\n");
 }

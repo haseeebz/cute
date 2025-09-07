@@ -6,32 +6,32 @@
 #include "../include/eval.h"
 
 
-EvaluatorContext* newEvaluatorContext()
+EvaluatorContext* EvaluatorContext_new()
 {
 	EvaluatorContext* evaluator = malloc(sizeof(EvaluatorContext));
-	evaluator->result_stack = newContainerStack(10);
+	evaluator->result_stack = ContainerStack_new(10);
 	return evaluator;
 }
 
 
-void initEvaluatorContext(EvaluatorContext* evaluator, ContainerStack* parsed_cons)
+void EvaluatorContext_init(EvaluatorContext* evaluator, ContainerStack* parsed_cons)
 {
 	evaluator->parsed_cons = parsed_cons;
 }
 
 
-void delEvaluatorContext(EvaluatorContext* evaluator)
+void EvaluatorContext_del(EvaluatorContext* evaluator)
 {
-	delContainerStack(evaluator->parsed_cons);
+	ContainerStack_del(evaluator->parsed_cons);
 
-	delContainerStack(evaluator->result_stack);
+	ContainerStack_del(evaluator->result_stack);
 	free(evaluator);
 }
 
 
 void EvaluatorContext_evaluate(EvaluatorContext* evaluator, ContainerStack* parsed_cons)
 {
-	initEvaluatorContext(evaluator, parsed_cons);
+	EvaluatorContext_init(evaluator, parsed_cons);
 	Container current;
 
 	for (int i = 0; i < evaluator->parsed_cons->size; i++)
@@ -60,10 +60,10 @@ void EvaluatorContext_evalExpr(EvaluatorContext* evaluator, Container op, Contai
 
 	switch (op.value.bop) 
 	{
-		case Add: result = newIntContainer(c1.value.i + c2.value.i); break;
-		case Sub: result = newIntContainer(c1.value.i - c2.value.i); break;
-		case Mul: result = newIntContainer(c1.value.i * c2.value.i); break;
-		case Div: result = newIntContainer(c1.value.i / c2.value.i); break;
+		case Add: result = Container_makeInt(c1.value.i + c2.value.i); break;
+		case Sub: result = Container_makeInt(c1.value.i - c2.value.i); break;
+		case Mul: result = Container_makeInt(c1.value.i * c2.value.i); break;
+		case Div: result = Container_makeInt(c1.value.i / c2.value.i); break;
 		default : return;
 	}
 

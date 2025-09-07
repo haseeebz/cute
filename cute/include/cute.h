@@ -9,5 +9,7 @@ typedef struct {
 	EvaluatorContext* evaluator;
 } Cute;
 
-Cute* initCute();
-void endCute(Cute* cute);
+Cute* Cute_init();
+void Cute_end(Cute* cute);
+
+void Cute_run();
