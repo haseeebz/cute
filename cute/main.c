@@ -8,7 +8,7 @@ int main()
 {
 	TokenizerContext* tokenizer = newTokenizerContext();
 	ParserContext* parser = newParserContext();
-	ContainerStack* stack = tokenize(tokenizer, "2 + 2 * 3");
+	ContainerStack* stack = tokenize(tokenizer, "2 / 7 * 8 + 9");
 	printContainerStack(stack);
 	ContainerStack* parsed_stack = parse(parser, stack);
 	printContainerStack(parsed_stack);
