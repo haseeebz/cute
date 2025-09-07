@@ -34,7 +34,7 @@ void delTokenizerContext(TokenizerContext* tokenizer)
 }
 
 
-char nextToken(TokenizerContext* tokenizer)
+char TokenizerContext_nextToken(TokenizerContext* tokenizer)
 {
 	char c = tokenizer->current_string[tokenizer->index];
 	tokenizer->index++;
@@ -42,42 +42,42 @@ char nextToken(TokenizerContext* tokenizer)
 }
 
 
-void backtrackToken(TokenizerContext* tokenizer)
+void TokenizerContext_backtrackToken(TokenizerContext* tokenizer)
 {
 	if (tokenizer->index > 0) {tokenizer->index--;}
 }
 
 
-ContainerStack* tokenize(TokenizerContext* tokenizer, char* string)
+ContainerStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* string)
 {
 	initTokenizerContext(tokenizer, string);
 	
 	while (tokenizer->index <= tokenizer->string_size) {
 
-		char c = nextToken(tokenizer);
+		char c = TokenizerContext_nextToken(tokenizer);
 
 		if (c == ' ') {continue;}
 
 		if (c >= '0' && c <= '9')
 		{
-			tokenizeNumber(tokenizer, c);
+			TokenizerContext_tokenizeNumber(tokenizer, c);
 			continue;
 		}
 
-		tokenizeOperator(tokenizer, c);
+		TokenizerContext_tokenizeOperator(tokenizer, c);
 	}
 
 	return tokenizer->stack;
 }
 
 
-void tokenizeNumber(TokenizerContext* tokenizer, char c)
+void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c)
 {
 	int integar = c - '0';
 
 	while (1)
 	{
-		char next_c = nextToken(tokenizer);
+		char next_c = TokenizerContext_nextToken(tokenizer);
 		
 		if (next_c >= '0' && next_c <= '9')
 		{
@@ -85,7 +85,7 @@ void tokenizeNumber(TokenizerContext* tokenizer, char c)
 			continue;
 		}
 
-		backtrackToken(tokenizer);
+		TokenizerContext_backtrackToken(tokenizer);
 		break;
 	}
 
@@ -93,7 +93,7 @@ void tokenizeNumber(TokenizerContext* tokenizer, char c)
 }
 
 
-void tokenizeOperator(TokenizerContext* tokenizer, char c)
+void TokenizerContext_tokenizeOperator(TokenizerContext* tokenizer, char c)
 {
 	Container con;
 

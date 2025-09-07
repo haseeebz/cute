@@ -34,7 +34,7 @@ void delParserContext(ParserContext* parser)
 }
 
 
-ContainerStack* parse(ParserContext* parser, ContainerStack* tokenized_cons)
+ContainerStack* ParserContext_parse(ParserContext* parser, ContainerStack* tokenized_cons)
 {
 	initParserContext(parser, tokenized_cons);
 	Container current;

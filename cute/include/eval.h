@@ -11,3 +11,6 @@ typedef struct {
 EvaluatorContext* newEvaluatorContext();
 void initEvaluatorContext(EvaluatorContext* evaluator, ContainerStack* parsed_cons);
 void delEvaluatorContext(EvaluatorContext* evaluator);
+
+void evaluate(EvaluatorContext* evaluator, ContainerStack* parsed_cons);
+Container EvaluatorContext_yield(EvaluatorContext* evaluate);

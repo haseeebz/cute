@@ -27,3 +27,4 @@ void delEvaluatorContext(EvaluatorContext* evaluator)
 	delContainerStack(evaluator->result_stack);
 	free(evaluator);
 }
+

@@ -16,10 +16,10 @@ TokenizerContext* newTokenizerContext();
 void initTokenizerContext(TokenizerContext* tokenizer, char* string);
 void delTokenizerContext(TokenizerContext* tokenizer);
 
-char nextToken(TokenizerContext* tokenizer);
-void backtrackToken(TokenizerContext* tokenizer);
+char TokenizerContext_nextToken(TokenizerContext* tokenizer);
+void TokenizerContext_backtrackToken(TokenizerContext* tokenizer);
 
-ContainerStack* tokenize(TokenizerContext* tokenizer, char* string);
-void tokenizeNumber(TokenizerContext* tokenizer, char c);
-void tokenizeOperator(TokenizerContext* tokenizer, char c);
+ContainerStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* string);
+void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c);
+void TokenizerContext_tokenizeOperator(TokenizerContext* tokenizer, char c);
 
