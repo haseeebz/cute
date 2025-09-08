@@ -13,12 +13,14 @@ typedef enum {
 typedef enum {
 	Void,
 	Int,
+	Float,
 	BinaryOp
 } ContainerType;
 
 
 typedef union {
 	int i;
+	float f;
 	BinaryOpType bop;
 } ContainerValue;
 
@@ -33,6 +35,7 @@ void Container_print(Container* con, bool endline);
 
 Container Container_makeVoid();
 Container Container_makeInt(int i);
+Container Container_makeFloat(float f);
 Container Container_makeBinaryOp(BinaryOpType op);
 
 

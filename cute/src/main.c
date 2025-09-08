@@ -1,4 +1,5 @@
 #include "../include/cute.h"
+#include <stdio.h>
 
 int main(int argc, char *argv[])
 {

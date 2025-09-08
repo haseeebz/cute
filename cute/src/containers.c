@@ -41,6 +41,15 @@ Container Container_makeInt(int i)
 }
 
 
+Container Container_makeFloat(float f)
+{
+	Container con;
+	con.type = Float;
+	con.value.f = f;
+	return con;
+}
+
+
 Container Container_makeBinaryOp(BinaryOpType op)
 {
 	Container con;
