@@ -39,7 +39,7 @@ ContainerStack* ParserContext_parse(ParserContext* parser, ContainerStack* token
 	{
 		current = parser->tokenized_cons->cons[parser->index];
 
-		if (current.type == Int)
+		if (current.type == Int || current.type == Float)
 		{
 			ContainerStack_push(parser->parsed_cons, current);
 			continue;

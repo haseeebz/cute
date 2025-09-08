@@ -73,6 +73,10 @@ ContainerStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* str
 void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c)
 {
 	int integar = c - '0';
+	float float_num;
+
+	float float_multiplier = 10;
+	bool is_float = false;
 
 	while (1)
 	{
@@ -80,7 +84,22 @@ void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c)
 		
 		if (next_c >= '0' && next_c <= '9')
 		{
+
+			if (is_float)
+			{
+				float_num = float_num + (next_c - '0') / float_multiplier;
+				float_multiplier = float_multiplier * 10;
+				continue;
+			}
+
 			integar = (integar * 10) + (next_c - '0');
+			continue;
+		}
+
+		if (next_c == '.') 
+		{
+			is_float = true;
+			float_num = (float) integar;
 			continue;
 		}
 
@@ -88,7 +107,8 @@ void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c)
 		break;
 	}
 
-	ContainerStack_push(tokenizer->stack, Container_makeInt(integar));
+	Container con = is_float ? Container_makeFloat(float_num) : Container_makeInt(integar);
+	ContainerStack_push(tokenizer->stack, con);
 }
 
 
