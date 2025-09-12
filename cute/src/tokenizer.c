@@ -55,12 +55,12 @@ CuteAtomStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* stri
 
 		char c = TokenizerContext_nextToken(tokenizer);
 
-		if (c == ' ') {atomtinue;}
+		if (c == ' ') {continue;}
 
 		if (c >= '0' && c <= '9')
 		{
 			TokenizerContext_tokenizeNumber(tokenizer, c);
-			atomtinue;
+			continue;
 		}
 
 		TokenizerContext_tokenizeOperator(tokenizer, c);
@@ -73,10 +73,10 @@ CuteAtomStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* stri
 void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c)
 {
 	int integar = c - '0';
-	float float_num;
+	double double_num;
 
-	float float_multiplier = 10;
-	bool is_float = false;
+	double double_multiplier = 10;
+	bool is_double = false;
 
 	while (1)
 	{
@@ -85,29 +85,29 @@ void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c)
 		if (next_c >= '0' && next_c <= '9')
 		{
 
-			if (is_float)
+			if (is_double)
 			{
-				float_num = float_num + (next_c - '0') / float_multiplier;
-				float_multiplier = float_multiplier * 10;
-				atomtinue;
+				double_num = double_num + (next_c - '0') / double_multiplier;
+				double_multiplier = double_multiplier * 10;
+				continue;
 			}
 
 			integar = (integar * 10) + (next_c - '0');
-			atomtinue;
+			continue;
 		}
 
 		if (next_c == '.') 
 		{
-			is_float = true;
-			float_num = (float) integar;
-			atomtinue;
+			is_double = true;
+			double_num = (float) integar;
+			continue;
 		}
 
 		TokenizerContext_backtrackToken(tokenizer);
 		break;
 	}
 
-	CuteAtom atom = is_float ? CuteAtom_makeFloat(float_num) : CuteAtom_makeInt(integar);
+	CuteAtom atom = is_double ? CuteAtom_makeDouble(double_num) : CuteAtom_makeInt(integar);
 	CuteAtomStack_push(tokenizer->stack, atom);
 }
 
@@ -118,10 +118,10 @@ void TokenizerContext_tokenizeOperator(TokenizerContext* tokenizer, char c)
 
 	switch (c) 
 	{
-		case '+' : atom = CuteAtom_makeBinaryOp(Add); break;
-		case '-' : atom = CuteAtom_makeBinaryOp(Sub); break;
-		case '*' : atom = CuteAtom_makeBinaryOp(Mul); break;
-		case '/' : atom = CuteAtom_makeBinaryOp(Div); break;
+		case '+' : atom = CuteAtom_makeBinaryOp(binaryOpAdd); break;
+		case '-' : atom = CuteAtom_makeBinaryOp(binaryOpSub); break;
+		case '*' : atom = CuteAtom_makeBinaryOp(binaryOpMul); break;
+		case '/' : atom = CuteAtom_makeBinaryOp(binaryOpDiv); break;
 		default  : return;
 	}
 

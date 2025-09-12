@@ -1,4 +1,4 @@
-
+#include <stdbool.h>
 #pragma once
 
 typedef enum {
@@ -35,7 +35,7 @@ void CuteAtom_print(CuteAtom* atom, bool endline);
 
 CuteAtom CuteAtom_makeVoid();
 CuteAtom CuteAtom_makeInt(int i);
-CuteAtom CuteAtom_makeFloat(float f);
+CuteAtom CuteAtom_makeDouble(double d);
 CuteAtom CuteAtom_makeBinaryOp(BinaryOpType op);
 
 

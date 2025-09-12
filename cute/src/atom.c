@@ -41,11 +41,11 @@ CuteAtom CuteAtom_makeInt(int i)
 }
 
 
-CuteAtom CuteAtom_makeFloat(float f)
+CuteAtom CuteAtom_makeDouble(double d)
 {
 	CuteAtom atom;
-	atom.type = atomFloat;
-	atom.value.f = f;
+	atom.type = atomDouble;
+	atom.value.d = d;
 	return atom;
 }
 
@@ -102,7 +102,7 @@ CuteAtom CuteAtomStack_pop(CuteAtomStack* stack)
 {
 	if (stack->size <= 0) 
 	{
-		CuteAtom atom = {.type = Void};
+		CuteAtom atom = {.type = atomVoid};
 		return atom;
 	}
 	stack->size--;
@@ -115,7 +115,7 @@ CuteAtom CuteAtomStack_peek(CuteAtomStack* stack)
 {
 	if (stack->size < 1) 
 	{
-		CuteAtom atom = {.type = Void};
+		CuteAtom atom = {.type = atomVoid};
 		return atom;
 	}
 

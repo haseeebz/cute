@@ -39,28 +39,28 @@ CuteAtomStack* ParserContext_parse(ParserContext* parser, CuteAtomStack* tokeniz
 	{
 		current = parser->tokenized_atoms->atoms[parser->index];
 
-		if (current.type == Int || current.type == Float)
+		if (current.type == atomInt || current.type == atomDouble)
 		{
 			CuteAtomStack_push(parser->parsed_atoms, current);
-			atomtinue;
+			continue;
 		}
 
-		if (current.type == BinaryOp)
+		if (current.type == atomBinaryOp)
 		{
 			while (true)
 			{
 				CuteAtom prev_op = CuteAtomStack_peek(parser->operator_stack);
-				if (prev_op.type == BinaryOp && binaryOpPrecedence(prev_op.value.bop, current.value.bop))
+				if (prev_op.type == atomBinaryOp && binaryOpPrecedence(prev_op.value.bop, current.value.bop))
 				{
 					CuteAtomStack_push(parser->parsed_atoms, CuteAtomStack_pop(parser->operator_stack));
-					atomtinue;
+					continue;
 				}
 
 				break;
 			}
 
 			CuteAtomStack_push(parser->operator_stack, current);
-			atomtinue;
+			continue;
 		}
 	}
 

@@ -36,13 +36,13 @@ void EvaluatorContext_evaluate(EvaluatorContext* evaluator, CuteAtomStack* parse
 	{
 		current = evaluator->parsed_atoms->atoms[i];
 
-		if (current.type == Int)
+		if (current.type == atomInt)
 		{
 			CuteAtomStack_push(evaluator->result_stack, current);
-			atomtinue;
+			continue;
 		}
 
-		if (current.type == BinaryOp)
+		if (current.type == atomBinaryOp)
 		{
 			CuteAtom c2 = CuteAtomStack_pop(evaluator->result_stack);
 			CuteAtom c1 = CuteAtomStack_pop(evaluator->result_stack);
@@ -58,10 +58,10 @@ void EvaluatorContext_evalExpr(EvaluatorContext* evaluator, CuteAtom op, CuteAto
 
 	switch (op.value.bop) 
 	{
-		case Add: result = CuteAtom_makeInt(c1.value.i + c2.value.i); break;
-		case Sub: result = CuteAtom_makeInt(c1.value.i - c2.value.i); break;
-		case Mul: result = CuteAtom_makeInt(c1.value.i * c2.value.i); break;
-		case Div: result = CuteAtom_makeInt(c1.value.i / c2.value.i); break;
+		case binaryOpAdd: result = CuteAtom_makeInt(c1.value.i + c2.value.i); break;
+		case binaryOpSub: result = CuteAtom_makeInt(c1.value.i - c2.value.i); break;
+		case binaryOpMul: result = CuteAtom_makeInt(c1.value.i * c2.value.i); break;
+		case binaryOpDiv: result = CuteAtom_makeInt(c1.value.i / c2.value.i); break;
 		default : return;
 	}
 
