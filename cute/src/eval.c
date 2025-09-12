@@ -36,7 +36,7 @@ void EvaluatorContext_evaluate(EvaluatorContext* evaluator, CuteAtomStack* parse
 	{
 		current = evaluator->parsed_atoms->atoms[i];
 
-		if (current.type == atomInt)
+		if (current.type == atomInt || current.type == atomDouble)
 		{
 			CuteAtomStack_push(evaluator->result_stack, current);
 			continue;
@@ -52,16 +52,16 @@ void EvaluatorContext_evaluate(EvaluatorContext* evaluator, CuteAtomStack* parse
 }
 
 
-void EvaluatorContext_evalExpr(EvaluatorContext* evaluator, CuteAtom op, CuteAtom c1, CuteAtom c2)
+void EvaluatorContext_evalExpr(EvaluatorContext* evaluator, CuteAtom op, CuteAtom a, CuteAtom b)
 {
 	CuteAtom result;
 
 	switch (op.value.bop) 
 	{
-		case binaryOpAdd: result = CuteAtom_makeInt(c1.value.i + c2.value.i); break;
-		case binaryOpSub: result = CuteAtom_makeInt(c1.value.i - c2.value.i); break;
-		case binaryOpMul: result = CuteAtom_makeInt(c1.value.i * c2.value.i); break;
-		case binaryOpDiv: result = CuteAtom_makeInt(c1.value.i / c2.value.i); break;
+		case binaryOpAdd: result = addAtoms(&a, &b); break;
+		case binaryOpSub: result = subAtoms(&a, &b); break;
+		case binaryOpMul: result = mulAtoms(&a, &b); break;
+		case binaryOpDiv: result = divAtoms(&a, &b); break;
 		default : return;
 	}
 
@@ -71,4 +71,55 @@ void EvaluatorContext_evalExpr(EvaluatorContext* evaluator, CuteAtom op, CuteAto
 CuteAtom EvaluatorContext_yield(EvaluatorContext* evaluator)
 {
 	return CuteAtomStack_pop(evaluator->result_stack);
+}
+
+
+
+CuteAtom addAtoms(CuteAtom* a, CuteAtom* b)
+{
+	if (a->type == atomInt && b->type == atomInt)
+	{
+		return CuteAtom_makeInt(a->value.i + b->value.i);
+	}
+	
+	double da = (a->type == atomDouble) ? a->value.d : (double) a->value.i;
+	double db = (b->type == atomDouble) ? b->value.d : (double) b->value.i;
+
+	return CuteAtom_makeDouble(da + db);
+}
+
+
+CuteAtom subAtoms(CuteAtom* a, CuteAtom* b)
+{
+	if (a->type == atomInt && b->type == atomInt)
+	{
+		return CuteAtom_makeInt(a->value.i - b->value.i);
+	}
+
+	double da = a->type == atomDouble ? a->value.d : (double) a->value.i;
+	double db = b->type == atomDouble ? b->value.d : (double) b->value.i;
+
+	return CuteAtom_makeDouble(da - db);
+}
+
+CuteAtom mulAtoms(CuteAtom* a, CuteAtom* b)
+{
+	if (a->type == atomInt && b->type == atomInt)
+	{
+		return CuteAtom_makeInt(a->value.i * b->value.i);
+	}
+
+	double da = a->type == atomDouble ? a->value.d : (double) a->value.i;
+	double db = b->type == atomDouble ? b->value.d : (double) b->value.i;
+
+	return CuteAtom_makeDouble(da * db);
+}
+
+
+CuteAtom divAtoms(CuteAtom* a, CuteAtom* b)
+{
+	double da = a->type == atomDouble ? a->value.d : (double) a->value.i;
+	double db = b->type == atomDouble ? b->value.d : (double) b->value.i;
+
+	return CuteAtom_makeDouble(da / db);
 }

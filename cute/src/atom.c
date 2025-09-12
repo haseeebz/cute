@@ -11,6 +11,10 @@ void CuteAtom_print(CuteAtom* atom, bool endline)
 	{
 		printf("[ Int %d ]", atom->value.i);
 	}
+	else if (atom->type == atomDouble)
+	{
+		printf("[ Double %lf ]", atom->value.d);
+	}
 	else if (atom->type == atomBinaryOp)
 	{
 		printf("[ BinaryOp %d ]", atom->value.bop);

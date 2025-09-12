@@ -10,6 +10,8 @@
 char CUTE_VERSION[] = "0.1.0";
 char CUTE_NAME[] = "cute cat";
 
+
+
 Cute* Cute_init()
 {
 	Cute* cute = malloc(sizeof(Cute));
@@ -59,6 +61,7 @@ void Cute_interpretString(Cute* cute, char* string)
 	CuteAtomStack* parsed_atoms = ParserContext_parse(cute->parser, tokenized_atoms);
 
 	EvaluatorContext_evaluate(cute->evaluator, parsed_atoms);
+	
 
 	CuteAtom result = EvaluatorContext_yield(cute->evaluator);
 
