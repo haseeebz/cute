@@ -19,6 +19,14 @@ void CuteAtom_print(CuteAtom* atom, bool endline)
 	{
 		printf("[ BinaryOp %d ]", atom->value.bop);
 	}
+	else if (atom->type == atomLeftParan)
+	{
+		printf("[ LeftParan ]");
+	}
+	else if (atom->type == atomRightParan)
+	{
+		printf("[ RightParan ]");
+	}
 	else if (atom->type == atomVoid)
 	{
 		printf("[ Void ]");
@@ -32,6 +40,15 @@ CuteAtom CuteAtom_makeVoid()
 {
 	CuteAtom atom;
 	atom.type = atomVoid;
+	return atom;
+}
+
+
+CuteAtom CuteAtom_makeParan(bool left)
+{
+	CuteAtom atom;
+	atom.type = atomRightParan;
+	if (left) { atom.type = atomLeftParan; }
 	return atom;
 }
 

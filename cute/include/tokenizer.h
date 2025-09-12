@@ -21,5 +21,5 @@ void TokenizerContext_backtrackToken(TokenizerContext* tokenizer);
 
 CuteAtomStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* string);
 void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c);
-void TokenizerContext_tokenizeOperator(TokenizerContext* tokenizer, char c);
+void TokenizerContext_tokenizeSymbol(TokenizerContext* tokenizer, char c);
 

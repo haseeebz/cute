@@ -10,7 +10,7 @@
 
 char CUTE_VERSION[] = "0.1.1";
 char CUTE_NAME[] = "cute cat";
-bool DEBUG = false;
+bool DEBUG = true;
 
 
 Cute* Cute_init()

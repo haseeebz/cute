@@ -62,6 +62,22 @@ CuteAtomStack* ParserContext_parse(ParserContext* parser, CuteAtomStack* tokeniz
 			CuteAtomStack_push(parser->operator_stack, current);
 			continue;
 		}
+
+		if (current.type == atomLeftParan)
+		{
+			CuteAtomStack_push(parser->operator_stack, current);
+			continue;
+		}
+
+		if (current.type == atomRightParan)
+		{
+			CuteAtom atom;
+			while (atom.type != atomLeftParan) 
+			{
+				atom = CuteAtomStack_pop(parser->operator_stack);
+				CuteAtomStack_push(parser->parsed_atoms, atom);
+			}
+		}
 	}
 
 	while (parser->operator_stack->size > 0) 

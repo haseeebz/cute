@@ -13,6 +13,8 @@ typedef enum {
 	atomVoid,
 	atomEOL,
 	atomEOF,
+	atomLeftParan,
+	atomRightParan,
 	atomBinaryOp,
 	atomUnaryOp,
 	atomInt,
@@ -34,6 +36,7 @@ typedef struct {
 void CuteAtom_print(CuteAtom* atom, bool endline);
 
 CuteAtom CuteAtom_makeVoid();
+CuteAtom CuteAtom_makeParan(bool left);
 CuteAtom CuteAtom_makeInt(int i);
 CuteAtom CuteAtom_makeDouble(double d);
 CuteAtom CuteAtom_makeBinaryOp(BinaryOpType op);

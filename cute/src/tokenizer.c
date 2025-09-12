@@ -63,7 +63,7 @@ CuteAtomStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* stri
 			continue;
 		}
 
-		TokenizerContext_tokenizeOperator(tokenizer, c);
+		TokenizerContext_tokenizeSymbol(tokenizer, c);
 	}
 
 	return tokenizer->stack;
@@ -112,7 +112,7 @@ void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c)
 }
 
 
-void TokenizerContext_tokenizeOperator(TokenizerContext* tokenizer, char c)
+void TokenizerContext_tokenizeSymbol(TokenizerContext* tokenizer, char c)
 {
 	CuteAtom atom;
 
@@ -122,6 +122,10 @@ void TokenizerContext_tokenizeOperator(TokenizerContext* tokenizer, char c)
 		case '-' : atom = CuteAtom_makeBinaryOp(binaryOpSub); break;
 		case '*' : atom = CuteAtom_makeBinaryOp(binaryOpMul); break;
 		case '/' : atom = CuteAtom_makeBinaryOp(binaryOpDiv); break;
+
+		case '(' : atom = CuteAtom_makeParan(true); break;
+		case ')' : atom = CuteAtom_makeParan(false); break;
+
 		default  : return;
 	}
 
