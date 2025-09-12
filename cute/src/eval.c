@@ -2,73 +2,73 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/containers.h"
+#include "../include/atom.h"
 #include "../include/eval.h"
 
 
 EvaluatorContext* EvaluatorContext_new()
 {
 	EvaluatorContext* evaluator = malloc(sizeof(EvaluatorContext));
-	evaluator->result_stack = ContainerStack_new(10);
+	evaluator->result_stack = CuteAtomStack_new(10);
 	return evaluator;
 }
 
 
-void EvaluatorContext_init(EvaluatorContext* evaluator, ContainerStack* parsed_cons)
+void EvaluatorContext_init(EvaluatorContext* evaluator, CuteAtomStack* parsed_atoms)
 {
-	evaluator->parsed_cons = parsed_cons;
+	evaluator->parsed_atoms = parsed_atoms;
 }
 
 
 void EvaluatorContext_del(EvaluatorContext* evaluator)
 {
-	ContainerStack_del(evaluator->result_stack);
+	CuteAtomStack_del(evaluator->result_stack);
 	free(evaluator);
 }
 
 
-void EvaluatorContext_evaluate(EvaluatorContext* evaluator, ContainerStack* parsed_cons)
+void EvaluatorContext_evaluate(EvaluatorContext* evaluator, CuteAtomStack* parsed_atoms)
 {
-	EvaluatorContext_init(evaluator, parsed_cons);
-	Container current;
+	EvaluatorContext_init(evaluator, parsed_atoms);
+	CuteAtom current;
 
-	for (int i = 0; i < evaluator->parsed_cons->size; i++)
+	for (int i = 0; i < evaluator->parsed_atoms->size; i++)
 	{
-		current = evaluator->parsed_cons->cons[i];
+		current = evaluator->parsed_atoms->atoms[i];
 
 		if (current.type == Int)
 		{
-			ContainerStack_push(evaluator->result_stack, current);
-			continue;
+			CuteAtomStack_push(evaluator->result_stack, current);
+			atomtinue;
 		}
 
 		if (current.type == BinaryOp)
 		{
-			Container c2 = ContainerStack_pop(evaluator->result_stack);
-			Container c1 = ContainerStack_pop(evaluator->result_stack);
+			CuteAtom c2 = CuteAtomStack_pop(evaluator->result_stack);
+			CuteAtom c1 = CuteAtomStack_pop(evaluator->result_stack);
 			EvaluatorContext_evalExpr(evaluator, current, c1, c2);
 		}
 	}
 }
 
 
-void EvaluatorContext_evalExpr(EvaluatorContext* evaluator, Container op, Container c1, Container c2)
+void EvaluatorContext_evalExpr(EvaluatorContext* evaluator, CuteAtom op, CuteAtom c1, CuteAtom c2)
 {
-	Container result;
+	CuteAtom result;
 
 	switch (op.value.bop) 
 	{
-		case Add: result = Container_makeInt(c1.value.i + c2.value.i); break;
-		case Sub: result = Container_makeInt(c1.value.i - c2.value.i); break;
-		case Mul: result = Container_makeInt(c1.value.i * c2.value.i); break;
-		case Div: result = Container_makeInt(c1.value.i / c2.value.i); break;
+		case Add: result = CuteAtom_makeInt(c1.value.i + c2.value.i); break;
+		case Sub: result = CuteAtom_makeInt(c1.value.i - c2.value.i); break;
+		case Mul: result = CuteAtom_makeInt(c1.value.i * c2.value.i); break;
+		case Div: result = CuteAtom_makeInt(c1.value.i / c2.value.i); break;
 		default : return;
 	}
 
-	ContainerStack_push(evaluator->result_stack, result);
+	CuteAtomStack_push(evaluator->result_stack, result);
 }
 
-Container EvaluatorContext_yield(EvaluatorContext* evaluator)
+CuteAtom EvaluatorContext_yield(EvaluatorContext* evaluator)
 {
-	return ContainerStack_pop(evaluator->result_stack);
+	return CuteAtomStack_pop(evaluator->result_stack);
 }

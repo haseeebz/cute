@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/containers.h"
+#include "../include/atom.h"
 #include "../include/parser.h"
 
 
@@ -14,63 +14,63 @@ ParserContext* ParserContext_new()
 }
 
 
-void ParserContext_init(ParserContext* parser, ContainerStack* tokenized_cons)
+void ParserContext_init(ParserContext* parser, CuteAtomStack* tokenized_atoms)
 {
-	parser->tokenized_cons = tokenized_cons;
-	parser->parsed_cons = ContainerStack_new(tokenized_cons->size);
-	parser->operator_stack = ContainerStack_new(tokenized_cons->size);
+	parser->tokenized_atoms = tokenized_atoms;
+	parser->parsed_atoms = CuteAtomStack_new(tokenized_atoms->size);
+	parser->operator_stack = CuteAtomStack_new(tokenized_atoms->size);
 	parser->index = 0;
 }
 
 
 void ParserContext_del(ParserContext* parser)
 {
-	ContainerStack_del(parser->operator_stack);
+	CuteAtomStack_del(parser->operator_stack);
 	free(parser);
 }
 
 
-ContainerStack* ParserContext_parse(ParserContext* parser, ContainerStack* tokenized_cons)
+CuteAtomStack* ParserContext_parse(ParserContext* parser, CuteAtomStack* tokenized_atoms)
 {
-	ParserContext_init(parser, tokenized_cons);
-	Container current;
+	ParserContext_init(parser, tokenized_atoms);
+	CuteAtom current;
 
-	for (parser->index = 0; parser->index <= tokenized_cons->size; parser->index++)
+	for (parser->index = 0; parser->index <= tokenized_atoms->size; parser->index++)
 	{
-		current = parser->tokenized_cons->cons[parser->index];
+		current = parser->tokenized_atoms->atoms[parser->index];
 
 		if (current.type == Int || current.type == Float)
 		{
-			ContainerStack_push(parser->parsed_cons, current);
-			continue;
+			CuteAtomStack_push(parser->parsed_atoms, current);
+			atomtinue;
 		}
 
 		if (current.type == BinaryOp)
 		{
 			while (true)
 			{
-				Container prev_op = ContainerStack_peek(parser->operator_stack);
+				CuteAtom prev_op = CuteAtomStack_peek(parser->operator_stack);
 				if (prev_op.type == BinaryOp && binaryOpPrecedence(prev_op.value.bop, current.value.bop))
 				{
-					ContainerStack_push(parser->parsed_cons, ContainerStack_pop(parser->operator_stack));
-					continue;
+					CuteAtomStack_push(parser->parsed_atoms, CuteAtomStack_pop(parser->operator_stack));
+					atomtinue;
 				}
 
 				break;
 			}
 
-			ContainerStack_push(parser->operator_stack, current);
-			continue;
+			CuteAtomStack_push(parser->operator_stack, current);
+			atomtinue;
 		}
 	}
 
 	while (parser->operator_stack->size > 0) 
 	{
-		Container con = ContainerStack_pop(parser->operator_stack);
-		ContainerStack_push(parser->parsed_cons, con);
+		CuteAtom atom = CuteAtomStack_pop(parser->operator_stack);
+		CuteAtomStack_push(parser->parsed_atoms, atom);
 	}
 
-	return parser->parsed_cons;
+	return parser->parsed_atoms;
 }	
 
 

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/containers.h"
+#include "../include/atom.h"
 #include "../include/cute.h"
 #include "../include/tokenizer.h"
 #include "../include/parser.h"
@@ -54,16 +54,16 @@ void Cute_invokeREPL(Cute* cute)
 
 void Cute_interpretString(Cute* cute, char* string)
 {
-	ContainerStack* tokenized_cons = TokenizerContext_tokenize(cute->tokenizer, string);
+	CuteAtomStack* tokenized_atoms = TokenizerContext_tokenize(cute->tokenizer, string);
 
-	ContainerStack* parsed_cons = ParserContext_parse(cute->parser, tokenized_cons);
+	CuteAtomStack* parsed_atoms = ParserContext_parse(cute->parser, tokenized_atoms);
 
-	EvaluatorContext_evaluate(cute->evaluator, parsed_cons);
+	EvaluatorContext_evaluate(cute->evaluator, parsed_atoms);
 
-	Container result = EvaluatorContext_yield(cute->evaluator);
+	CuteAtom result = EvaluatorContext_yield(cute->evaluator);
 
-	Container_print(&result, true);
+	CuteAtom_print(&result, true);
 
-	ContainerStack_del(tokenized_cons);
-	ContainerStack_del(parsed_cons);
+	CuteAtomStack_del(tokenized_atoms);
+	CuteAtomStack_del(parsed_atoms);
 }

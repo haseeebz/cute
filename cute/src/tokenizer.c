@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/containers.h"
+#include "../include/atom.h"
 #include "../include/tokenizer.h"
 
 
@@ -22,7 +22,7 @@ void TokenizerContext_init(TokenizerContext* tokenizer, char* string)
 	tokenizer->current_string = malloc(sizeof(char) * tokenizer->string_size);
 	strcpy(tokenizer->current_string, string);
 
-	tokenizer->stack = ContainerStack_new(tokenizer->string_size);
+	tokenizer->stack = CuteAtomStack_new(tokenizer->string_size);
 }
 
 
@@ -47,7 +47,7 @@ void TokenizerContext_backtrackToken(TokenizerContext* tokenizer)
 }
 
 
-ContainerStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* string)
+CuteAtomStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* string)
 {
 	TokenizerContext_init(tokenizer, string);
 	
@@ -55,12 +55,12 @@ ContainerStack* TokenizerContext_tokenize(TokenizerContext* tokenizer, char* str
 
 		char c = TokenizerContext_nextToken(tokenizer);
 
-		if (c == ' ') {continue;}
+		if (c == ' ') {atomtinue;}
 
 		if (c >= '0' && c <= '9')
 		{
 			TokenizerContext_tokenizeNumber(tokenizer, c);
-			continue;
+			atomtinue;
 		}
 
 		TokenizerContext_tokenizeOperator(tokenizer, c);
@@ -89,41 +89,41 @@ void TokenizerContext_tokenizeNumber(TokenizerContext* tokenizer, char c)
 			{
 				float_num = float_num + (next_c - '0') / float_multiplier;
 				float_multiplier = float_multiplier * 10;
-				continue;
+				atomtinue;
 			}
 
 			integar = (integar * 10) + (next_c - '0');
-			continue;
+			atomtinue;
 		}
 
 		if (next_c == '.') 
 		{
 			is_float = true;
 			float_num = (float) integar;
-			continue;
+			atomtinue;
 		}
 
 		TokenizerContext_backtrackToken(tokenizer);
 		break;
 	}
 
-	Container con = is_float ? Container_makeFloat(float_num) : Container_makeInt(integar);
-	ContainerStack_push(tokenizer->stack, con);
+	CuteAtom atom = is_float ? CuteAtom_makeFloat(float_num) : CuteAtom_makeInt(integar);
+	CuteAtomStack_push(tokenizer->stack, atom);
 }
 
 
 void TokenizerContext_tokenizeOperator(TokenizerContext* tokenizer, char c)
 {
-	Container con;
+	CuteAtom atom;
 
 	switch (c) 
 	{
-		case '+' : con = Container_makeBinaryOp(Add); break;
-		case '-' : con = Container_makeBinaryOp(Sub); break;
-		case '*' : con = Container_makeBinaryOp(Mul); break;
-		case '/' : con = Container_makeBinaryOp(Div); break;
+		case '+' : atom = CuteAtom_makeBinaryOp(Add); break;
+		case '-' : atom = CuteAtom_makeBinaryOp(Sub); break;
+		case '*' : atom = CuteAtom_makeBinaryOp(Mul); break;
+		case '/' : atom = CuteAtom_makeBinaryOp(Div); break;
 		default  : return;
 	}
 
-	ContainerStack_push(tokenizer->stack, con);
+	CuteAtomStack_push(tokenizer->stack, atom);
 }
