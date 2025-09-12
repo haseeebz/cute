@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/atom.h"
@@ -9,7 +10,7 @@
 
 char CUTE_VERSION[] = "0.1.0";
 char CUTE_NAME[] = "cute cat";
-
+bool DEBUG = false;
 
 
 Cute* Cute_init()
@@ -58,11 +59,14 @@ void Cute_interpretString(Cute* cute, char* string)
 {
 	CuteAtomStack* tokenized_atoms = TokenizerContext_tokenize(cute->tokenizer, string);
 
+	if (DEBUG) {CuteAtomStack_print(tokenized_atoms);}
+
 	CuteAtomStack* parsed_atoms = ParserContext_parse(cute->parser, tokenized_atoms);
+
+	if (DEBUG) {CuteAtomStack_print(parsed_atoms);}
 
 	EvaluatorContext_evaluate(cute->evaluator, parsed_atoms);
 	
-
 	CuteAtom result = EvaluatorContext_yield(cute->evaluator);
 
 	CuteAtom_print(&result, true);
