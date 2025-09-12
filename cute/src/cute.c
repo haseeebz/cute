@@ -8,7 +8,7 @@
 #include "../include/eval.h"
 
 
-char CUTE_VERSION[] = "0.1.0";
+char CUTE_VERSION[] = "0.1.1";
 char CUTE_NAME[] = "cute cat";
 bool DEBUG = false;
 
