@@ -1,5 +1,6 @@
 #include "tokens.h"
 #include "lexer.h"
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -35,6 +36,7 @@ void LexerContext_init(LexerContext* lexer, char* string)
 
 char LexerContext_nextChar(LexerContext* lexer)
 {
+	if (lexer->index > lexer->len_str) {return '\0';}
 	char c = lexer->curr_str[lexer->index];
 	lexer->index++;
 	return c;
@@ -57,9 +59,35 @@ TokenArray* LexerContext_tokenize(LexerContext* lexer)
 
 		if (c >= '0' && c <= '9') 
 		{
-			int i;
+			int i = c - '0';
 			
+			char ci;
+
+			while (true) 
+			{
+				ci = LexerContext_nextChar(lexer);
+				if (ci >= '0' && ci <= '9') 
+				{
+					i = (i*10) + (ci - '0');
+					continue;
+				}
+
+				LexerContext_backtrack(lexer);
+				break;
+			} 
+
+			Token token = {tokenInt, {i}};
+			TokenArray_push(lexer->token_array, token);
+			Token_print(&token, true);
+			continue;
 		}
+
+		Token token = {tokenSymbol, {c}};
+		TokenArray_push(lexer->token_array, token);
+
+		Token_print(&token, true);
 	}
+
+	return lexer->token_array;
 }
 
