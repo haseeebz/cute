@@ -72,8 +72,8 @@ void CuteAtomStack_resize(CuteAtomStack* stack, int capacity)
 
 bool CuteAtomStack_isEmpty(CuteAtomStack* stack)
 {
-	if (stack->size > 0) { return true; }
-	return false;
+	if (stack->size > 0) { return false; }
+	return true;
 }
 
 
@@ -93,4 +93,9 @@ CuteAtom CuteAtomStack_pop(CuteAtomStack* stack)
 {
 	stack->size--;
 	return stack->atoms[stack->size];
+}
+
+CuteAtom CuteAtomStack_peek(CuteAtomStack* stack)
+{
+	return stack->atoms[stack->size-1];
 }

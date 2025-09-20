@@ -37,3 +37,4 @@ void CuteAtomStack_resize(CuteAtomStack* stack, int capacity);
 bool CuteAtomStack_isEmpty(CuteAtomStack* stack);
 void CuteAtomStack_push(CuteAtomStack* stack, CuteAtom atom);
 CuteAtom CuteAtomStack_pop(CuteAtomStack* stack);
+CuteAtom CuteAtomStack_peek(CuteAtomStack* stack);

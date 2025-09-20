@@ -9,6 +9,7 @@ set(SOURCES
 	cute/lexer/lexer.c
 
 	cute/parser/atoms.c
+	cute/parser/parser.c
 )
 
 add_executable(cute ${SOURCES})
