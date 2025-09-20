@@ -15,7 +15,9 @@ LexerContext* LexerContext_new();
 void LexerContext_del(LexerContext* lexer);
 void LexerContext_init(LexerContext* lexer, char* string);
 
-TokenArray* LexerContext_tokenize(LexerContext* lexer);
-
-char LexerContext_nextChar(LexerContext* lexer);
+char LexerContext_next(LexerContext* lexer);
 void LexerContext_backtrack(LexerContext* lexer);
+
+TokenArray* LexerContext_tokenize(LexerContext* lexer);
+void LexerContext_tokenizeNumber(LexerContext* lexer, char c);
+

@@ -59,35 +59,35 @@ TokenArray* LexerContext_tokenize(LexerContext* lexer)
 
 		if (c >= '0' && c <= '9') 
 		{
-			int i = c - '0';
-			
-			char ci;
-
-			while (true) 
-			{
-				ci = LexerContext_nextChar(lexer);
-				if (ci >= '0' && ci <= '9') 
-				{
-					i = (i*10) + (ci - '0');
-					continue;
-				}
-
-				LexerContext_backtrack(lexer);
-				break;
-			} 
-
-			Token token = {tokenInt, {i}};
-			TokenArray_push(lexer->token_array, token);
-			Token_print(&token, true);
+			LexerContext_tokenizeNumber(lexer, c);
 			continue;
 		}
 
 		Token token = {tokenSymbol, {c}};
 		TokenArray_push(lexer->token_array, token);
-
-		Token_print(&token, true);
 	}
 
 	return lexer->token_array;
 }
 
+
+void LexerContext_tokenizeNumber(LexerContext* lexer, char c)
+{
+	int i = c - '0';
+			
+	while (true) 
+	{
+		c = LexerContext_nextChar(lexer);
+		if (c >= '0' && c <= '9') 
+		{
+			i = (i*10) + (c - '0');
+			continue;
+		}
+
+		LexerContext_backtrack(lexer);
+		break;
+	} 
+
+	Token token = {tokenInt, {i}};
+	TokenArray_push(lexer->token_array, token);
+}
