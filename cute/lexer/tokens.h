@@ -5,6 +5,7 @@
 typedef enum
 {
 	tokenInt,
+	tokenFloat,
 	tokenSymbol
 } TokenType;
 
@@ -14,6 +15,7 @@ typedef struct
 	union {
 		int i;
 		char c;
+		double d;
 	} val;
 } Token;
 

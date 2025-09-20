@@ -4,6 +4,7 @@ project(cute C)
 
 set(SOURCES
     cute/main.c
+	cute/cute.c
 
     cute/lexer/tokens.c
 	cute/lexer/lexer.c
