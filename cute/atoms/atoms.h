@@ -1,25 +1,36 @@
 #include <stdbool.h>
+
 #pragma once
 
 typedef enum 
 {
-	Int,
-	BinaryOp,
-
+	atomVoid,
+	atomInt,
+	atomFloat,
+	atomBinaryOp,
 } CuteAtomType;
 
 
 typedef struct 
 {
 	CuteAtomType type;
-	union {
-		int i;
-		char c;
-	} val;
+	void* val;
 } CuteAtom;
 
 
+typedef int CuteInt;
+typedef double CuteFloat;
+typedef enum {ADD, SUB, DIV, MUL} CuteBinaryOp;
+
+
+
 void CuteAtom_print(CuteAtom* atom, bool endline);
+
+CuteAtom CuteAtom_makeInt(CuteInt i);
+CuteAtom CuteAtom_makeFloat(CuteFloat f);
+CuteAtom CuteAtom_makeBinaryOp(CuteBinaryOp op);
+
+void CuteAtom_del(CuteAtom* atom);
 
 
 typedef struct
@@ -28,7 +39,6 @@ typedef struct
 	int size;
 	int capacity; 
 } CuteAtomStack;
-
 
 void CuteAtomStack_print(CuteAtomStack* stack);
 CuteAtomStack* CuteAtomStack_new(int capacity);

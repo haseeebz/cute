@@ -1,4 +1,4 @@
-#include "atoms.h"
+#include "../atoms/atoms.h"
 #include "../lexer/tokens.h"
 
 #pragma once

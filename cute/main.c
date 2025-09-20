@@ -1,6 +1,6 @@
 #include "lexer/lexer.h"
 #include "lexer/tokens.h"
-#include "parser/atoms.h"
+#include "atoms/atoms.h"
 #include "parser/parser.h"
 #include <stdio.h>
 

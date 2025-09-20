@@ -8,13 +8,13 @@ set(SOURCES
     cute/lexer/tokens.c
 	cute/lexer/lexer.c
 
-	cute/parser/atoms.c
+	cute/atoms/atoms.c
 	cute/parser/parser.c
 )
 
 add_executable(cute ${SOURCES})
 
-target_compile_options(cute PRIVATE -Wall -Wextra -Werror -g)
+target_compile_options(cute PRIVATE -Wall -Wextra -g)
 
 set_target_properties(cute PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"

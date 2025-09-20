@@ -1,6 +1,7 @@
 #include "parser.h"
-#include "atoms.h"
+#include "../atoms/atoms.h"
 #include "../lexer/tokens.h"
+#include "../atoms/atoms.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -40,7 +41,7 @@ CuteAtomStack* ParserContext_parse(ParserContext* parser)
 		
 		if (token.type == tokenInt)
 		{
-			CuteAtom atom = {Int, {token.val.i}};
+			CuteAtom atom = CuteAtom_makeInt(token.val.i);
 			CuteAtomStack_push(parser->parsed_stack, atom);
 			parser->index++;
 			continue;
@@ -52,7 +53,7 @@ CuteAtomStack* ParserContext_parse(ParserContext* parser)
 			{
 				CuteAtom op_atom = CuteAtomStack_peek(parser->op_stack);
 
-				if (precedence(op_atom.val.c) > precedence(token.val.c))
+				if (*(CuteBinaryOp*)op_atom.val > precedence(token.val.c))
 				{
 					CuteAtomStack_pop(parser->op_stack);
 					CuteAtomStack_push(parser->parsed_stack, op_atom);
@@ -62,7 +63,7 @@ CuteAtomStack* ParserContext_parse(ParserContext* parser)
 				break;
 			}
 
-			CuteAtom atom = {BinaryOp, {token.val.c}};
+			CuteAtom atom = CuteAtom_makeBinaryOp(precedence(token.val.c));
 			CuteAtomStack_push(parser->op_stack, atom);
 			parser->index++;
 			continue;

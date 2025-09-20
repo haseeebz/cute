@@ -6,13 +6,17 @@
 
 void CuteAtom_print(CuteAtom* atom, bool endline)
 {
-	if (atom->type == Int)
+	if (atom->type == atomInt)
 	{
-		printf("[ Int %d ] ", atom->val.i);
+		printf("[ Int %d ] ", *(CuteInt*)atom->val);
 	}
-	else if (atom->type == BinaryOp)
+	else if (atom->type == atomFloat)
 	{
-		printf("[ BinaryOp %c ] ", atom->val.c);
+		printf("[ Float %lf ] ", *(CuteFloat*)atom->val);
+	}
+	else if (atom->type == atomBinaryOp)
+	{
+		printf("[ BinaryOp %d ] ", *(CuteBinaryOp*)atom->val);
 	}
 	else 
 	{
@@ -21,6 +25,44 @@ void CuteAtom_print(CuteAtom* atom, bool endline)
 
 	if (endline) { printf("\n"); }
 }
+
+
+CuteAtom CuteAtom_makeInt(CuteInt i)
+{
+	CuteAtom atom;
+	atom.type = atomInt;
+	atom.val = (CuteInt*) malloc(sizeof(CuteInt));
+	* (CuteInt*)atom.val = i;
+	return atom; 
+}
+
+
+CuteAtom CuteAtom_makeFloat(CuteFloat f)
+{
+	CuteAtom atom;
+	atom.type = atomFloat;
+	atom.val = (CuteFloat*) malloc(sizeof(CuteFloat));
+	* (CuteFloat*)atom.val = f;
+	return atom; 
+}
+
+
+CuteAtom CuteAtom_makeBinaryOp(CuteBinaryOp op)
+{
+	CuteAtom atom;
+	atom.type = atomBinaryOp;
+	atom.val = (CuteBinaryOp*) malloc(sizeof(CuteBinaryOp));
+	* (CuteBinaryOp*)atom.val = op;
+	return atom; 
+}
+
+
+void CuteAtom_del(CuteAtom* atom)
+{
+	free(atom->val);
+	atom->type = atomVoid;
+}
+
 
 
 void CuteAtomStack_print(CuteAtomStack* stack)
