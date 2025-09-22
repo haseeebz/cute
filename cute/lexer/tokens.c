@@ -7,19 +7,19 @@ void Token_print(Token* token, bool endline)
 {
 	if (token->type == tokenInt)
 	{
-		printf("[ Int %d ] ", token->val.i);
+		printf("( Int %d ) ", token->val.i);
 	}
 	else if (token->type == tokenSymbol)
 	{
-		printf("[ Sym %c ] ", token->val.c);
+		printf("( Sym %c ) ", token->val.c);
 	}
 	else if (token->type == tokenWord)
 	{
-		printf("[ Word %s ] ", token->val.s);
+		printf("( Word %s ) ", token->val.s);
 	}
 	else 
 	{
-		printf("[ Undef ] ");
+		printf("( Undef ) ");
 	}
 
 	if (endline) { printf("\n"); }
