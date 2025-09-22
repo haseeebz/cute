@@ -7,7 +7,7 @@ typedef enum
 	atomVoid,
 	atomInt,
 	atomFloat,
-	atomBinaryOp,
+	atomOp,
 } CuteAtomType;
 
 
@@ -20,15 +20,21 @@ typedef struct
 
 typedef int CuteInt;
 typedef double CuteFloat;
-typedef enum {ADD, SUB, DIV, MUL} CuteBinaryOp;
+
+// Arranged according to default precedence.
+typedef enum 
+{
+	opAdd, opSub, opMul, opDiv
+} CuteOperator;
 
 
 
 void CuteAtom_print(CuteAtom* atom, bool endline);
 
+CuteAtom CuteAtom_makeVoid();
 CuteAtom CuteAtom_makeInt(CuteInt i);
 CuteAtom CuteAtom_makeFloat(CuteFloat f);
-CuteAtom CuteAtom_makeBinaryOp(CuteBinaryOp op);
+CuteAtom CuteAtom_makeOperator(CuteOperator op);
 
 void CuteAtom_del(CuteAtom* atom);
 

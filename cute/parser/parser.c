@@ -31,28 +31,56 @@ void ParserContext_init(ParserContext* parser, TokenArray* tokens)
 }
 
 
+CuteAtom ParserContext_tokenToAtom(Token* token)
+{
+	if (token->type == tokenInt)
+	{
+		return CuteAtom_makeInt(token->val.i);
+	} 
+	else if (token->type == tokenSymbol)
+	{
+		CuteOperator op = ParserContext_detectOperator(token->val.c);
+		return CuteAtom_makeOperator(op);
+	}
+
+	return CuteAtom_makeVoid();
+}
+
+
+CuteOperator ParserContext_detectOperator(char c)
+{
+	switch (c) 
+	{
+		case '+' : return opAdd;
+		case '-' : return opSub;
+		case '*' : return opMul;
+		case '/' : return opDiv;
+	}
+	return -1;
+}
+
+
 CuteAtomStack* ParserContext_parse(ParserContext* parser)
 {
 	while (parser->index < parser->token_array->size)
 	{
-
 		Token token = parser->token_array->tokens[parser->index];
-		
-		if (token.type == tokenInt)
+		CuteAtom atom = ParserContext_tokenToAtom(&token);
+
+		if (atom.type == atomInt)
 		{
-			CuteAtom atom = CuteAtom_makeInt(token.val.i);
 			CuteAtomStack_push(parser->parsed_stack, atom);
 			parser->index++;
 			continue;
 		}
 
-		if (token.type == tokenSymbol)
+		if (atom.type == atomOp)
 		{
 			while (!CuteAtomStack_isEmpty(parser->op_stack))
 			{
 				CuteAtom op_atom = CuteAtomStack_peek(parser->op_stack);
 
-				if (*(CuteBinaryOp*)op_atom.val > precedence(token.val.c))
+				if (*(CuteOperator*)op_atom.val > precedence(token.val.c))
 				{
 					CuteAtomStack_pop(parser->op_stack);
 					CuteAtomStack_push(parser->parsed_stack, op_atom);
@@ -62,7 +90,6 @@ CuteAtomStack* ParserContext_parse(ParserContext* parser)
 				break;
 			}
 
-			CuteAtom atom = CuteAtom_makeBinaryOp(precedence(token.val.c));
 			CuteAtomStack_push(parser->op_stack, atom);
 			parser->index++;
 			continue;

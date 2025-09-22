@@ -14,9 +14,9 @@ void CuteAtom_print(CuteAtom* atom, bool endline)
 	{
 		printf("[ Float %lf ] ", *(CuteFloat*)atom->val);
 	}
-	else if (atom->type == atomBinaryOp)
+	else if (atom->type == atomOp)
 	{
-		printf("[ BinaryOp %d ] ", *(CuteBinaryOp*)atom->val);
+		printf("[ Op %d ] ", *(CuteOperator*)atom->val);
 	}
 	else 
 	{
@@ -26,6 +26,14 @@ void CuteAtom_print(CuteAtom* atom, bool endline)
 	if (endline) { printf("\n"); }
 }
 
+
+CuteAtom CuteAtom_makeVoid()
+{
+	CuteAtom atom;
+	atom.type = atomVoid;
+	atom.val = NULL;
+	return atom;
+}
 
 CuteAtom CuteAtom_makeInt(CuteInt i)
 {
@@ -47,12 +55,12 @@ CuteAtom CuteAtom_makeFloat(CuteFloat f)
 }
 
 
-CuteAtom CuteAtom_makeBinaryOp(CuteBinaryOp op)
+CuteAtom CuteAtom_makeOperator(CuteOperator op)
 {
 	CuteAtom atom;
-	atom.type = atomBinaryOp;
-	atom.val = (CuteBinaryOp*) malloc(sizeof(CuteBinaryOp));
-	* (CuteBinaryOp*)atom.val = op;
+	atom.type = atomOp;
+	atom.val = (CuteOperator*) malloc(sizeof(CuteOperator));
+	* (CuteOperator*)atom.val = op;
 	return atom; 
 }
 

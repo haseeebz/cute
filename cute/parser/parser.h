@@ -15,6 +15,7 @@ ParserContext* ParserContext_new();
 void ParserContext_del(ParserContext* parser);
 void ParserContext_init(ParserContext* parser, TokenArray* tokens);
 
-
+CuteAtom ParserContext_tokenToAtom(Token* token);
+CuteOperator ParserContext_detectOperator(char c);
 CuteAtomStack* ParserContext_parse(ParserContext* parser);
 int precedence(char op);
