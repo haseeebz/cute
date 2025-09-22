@@ -35,8 +35,7 @@ CuteAtomStack* ParserContext_parse(ParserContext* parser)
 {
 	while (parser->index < parser->token_array->size)
 	{
-		CuteAtomStack_print(parser->parsed_stack);
-		CuteAtomStack_print(parser->op_stack);
+
 		Token token = parser->token_array->tokens[parser->index];
 		
 		if (token.type == tokenInt)

@@ -6,6 +6,7 @@
 #include "cute.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 CuteCore* CuteCore_Init()
@@ -39,6 +40,14 @@ void CuteCore_InvokeREPL(CuteCore* core)
 	{
 		printf(">> ");
 		fgets(buffer, sizeof(buffer), stdin);
-		printf("%s\n", buffer);
+		char* newline = strchr(buffer, '\n');
+		*newline = 0;
+		
+		LexerContext_init(core->lexer, buffer);
+		TokenArray* tokens = LexerContext_tokenize(core->lexer);
+		TokenArray_print(tokens);
+		ParserContext_init(core->parser, tokens);
+		CuteAtomStack* stack = ParserContext_parse(core->parser);
+		CuteAtomStack_print(stack);
 	}
 }
