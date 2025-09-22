@@ -1,13 +1,16 @@
 #include <stdbool.h>
 
 #pragma once
+#define WORD_LEN 10
 
 typedef enum
 {
 	tokenInt,
 	tokenFloat,
-	tokenSymbol
+	tokenSymbol,
+	tokenWord
 } TokenType;
+
 
 typedef struct
 {
@@ -15,7 +18,7 @@ typedef struct
 	union {
 		int i;
 		char c;
-		double d;
+		char s[WORD_LEN];
 	} val;
 } Token;
 

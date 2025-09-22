@@ -42,7 +42,7 @@ void CuteCore_InvokeREPL(CuteCore* core)
 		fgets(buffer, sizeof(buffer), stdin);
 		char* newline = strchr(buffer, '\n');
 		*newline = 0;
-		
+
 		LexerContext_init(core->lexer, buffer);
 		TokenArray* tokens = LexerContext_tokenize(core->lexer);
 		TokenArray_print(tokens);

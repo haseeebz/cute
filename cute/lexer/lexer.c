@@ -1,6 +1,8 @@
 #include "tokens.h"
 #include "lexer.h"
+#include <ctype.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -55,11 +57,17 @@ TokenArray* LexerContext_tokenize(LexerContext* lexer)
 	{
 		c = LexerContext_nextChar(lexer);
 
-		if (c == ' ') {continue;}
+		if (c == ' ' || c == '\n') {continue;}
 
-		if (c >= '0' && c <= '9') 
+		if (isdigit(c)) 
 		{
 			LexerContext_tokenizeNumber(lexer, c);
+			continue;
+		}
+
+		if (isalpha(c))
+		{
+			LexerContext_tokenizeWord(lexer, c);
 			continue;
 		}
 
@@ -78,7 +86,7 @@ void LexerContext_tokenizeNumber(LexerContext* lexer, char c)
 	while (true) 
 	{
 		c = LexerContext_nextChar(lexer);
-		if (c >= '0' && c <= '9') 
+		if (isdigit(c)) 
 		{
 			i = (i*10) + (c - '0');
 			continue;
@@ -89,5 +97,31 @@ void LexerContext_tokenizeNumber(LexerContext* lexer, char c)
 	} 
 
 	Token token = {tokenInt, {i}};
+	TokenArray_push(lexer->token_array, token);
+}
+
+
+void LexerContext_tokenizeWord(LexerContext* lexer, char c)
+{
+	int i = 0;
+	char word[WORD_LEN] = {0};
+	word[i++] = c;
+			
+	while (i < WORD_LEN) 
+	{
+		c = LexerContext_nextChar(lexer);
+		if (isalpha(c)) 
+		{
+			word[i++] = c;
+			continue;
+		}
+
+		LexerContext_backtrack(lexer);
+		break;
+	} 
+
+	Token token;
+	token.type = tokenWord;
+	strcpy(token.val.s, word);
 	TokenArray_push(lexer->token_array, token);
 }

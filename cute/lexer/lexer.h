@@ -20,4 +20,6 @@ void LexerContext_backtrack(LexerContext* lexer);
 
 TokenArray* LexerContext_tokenize(LexerContext* lexer);
 void LexerContext_tokenizeNumber(LexerContext* lexer, char c);
+void LexerContext_tokenizeWord(LexerContext* lexer, char c);
+
 

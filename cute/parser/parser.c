@@ -67,6 +67,8 @@ CuteAtomStack* ParserContext_parse(ParserContext* parser)
 			parser->index++;
 			continue;
 		}
+
+		parser->index++;
 	}
 
 

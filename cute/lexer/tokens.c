@@ -13,6 +13,10 @@ void Token_print(Token* token, bool endline)
 	{
 		printf("[ Sym %c ] ", token->val.c);
 	}
+	else if (token->type == tokenWord)
+	{
+		printf("[ Word %s ] ", token->val.s);
+	}
 	else 
 	{
 		printf("[ Undef ] ");
