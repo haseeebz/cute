@@ -104,7 +104,7 @@ void LexerContext_tokenizeNumber(LexerContext* lexer, char c)
 void LexerContext_tokenizeWord(LexerContext* lexer, char c)
 {
 	int i = 0;
-	char word[WORD_LEN] = {0};
+	char word[WORD_LEN] = {'\0'};
 	word[i++] = c;
 			
 	while (i < WORD_LEN) 
