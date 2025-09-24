@@ -1,4 +1,5 @@
 #include "atoms/atoms.h"
+#include "eval/eval.h"
 #include "lexer/lexer.h"
 #include "lexer/tokens.h"
 #include "parser/parser.h"
@@ -9,6 +10,7 @@ typedef struct
 {
 	LexerContext* lexer;
 	ParserContext* parser;
+	EvaluatorContext* evaluator;
 } CuteCore;
 
 CuteCore* CuteCore_Init();

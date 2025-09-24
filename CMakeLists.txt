@@ -11,6 +11,8 @@ set(SOURCES
 
 	cute/atoms/atoms.c
 	cute/parser/parser.c
+
+	cute/eval/eval.c
 )
 
 add_executable(cute ${SOURCES})

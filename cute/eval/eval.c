@@ -6,6 +6,7 @@
 EvaluatorContext* EvaluatorContext_new()
 {
 	EvaluatorContext* evaluator = malloc(sizeof(EvaluatorContext));
+	evaluator->result_stack = *(CuteAtomStack_new(10));
 	return evaluator;
 }
 
@@ -31,7 +32,7 @@ CuteAtom EvaluatorContext_evaluate(EvaluatorContext* evaluator)
 	CuteAtom a;
 	CuteAtom b;
 
-	while (evaluator->index < evaluator->parsed_stack->size) 
+	while (evaluator->index <= evaluator->parsed_stack->size) 
 	{
 		current_atom = evaluator->parsed_stack->atoms[evaluator->index];
 		
@@ -47,8 +48,10 @@ CuteAtom EvaluatorContext_evaluate(EvaluatorContext* evaluator)
 			result_atom = EvaluatorContext_evalExpr(&current_atom, &a, &b);
 			CuteAtomStack_push(&evaluator->result_stack, result_atom);
 			break;
-		default: continue;
+		default: break;
 		}
+
+		evaluator->index++;
 	}
 
 	return CuteAtomStack_pop(&evaluator->result_stack);
@@ -71,8 +74,7 @@ CuteAtom EvaluatorContext_evalExpr(CuteAtom* op, CuteAtom* a, CuteAtom* b)
 	default: atom.type = atomVoid; return atom;
 	}
 
-	atom.type = atomInt;
-	*(CuteInt*) atom.val = result;
+	atom = CuteAtom_makeInt(result);
 
 	return atom;
 }

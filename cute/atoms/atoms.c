@@ -110,7 +110,7 @@ void CuteAtomStack_resize(CuteAtomStack* stack, int capacity)
 
 	CuteAtom* atoms = malloc(sizeof(CuteAtom)*capacity);
 	
-	for (int i = 0; i <= stack->size; i++)
+	for (int i = 0; i < stack->size; i++)
 	{
 		atoms[i] = stack->atoms[i];
 	}
