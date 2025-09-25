@@ -9,6 +9,10 @@ void Token_print(Token* token, bool endline)
 	{
 		printf("( Int %d ) ", token->val.i);
 	}
+	else if (token->type == tokenFloat)
+	{
+		printf("( Float %lf ) ", token->val.d);
+	}
 	else if (token->type == tokenSymbol)
 	{
 		printf("( Sym %c ) ", token->val.c);

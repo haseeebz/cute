@@ -19,6 +19,7 @@ typedef struct
 		int i;
 		char c;
 		char s[WORD_LEN];
+		double d;
 	} val;
 } Token;
 

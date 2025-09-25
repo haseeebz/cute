@@ -82,21 +82,50 @@ TokenArray* LexerContext_tokenize(LexerContext* lexer)
 void LexerContext_tokenizeNumber(LexerContext* lexer, char c)
 {
 	int i = c - '0';
-			
+	double d;
+	double dmultiplier = 10;
+	bool isDouble = false;			
+
 	while (true) 
 	{
 		c = LexerContext_nextChar(lexer);
 		if (isdigit(c)) 
 		{
+
+			if (isDouble)
+			{
+				d = d + (c - '0') / dmultiplier;
+				dmultiplier = dmultiplier * 10;
+				continue;
+			}
+
 			i = (i*10) + (c - '0');
+			continue;
+		}
+		
+		if (c == '.')
+		{
+			isDouble = true;
+			d = (double) i;
 			continue;
 		}
 
 		LexerContext_backtrack(lexer);
 		break;
 	} 
+	
+	Token token;
 
-	Token token = {tokenInt, {i}};
+	if (isDouble) {
+		token.type = tokenFloat;
+		token.val.d = d;
+	}
+	else 
+	{
+		token.type = tokenInt;
+		token.val.i = i;
+	}
+	
 	TokenArray_push(lexer->token_array, token);
 }
 
@@ -110,7 +139,7 @@ void LexerContext_tokenizeWord(LexerContext* lexer, char c)
 	while (i < WORD_LEN) 
 	{
 		c = LexerContext_nextChar(lexer);
-		if (isalpha(c)) 
+		if (isalpha(c) || isdigit(c)) 
 		{
 			word[i++] = c;
 			continue;
