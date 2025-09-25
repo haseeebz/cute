@@ -36,6 +36,10 @@ CuteAtom ParserContext_tokenToAtom(Token* token)
 	if (token->type == tokenInt)
 	{
 		return CuteAtom_makeInt(token->val.i);
+	}
+	else if (token->type == tokenFloat)
+	{
+		return CuteAtom_makeFloat(token->val.d);
 	} 
 	else if (token->type == tokenSymbol)
 	{
@@ -80,7 +84,7 @@ CuteAtomStack* ParserContext_parse(ParserContext* parser)
 			{
 				CuteAtom op_atom = CuteAtomStack_peek(parser->op_stack);
 
-				if (*(CuteOperator*)op_atom.val > precedence(token.val.c))
+				if (op_atom.val.op > precedence(token.val.c))
 				{
 					CuteAtomStack_pop(parser->op_stack);
 					CuteAtomStack_push(parser->parsed_stack, op_atom);

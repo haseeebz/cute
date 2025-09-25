@@ -8,15 +8,15 @@ void CuteAtom_print(CuteAtom* atom, bool endline)
 {
 	if (atom->type == atomInt)
 	{
-		printf("[ Int %d ] ", *(CuteInt*)atom->val);
+		printf("[ Int %d ] ", atom->val.i);
 	}
 	else if (atom->type == atomFloat)
 	{
-		printf("[ Float %lf ] ", *(CuteFloat*)atom->val);
+		printf("[ Float %lf ] ", atom->val.f);
 	}
 	else if (atom->type == atomOp)
 	{
-		printf("[ Op %d ] ", *(CuteOperator*)atom->val);
+		printf("[ Op %d ] ", atom->val.op);
 	}
 	else 
 	{
@@ -31,7 +31,6 @@ CuteAtom CuteAtom_makeVoid()
 {
 	CuteAtom atom;
 	atom.type = atomVoid;
-	atom.val = NULL;
 	return atom;
 }
 
@@ -39,8 +38,7 @@ CuteAtom CuteAtom_makeInt(CuteInt i)
 {
 	CuteAtom atom;
 	atom.type = atomInt;
-	atom.val = (CuteInt*) malloc(sizeof(CuteInt));
-	* (CuteInt*)atom.val = i;
+	atom.val.i = i;
 	return atom; 
 }
 
@@ -49,8 +47,7 @@ CuteAtom CuteAtom_makeFloat(CuteFloat f)
 {
 	CuteAtom atom;
 	atom.type = atomFloat;
-	atom.val = (CuteFloat*) malloc(sizeof(CuteFloat));
-	* (CuteFloat*)atom.val = f;
+	atom.val.f = f;
 	return atom; 
 }
 
@@ -59,15 +56,13 @@ CuteAtom CuteAtom_makeOperator(CuteOperator op)
 {
 	CuteAtom atom;
 	atom.type = atomOp;
-	atom.val = (CuteOperator*) malloc(sizeof(CuteOperator));
-	* (CuteOperator*)atom.val = op;
+	atom.val.op = op;
 	return atom; 
 }
 
 
 void CuteAtom_del(CuteAtom* atom)
 {
-	free(atom->val);
 	atom->type = atomVoid;
 }
 

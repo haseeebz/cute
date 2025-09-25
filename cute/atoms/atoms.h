@@ -11,13 +11,6 @@ typedef enum
 } CuteAtomType;
 
 
-typedef struct 
-{
-	CuteAtomType type;
-	void* val;
-} CuteAtom;
-
-
 typedef int CuteInt;
 typedef double CuteFloat;
 
@@ -26,6 +19,18 @@ typedef enum
 {
 	opAdd, opSub, opMul, opDiv
 } CuteOperator;
+
+
+
+typedef struct 
+{
+	CuteAtomType type;
+	union {
+		CuteInt i;
+		CuteFloat f;
+		CuteOperator op;
+	} val;
+} CuteAtom;
 
 
 

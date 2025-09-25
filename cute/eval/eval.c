@@ -1,5 +1,6 @@
 #include "eval.h"
 #include "../atoms/atoms.h"
+#include <stdbool.h>
 #include <stdlib.h>
 
 
@@ -60,21 +61,56 @@ CuteAtom EvaluatorContext_evaluate(EvaluatorContext* evaluator)
 
 CuteAtom EvaluatorContext_evalExpr(CuteAtom* op, CuteAtom* a, CuteAtom* b)
 {
-	int num1 = *(CuteInt*) a->val;
-	int num2 = *(CuteInt*) b->val;
-	int result;
+
 	CuteAtom atom;
 
-	switch ( *(CuteOperator*) op->val ) 
+	switch ( op->val.op ) 
 	{
-	case opAdd: result = num1 + num2; break;
-	case opSub: result = num1 - num2; break;
-	case opMul: result = num1 * num2; break;
-	case opDiv: result = num1 / num2; break;
+	case opAdd: atom = EvaluatorContext_add(a, b); break;
+	case opSub: atom = EvaluatorContext_sub(a, b); break;
+	case opMul: atom = EvaluatorContext_mul(a, b); break;
+	case opDiv: atom = EvaluatorContext_div(a, b); break;
 	default: atom.type = atomVoid; return atom;
 	}
 
-	atom = CuteAtom_makeInt(result);
-
 	return atom;
+}
+
+
+CuteAtom EvaluatorContext_add(CuteAtom* a, CuteAtom* b)
+{
+	if (a->type == atomFloat || b->type == atomFloat)
+	{
+		return CuteAtom_makeFloat(a->val.f + b->val.f);
+	}
+	return CuteAtom_makeInt(a->val.i + b->val.i);
+}
+
+CuteAtom EvaluatorContext_sub(CuteAtom* a, CuteAtom* b)
+{
+	if (a->type == atomFloat || b->type == atomFloat)
+	{
+		return CuteAtom_makeFloat(a->val.f - b->val.f);
+	}
+	return CuteAtom_makeInt(a->val.i - b->val.i);
+}
+
+
+CuteAtom EvaluatorContext_mul(CuteAtom* a, CuteAtom* b)
+{
+	if (a->type == atomFloat || b->type == atomFloat)
+	{
+		return CuteAtom_makeFloat(a->val.f * b->val.f);
+	}
+	return CuteAtom_makeInt(a->val.i / b->val.i);
+}
+
+
+CuteAtom EvaluatorContext_div(CuteAtom* a, CuteAtom* b)
+{
+	if (a->type == atomFloat || b->type == atomFloat)
+	{
+		return CuteAtom_makeFloat(a->val.f * b->val.f);
+	}
+	return CuteAtom_makeFloat(a->val.i / (double) b->val.i);
 }
