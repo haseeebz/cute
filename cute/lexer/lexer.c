@@ -10,147 +10,118 @@
 LexerContext* LexerContext_new()
 {
 	LexerContext* lexer = malloc(sizeof(LexerContext));
-	lexer->curr_str = NULL;
+	lexer->buffer = NULL;
 	return lexer;
 }
 
 
 void LexerContext_del(LexerContext* lexer)
 {
-	free(lexer->curr_str);
+	free(lexer->buffer);
 	free(lexer);
 }
 
+
 void LexerContext_init(LexerContext* lexer, char* string)
 {
-	lexer->len_str = strlen(string);
+	lexer->length = strlen(string);
 
-	if (lexer->curr_str != NULL) {free(lexer->curr_str);}
+	if (lexer->buffer != NULL) {free(lexer->buffer);}
 
-	lexer->curr_str = malloc(sizeof(char)*lexer->len_str);
-	strncpy(lexer->curr_str, string, lexer->len_str);
+	lexer->buffer = malloc(sizeof(char)*lexer->length);
+	strncpy(lexer->buffer, string, lexer->length);
 
 	lexer->index = 0;
-	lexer->token_array = TokenArray_new(lexer->len_str);
 }
 
 
-
-char LexerContext_nextChar(LexerContext* lexer)
+Token LexerContext_nextToken(LexerContext* lexer)
 {
-	if (lexer->index > lexer->len_str) {return '\0';}
-	char c = lexer->curr_str[lexer->index];
-	lexer->index++;
-	return c;
-}
+	Token token;
+	char* c;
 
-void LexerContext_backtrack(LexerContext* lexer)
-{
-	lexer->index--;
-}
-
-
-TokenArray* LexerContext_tokenize(LexerContext* lexer)
-{
-	char c;
-	while (lexer->index < lexer->len_str)
+	while (lexer->index < lexer->length)
 	{
-		c = LexerContext_nextChar(lexer);
+		c = &lexer->buffer[lexer->index++];
 
-		if (c == ' ' || c == '\n') {continue;}
+		if (*c == ' ' || *c == '\n') {continue;}
 
-		if (isdigit(c)) 
+		if (isdigit(*c)) 
 		{
-			LexerContext_tokenizeNumber(lexer, c);
-			continue;
+			token = LexerContext_tokenizeNumber(lexer, c);
+		}
+		else if (isalpha(*c))
+		{
+			token = LexerContext_tokenizeWord(lexer, c);
+		}
+		else 
+		{
+			token = Token_make(tokenSymbol, c, 1);
 		}
 
-		if (isalpha(c))
-		{
-			LexerContext_tokenizeWord(lexer, c);
-			continue;
-		}
-
-		Token token = {tokenSymbol, {c}};
-		TokenArray_push(lexer->token_array, token);
+		return token;
 	}
 
-	return lexer->token_array;
+	return Token_make(tokenEOF, NULL, 0);
 }
 
 
-void LexerContext_tokenizeNumber(LexerContext* lexer, char c)
+
+Token LexerContext_tokenizeNumber(LexerContext* lexer, char* c)
 {
-	int i = c - '0';
-	double d;
-	double dmultiplier = 10;
-	bool isDouble = false;			
-
-	while (true) 
+	int token_length = 1;
+	bool isFloat = false;			
+	char* nc;
+	while (lexer->index < lexer->length) 
 	{
-		c = LexerContext_nextChar(lexer);
-		if (isdigit(c)) 
+		nc = &lexer->buffer[lexer->index++];
+
+		if (isdigit(*nc)) 
 		{
+			token_length++;
+			continue;
+		}
 
-			if (isDouble)
-			{
-				d = d + (c - '0') / dmultiplier;
-				dmultiplier = dmultiplier * 10;
-				continue;
-			}
-
-			i = (i*10) + (c - '0');
+		if (*nc == '.')
+		{
+			token_length++;
+			isFloat = true;
 			continue;
 		}
 		
-		if (c == '.')
-		{
-			isDouble = true;
-			d = (double) i;
-			continue;
-		}
-
-		LexerContext_backtrack(lexer);
+		lexer->index--;
 		break;
 	} 
 	
-	Token token;
-
-	if (isDouble) {
-		token.type = tokenFloat;
-		token.val.d = d;
-	}
-	else 
+	if (isFloat)
 	{
-		token.type = tokenInt;
-		token.val.i = i;
+		return Token_make(tokenFloat, c, token_length);
 	}
-	
-	TokenArray_push(lexer->token_array, token);
+	else
+	{
+		return Token_make(tokenInt, c, token_length);
+	}
 }
 
 
-void LexerContext_tokenizeWord(LexerContext* lexer, char c)
+
+Token LexerContext_tokenizeWord(LexerContext* lexer, char* c)
 {
-	int i = 0;
-	char word[WORD_LEN] = {'\0'};
-	word[i++] = c;
-			
-	while (i < WORD_LEN) 
+	int token_length = 1;
+	char* nc;
+	while (lexer->index < lexer->length) 
 	{
-		c = LexerContext_nextChar(lexer);
-		if (isalpha(c) || isdigit(c)) 
+		nc = &lexer->buffer[lexer->index++];
+
+		if (isalpha(*nc) || isdigit(*nc)) 
 		{
-			word[i++] = c;
+			token_length++;
 			continue;
 		}
 
-		LexerContext_backtrack(lexer);
+		lexer->index--;
 		break;
 	} 
 
-	Token token;
-	token.type = tokenWord;
-	strcpy(token.val.s, word);
-	TokenArray_push(lexer->token_array, token);
+	return Token_make(tokenWord, c, token_length);
 }

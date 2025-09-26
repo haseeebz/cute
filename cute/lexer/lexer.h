@@ -4,9 +4,8 @@
 
 typedef struct
 {
-	char* curr_str;
-	int len_str;
-	TokenArray* token_array;
+	char* buffer;
+	int length;
 	int index;
 } LexerContext;
 
@@ -15,11 +14,10 @@ LexerContext* LexerContext_new();
 void LexerContext_del(LexerContext* lexer);
 void LexerContext_init(LexerContext* lexer, char* string);
 
-char LexerContext_next(LexerContext* lexer);
-void LexerContext_backtrack(LexerContext* lexer);
+Token LexerContext_nextToken(LexerContext* lexer);
 
-TokenArray* LexerContext_tokenize(LexerContext* lexer);
-void LexerContext_tokenizeNumber(LexerContext* lexer, char c);
-void LexerContext_tokenizeWord(LexerContext* lexer, char c);
+Token LexerContext_nextToken(LexerContext* lexer);
+Token LexerContext_tokenizeNumber(LexerContext* lexer, char* c);
+Token LexerContext_tokenizeWord(LexerContext* lexer, char* c);
 
 
