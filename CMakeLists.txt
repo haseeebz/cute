@@ -4,15 +4,12 @@ project(cute C)
 
 set(SOURCES
     cute/main.c
-	cute/cute.c
 
     cute/lexer/tokens.c
 	cute/lexer/lexer.c
 
-	cute/atoms/atoms.c
+	cute/parser/node.c
 	cute/parser/parser.c
-
-	cute/eval/eval.c
 )
 
 add_executable(cute ${SOURCES})

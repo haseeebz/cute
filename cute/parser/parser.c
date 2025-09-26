@@ -1,7 +1,7 @@
 #include "parser.h"
-#include "../atoms/atoms.h"
 #include "../lexer/tokens.h"
-#include "../atoms/atoms.h"
+#include "node.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,118 +10,136 @@
 ParserContext* ParserContext_new()
 {
 	ParserContext* parser = malloc(sizeof(ParserContext));
-	parser->op_stack = CuteAtomStack_new(10);
+	parser->lexer = LexerContext_new();
+	parser->root = NULL;
 	return parser;
 }
 
+
 void ParserContext_del(ParserContext* parser)
 {
-	free(parser->token_array);
-	free(parser->op_stack);
+	LexerContext_del(parser->lexer);
 	free(parser);
 }
 
-void ParserContext_init(ParserContext* parser, TokenArray* tokens)
-{
-	free(parser->token_array);
 
-	parser->token_array = tokens;
-	parser->index = 0;
-	parser->parsed_stack = CuteAtomStack_new(tokens->size);
+void ParserContext_init(ParserContext* parser, char* string)
+{
+	LexerContext_init(parser->lexer, string);
 }
 
 
-CuteAtom ParserContext_tokenToAtom(Token* token)
+CuteNode* ParserContext_parse(ParserContext* parser)
 {
-	if (token->type == tokenInt)
-	{
-		return CuteAtom_makeInt(token->val.i);
-	}
-	else if (token->type == tokenFloat)
-	{
-		return CuteAtom_makeFloat(token->val.d);
-	} 
-	else if (token->type == tokenSymbol)
-	{
-		CuteOperator op = ParserContext_detectOperator(token->val.c);
-		return CuteAtom_makeOperator(op);
-	}
-
-	return CuteAtom_makeVoid();
+	parser->root = ParserContext_parseExpr(parser, 0);
+	return parser->root;
 }
 
-
-CuteOperator ParserContext_detectOperator(char c)
+CuteNode* ParserContext_parseExpr(ParserContext* parser, float precedence)
 {
-	switch (c) 
+	Token token;
+	token = LexerContext_nextToken(parser->lexer);
+	Token_print(&token, true);
+
+	CuteNode* lhs;
+	CuteNode* rhs;
+
+	if (token.type == tokenEOF)
 	{
-		case '+' : return opAdd;
-		case '-' : return opSub;
-		case '*' : return opMul;
-		case '/' : return opDiv;
+		return NULL;
 	}
-	return -1;
-}
 
-
-CuteAtomStack* ParserContext_parse(ParserContext* parser)
-{
-	while (parser->index < parser->token_array->size)
+	if (token.type == tokenInt)
 	{
-		Token token = parser->token_array->tokens[parser->index];
-		CuteAtom atom = ParserContext_tokenToAtom(&token);
+		lhs = CuteNode_makeInt(ParserContext_strToInt(token.str, token.len));
+	}
 
-		if (atom.type == atomInt)
+
+	while (true)
+	{
+		CuteBinaryOp op;
+		token = LexerContext_nextToken(parser->lexer);
+		Token_print(&token, true);
+
+		if (token.type == tokenEOF)
 		{
-			CuteAtomStack_push(parser->parsed_stack, atom);
-			parser->index++;
-			continue;
+			break;
 		}
 
-		if (atom.type == atomOp)
+		if (token.type == tokenSymbol)
 		{
-			while (!CuteAtomStack_isEmpty(parser->op_stack))
-			{
-				CuteAtom op_atom = CuteAtomStack_peek(parser->op_stack);
-
-				if (op_atom.val.op > precedence(token.val.c))
-				{
-					CuteAtomStack_pop(parser->op_stack);
-					CuteAtomStack_push(parser->parsed_stack, op_atom);
-					continue;
-				}
-				
-				break;
-			}
-
-			CuteAtomStack_push(parser->op_stack, atom);
-			parser->index++;
-			continue;
+			op = ParserContext_detectOperator(*token.str);
 		}
 
-		parser->index++;
+		if (ParserContext_getPrecedence(op) < precedence) {break;}
+
+		rhs = ParserContext_parseExpr(parser, ParserContext_getPrecedence(op));
+		lhs = CuteNode_makeBinaryOp(op, lhs, rhs);
 	}
 
-
-	while (!CuteAtomStack_isEmpty(parser->op_stack))
-	{
-		CuteAtom op_atom = CuteAtomStack_pop(parser->op_stack);
-		CuteAtomStack_push(parser->parsed_stack, op_atom);
-	}
-	
-	return parser->parsed_stack;
+	return lhs;
 }
 
 
-
-int precedence(char op)
+float ParserContext_getPrecedence(CuteBinaryOp op)
 {
 	switch (op) 
 	{
-		case '+' : return 0;
-		case '-' : return 1;
-		case '*' : return 2;
-		case '/' : return 3;
+		case binaryAdd : return 1;
+		case binarySub : return 2;
+		case binaryMul : return 3;
+		case binaryDiv : return 4;
+		default  : return 0; 
 	}
-	return -1;
+}
+
+CuteBinaryOp ParserContext_detectOperator(char c)
+{
+	switch (c) 
+	{
+		case '+' : return binaryAdd;
+		case '-' : return binarySub;
+		case '*' : return binaryMul;
+		case '/' : return binaryDiv;
+		default  : return -1; 
+	}
+}
+
+
+// These functions work assuming the lexer did its job properly
+
+int ParserContext_strToInt(char* str, int len)
+{
+	int num = 0;
+	for (int i = 0; i < len; i++)
+	{
+		num = num + (str[i] - '0');
+	}
+	return num;
+}
+
+double ParserContext_strToFloat(char* str, int len)
+{
+	double num;
+	double multiplier = 10;
+	bool afterPoint = false;
+
+	for (int i = 0; i < len; i++)
+	{
+		if (afterPoint)
+		{
+			num = num + ((str[i] - '0') / multiplier);
+			multiplier = multiplier * 10;
+			continue;
+		}
+
+		if (str[i] == '.')
+		{
+			afterPoint = true;
+			continue;
+		}
+
+		num = num + (str[i] - '0');
+	}
+	return num;
 }

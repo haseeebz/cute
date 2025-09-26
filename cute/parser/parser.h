@@ -1,21 +1,26 @@
-#include "../atoms/atoms.h"
 #include "../lexer/tokens.h"
+#include "../lexer/lexer.h"
+#include "node.h"
 
 #pragma once
 
 typedef struct
 {
-	TokenArray* token_array;
-	CuteAtomStack* parsed_stack;
-	CuteAtomStack* op_stack;
-	int index;
+	LexerContext* lexer;
+	CuteNode* root;
 } ParserContext;
 
 ParserContext* ParserContext_new();
 void ParserContext_del(ParserContext* parser);
-void ParserContext_init(ParserContext* parser, TokenArray* tokens);
+void ParserContext_init(ParserContext* parser, char* string);
 
-CuteAtom ParserContext_tokenToAtom(Token* token);
-CuteOperator ParserContext_detectOperator(char c);
-CuteAtomStack* ParserContext_parse(ParserContext* parser);
-int precedence(char op);
+
+CuteNode* ParserContext_parse(ParserContext* parser);
+
+CuteNode* ParserContext_parseExpr(ParserContext* parser, float precedence);
+
+CuteBinaryOp ParserContext_detectOperator(char c);
+float ParserContext_getPrecedence(CuteBinaryOp op);
+
+int ParserContext_strToInt(char* str, int len);
+double ParserContext_strToFloat(char* str, int len);
