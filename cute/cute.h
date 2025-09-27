@@ -1,4 +1,3 @@
-#include "atoms/atoms.h"
 #include "eval/eval.h"
 #include "lexer/lexer.h"
 #include "lexer/tokens.h"

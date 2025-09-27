@@ -34,6 +34,7 @@ typedef enum
 {
 	nodeAtom,
 	nodeBinaryOp,
+	nodeGarbage
 } CuteNodeType;
 
 
@@ -57,6 +58,7 @@ typedef struct CuteNode CuteNode;
 CuteNode* CuteNode_makeInt(int i);
 CuteNode* CuteNode_makeFloat(double d);
 CuteNode* CuteNode_makeBinaryOp(CuteBinaryOp op, CuteNode* lc, CuteNode* rc);
+
 
 void CuteNode_printRecursive(CuteNode* node);
 void CuteNode_delRecursive(CuteNode* root);

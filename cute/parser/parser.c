@@ -38,45 +38,32 @@ CuteNode* ParserContext_parse(ParserContext* parser)
 CuteNode* ParserContext_parseExpr(ParserContext* parser, float precedence)
 {
 	Token token;
-	token = LexerContext_nextToken(parser->lexer);
-	Token_print(&token, true);
-
 	CuteNode* lhs;
-	CuteNode* rhs;
+	
+	token = LexerContext_nextToken(parser->lexer);
 
-	if (token.type == tokenEOF)
-	{
-		return NULL;
-	}
-
-	if (token.type == tokenInt)
-	{
-		lhs = CuteNode_makeInt(ParserContext_strToInt(token.str, token.len));
-	}
-
+	lhs = ParserContext_tokenToAtom(&token);
 
 	while (true)
 	{
-		CuteBinaryOp op;
-		token = LexerContext_nextToken(parser->lexer);
-		Token_print(&token, true);
+		CuteNode* rhs;
 
-		if (token.type == tokenEOF)
+		token = LexerContext_nextToken(parser->lexer);
+
+		if (token.type == tokenEOF) {break;}
+
+		CuteBinaryOp optype = ParserContext_detectOperator(*token.str);
+		float current_precedence = ParserContext_getPrecedence(optype);
+
+		if (current_precedence < precedence) 
 		{
+			LexerContext_backtrack(parser->lexer);
 			break;
 		}
-
-		if (token.type == tokenSymbol)
-		{
-			op = ParserContext_detectOperator(*token.str);
-		}
-
-		if (ParserContext_getPrecedence(op) < precedence) {break;}
-
-		rhs = ParserContext_parseExpr(parser, ParserContext_getPrecedence(op));
-		lhs = CuteNode_makeBinaryOp(op, lhs, rhs);
+		
+		rhs = ParserContext_parseExpr(parser, current_precedence);
+		lhs = CuteNode_makeBinaryOp(optype, lhs, rhs);
 	}
-
 	return lhs;
 }
 
@@ -105,6 +92,23 @@ CuteBinaryOp ParserContext_detectOperator(char c)
 	}
 }
 
+CuteNode* ParserContext_tokenToAtom(Token* token)
+{
+	if (token->type == tokenInt)
+	{
+		return CuteNode_makeInt(ParserContext_strToInt(token->str, token->len));
+	}
+	else if (token->type == tokenFloat) 
+	{
+		return CuteNode_makeFloat(ParserContext_strToFloat(token->str, token->len));
+	}
+	else
+	{
+		printf("Invalid Syntax: Expected atom");
+		exit(1);
+	}
+}
+
 
 // These functions work assuming the lexer did its job properly
 
@@ -113,7 +117,7 @@ int ParserContext_strToInt(char* str, int len)
 	int num = 0;
 	for (int i = 0; i < len; i++)
 	{
-		num = num + (str[i] - '0');
+		num = (num * 10) + (str[i] - '0');
 	}
 	return num;
 }
@@ -139,7 +143,7 @@ double ParserContext_strToFloat(char* str, int len)
 			continue;
 		}
 
-		num = num + (str[i] - '0');
+		num = (num * 10) + (str[i] - '0');
 	}
 	return num;
 }

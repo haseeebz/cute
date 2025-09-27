@@ -22,5 +22,9 @@ CuteNode* ParserContext_parseExpr(ParserContext* parser, float precedence);
 CuteBinaryOp ParserContext_detectOperator(char c);
 float ParserContext_getPrecedence(CuteBinaryOp op);
 
+CuteNode* ParserContext_tokenToAtom(Token* token);
+
 int ParserContext_strToInt(char* str, int len);
 double ParserContext_strToFloat(char* str, int len);
+
+

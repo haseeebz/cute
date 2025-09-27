@@ -65,6 +65,14 @@ Token LexerContext_nextToken(LexerContext* lexer)
 	return Token_make(tokenEOF, NULL, 0);
 }
 
+void LexerContext_backtrack(LexerContext* lexer)
+{
+	if (lexer->index > 0) 
+	{
+		lexer->index--;
+	}
+}
+
 
 
 Token LexerContext_tokenizeNumber(LexerContext* lexer, char* c)
