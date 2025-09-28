@@ -1,5 +1,5 @@
-#include "./parser/node.h"
-#include "./parser/parser.h"
+#include "../parser/node.h"
+#include "../parser/parser.h"
 
 #pragma once
 

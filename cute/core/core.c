@@ -1,7 +1,7 @@
-#include "./parser/node.h"
-#include "./parser/parser.h"
+#include "../parser/node.h"
+#include "../parser/parser.h"
 
-#include "cute.h"
+#include "core.h"
 #include <stdio.h>
 
 

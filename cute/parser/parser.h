@@ -1,5 +1,5 @@
-#include "../lexer/tokens.h"
-#include "../lexer/lexer.h"
+#include "./lexer/tokens.h"
+#include "./lexer/lexer.h"
 #include "node.h"
 
 #pragma once

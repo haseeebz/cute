@@ -1,6 +1,6 @@
 #include "parser.h"
-#include "../lexer/tokens.h"
-#include "../lexer/lexer.h"
+#include "./lexer/tokens.h"
+#include "./lexer/lexer.h"
 #include "node.h"
 #include <stdbool.h>
 #include <stdio.h>
