@@ -7,22 +7,22 @@
 #include <string.h>
 
 
-LexerContext* LexerContext_new()
+Lexer* Lexer_new()
 {
-	LexerContext* lexer = malloc(sizeof(LexerContext));
+	Lexer* lexer = malloc(sizeof(Lexer));
 	lexer->buffer = NULL;
 	return lexer;
 }
 
 
-void LexerContext_del(LexerContext* lexer)
+void Lexer_del(Lexer* lexer)
 {
 	free(lexer->buffer);
 	free(lexer);
 }
 
 
-void LexerContext_init(LexerContext* lexer, char* string)
+void Lexer_init(Lexer* lexer, char* string)
 {
 	lexer->length = strlen(string);
 
@@ -35,7 +35,7 @@ void LexerContext_init(LexerContext* lexer, char* string)
 }
 
 
-Token LexerContext_nextToken(LexerContext* lexer)
+Token Lexer_nextToken(Lexer* lexer)
 {
 	Token token;
 	char* c;
@@ -48,11 +48,11 @@ Token LexerContext_nextToken(LexerContext* lexer)
 
 		if (isdigit(*c)) 
 		{
-			token = LexerContext_tokenizeNumber(lexer, c);
+			token = Lexer_tokenizeNumber(lexer, c);
 		}
 		else if (isalpha(*c))
 		{
-			token = LexerContext_tokenizeWord(lexer, c);
+			token = Lexer_tokenizeWord(lexer, c);
 		}
 		else 
 		{
@@ -65,7 +65,7 @@ Token LexerContext_nextToken(LexerContext* lexer)
 	return Token_make(tokenEOF, NULL, 0);
 }
 
-void LexerContext_backtrack(LexerContext* lexer)
+void Lexer_backtrack(Lexer* lexer)
 {
 	if (lexer->index > 0) 
 	{
@@ -75,7 +75,7 @@ void LexerContext_backtrack(LexerContext* lexer)
 
 
 
-Token LexerContext_tokenizeNumber(LexerContext* lexer, char* c)
+Token Lexer_tokenizeNumber(Lexer* lexer, char* c)
 {
 	int token_length = 1;
 	bool isFloat = false;			
@@ -113,7 +113,7 @@ Token LexerContext_tokenizeNumber(LexerContext* lexer, char* c)
 
 
 
-Token LexerContext_tokenizeWord(LexerContext* lexer, char* c)
+Token Lexer_tokenizeWord(Lexer* lexer, char* c)
 {
 	int token_length = 1;
 	char* nc;

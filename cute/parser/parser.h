@@ -6,25 +6,25 @@
 
 typedef struct
 {
-	LexerContext* lexer;
+	Lexer* lexer;
 	CuteNode* root;
-} ParserContext;
+} Parser;
 
-ParserContext* ParserContext_new();
-void ParserContext_del(ParserContext* parser);
-void ParserContext_init(ParserContext* parser, char* string);
+Parser* Parser_new();
+void Parser_del(Parser* parser);
+void Parser_init(Parser* parser, char* string);
 
 
-CuteNode* ParserContext_parse(ParserContext* parser);
+CuteNode* Parser_parse(Parser* parser);
 
-CuteNode* ParserContext_parseExpr(ParserContext* parser, float precedence);
+CuteNode* Parser_parseExpr(Parser* parser, float precedence);
 
-CuteBinaryOp ParserContext_detectOperator(char c);
-float ParserContext_getPrecedence(CuteBinaryOp op);
+CuteBinaryOp Parser_detectOperator(char c);
+float Parser_getPrecedence(CuteBinaryOp op);
 
-CuteNode* ParserContext_tokenToAtom(Token* token);
+CuteNode* Parser_tokenToAtom(Token* token);
 
-int ParserContext_strToInt(char* str, int len);
-double ParserContext_strToFloat(char* str, int len);
+int Parser_strToInt(char* str, int len);
+double Parser_strToFloat(char* str, int len);
 
 

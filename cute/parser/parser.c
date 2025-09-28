@@ -1,5 +1,6 @@
 #include "parser.h"
 #include "../lexer/tokens.h"
+#include "../lexer/lexer.h"
 #include "node.h"
 #include <stdbool.h>
 #include <stdio.h>
@@ -7,68 +8,68 @@
 
 
 
-ParserContext* ParserContext_new()
+Parser* Parser_new()
 {
-	ParserContext* parser = malloc(sizeof(ParserContext));
-	parser->lexer = LexerContext_new();
+	Parser* parser = malloc(sizeof(Parser));
+	parser->lexer = Lexer_new();
 	parser->root = NULL;
 	return parser;
 }
 
 
-void ParserContext_del(ParserContext* parser)
+void Parser_del(Parser* parser)
 {
-	LexerContext_del(parser->lexer);
+	Lexer_del(parser->lexer);
 	free(parser);
 }
 
 
-void ParserContext_init(ParserContext* parser, char* string)
+void Parser_init(Parser* parser, char* string)
 {
-	LexerContext_init(parser->lexer, string);
+	Lexer_init(parser->lexer, string);
 }
 
 
-CuteNode* ParserContext_parse(ParserContext* parser)
+CuteNode* Parser_parse(Parser* parser)
 {
-	parser->root = ParserContext_parseExpr(parser, 0);
+	parser->root = Parser_parseExpr(parser, 0);
 	return parser->root;
 }
 
-CuteNode* ParserContext_parseExpr(ParserContext* parser, float precedence)
+CuteNode* Parser_parseExpr(Parser* parser, float precedence)
 {
 	Token token;
 	CuteNode* lhs;
 	
-	token = LexerContext_nextToken(parser->lexer);
+	token = Lexer_nextToken(parser->lexer);
 
-	lhs = ParserContext_tokenToAtom(&token);
+	lhs = Parser_tokenToAtom(&token);
 
 	while (true)
 	{
 		CuteNode* rhs;
 
-		token = LexerContext_nextToken(parser->lexer);
+		token = Lexer_nextToken(parser->lexer);
 
 		if (token.type == tokenEOF) {break;}
 
-		CuteBinaryOp optype = ParserContext_detectOperator(*token.str);
-		float current_precedence = ParserContext_getPrecedence(optype);
+		CuteBinaryOp optype = Parser_detectOperator(*token.str);
+		float current_precedence = Parser_getPrecedence(optype);
 
 		if (current_precedence < precedence) 
 		{
-			LexerContext_backtrack(parser->lexer);
+			Lexer_backtrack(parser->lexer);
 			break;
 		}
 		
-		rhs = ParserContext_parseExpr(parser, current_precedence);
+		rhs = Parser_parseExpr(parser, current_precedence);
 		lhs = CuteNode_makeBinaryOp(optype, lhs, rhs);
 	}
 	return lhs;
 }
 
 
-float ParserContext_getPrecedence(CuteBinaryOp op)
+float Parser_getPrecedence(CuteBinaryOp op)
 {
 	switch (op) 
 	{
@@ -80,7 +81,7 @@ float ParserContext_getPrecedence(CuteBinaryOp op)
 	}
 }
 
-CuteBinaryOp ParserContext_detectOperator(char c)
+CuteBinaryOp Parser_detectOperator(char c)
 {
 	switch (c) 
 	{
@@ -92,15 +93,15 @@ CuteBinaryOp ParserContext_detectOperator(char c)
 	}
 }
 
-CuteNode* ParserContext_tokenToAtom(Token* token)
+CuteNode* Parser_tokenToAtom(Token* token)
 {
 	if (token->type == tokenInt)
 	{
-		return CuteNode_makeInt(ParserContext_strToInt(token->str, token->len));
+		return CuteNode_makeInt(Parser_strToInt(token->str, token->len));
 	}
 	else if (token->type == tokenFloat) 
 	{
-		return CuteNode_makeFloat(ParserContext_strToFloat(token->str, token->len));
+		return CuteNode_makeFloat(Parser_strToFloat(token->str, token->len));
 	}
 	else
 	{
@@ -112,7 +113,7 @@ CuteNode* ParserContext_tokenToAtom(Token* token)
 
 // These functions work assuming the lexer did its job properly
 
-int ParserContext_strToInt(char* str, int len)
+int Parser_strToInt(char* str, int len)
 {
 	int num = 0;
 	for (int i = 0; i < len; i++)
@@ -122,7 +123,7 @@ int ParserContext_strToInt(char* str, int len)
 	return num;
 }
 
-double ParserContext_strToFloat(char* str, int len)
+double Parser_strToFloat(char* str, int len)
 {
 	double num;
 	double multiplier = 10;

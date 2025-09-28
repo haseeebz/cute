@@ -7,8 +7,8 @@
 
 typedef struct
 {
-	LexerContext* lexer;
-	ParserContext* parser;
+	Lexer* lexer;
+	Parser* parser;
 	EvaluatorContext* evaluator;
 } CuteCore;
 

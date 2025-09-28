@@ -13,8 +13,8 @@
 CuteCore* CuteCore_Init()
 {
 	CuteCore* core = malloc(sizeof(CuteCore));
-	core->lexer = LexerContext_new();
-	core->parser = ParserContext_new();
+	core->lexer = Lexer_new();
+	core->parser = Parser_new();
 	core->evaluator = EvaluatorContext_new();
 	return core;
 }
@@ -26,8 +26,8 @@ void CuteCore_Run(CuteCore* core)
 
 void CuteCore_End(CuteCore* core)
 {
-	LexerContext_del(core->lexer);
-	ParserContext_del(core->parser);
+	Lexer_del(core->lexer);
+	Parser_del(core->parser);
 	free(core);
 }
 
@@ -43,11 +43,11 @@ void CuteCore_InvokeREPL(CuteCore* core)
 		printf(">> ");
 		fgets(buffer, sizeof(buffer), stdin);
 		
-		LexerContext_init(core->lexer, buffer);
-		TokenArray* tokens = LexerContext_tokenize(core->lexer);
+		Lexer_init(core->lexer, buffer);
+		TokenArray* tokens = Lexer_tokenize(core->lexer);
 		TokenArray_print(tokens);
-		ParserContext_init(core->parser, tokens);
-		CuteAtomStack* stack = ParserContext_parse(core->parser);
+		Parser_init(core->parser, tokens);
+		CuteAtomStack* stack = Parser_parse(core->parser);
 		CuteAtomStack_print(stack);
 		EvaluatorContext_init(core->evaluator, stack);
 		CuteAtom atom = EvaluatorContext_evaluate(core->evaluator);

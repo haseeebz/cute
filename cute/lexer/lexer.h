@@ -7,18 +7,18 @@ typedef struct
 	char* buffer;
 	int length;
 	int index;
-} LexerContext;
+} Lexer;
 
 
-LexerContext* LexerContext_new();
-void LexerContext_del(LexerContext* lexer);
-void LexerContext_init(LexerContext* lexer, char* string);
+Lexer* Lexer_new();
+void Lexer_del(Lexer* lexer);
+void Lexer_init(Lexer* lexer, char* string);
 
-Token LexerContext_nextToken(LexerContext* lexer);
-void LexerContext_backtrack(LexerContext* lexer);
+Token Lexer_nextToken(Lexer* lexer);
+void Lexer_backtrack(Lexer* lexer);
 
-Token LexerContext_nextToken(LexerContext* lexer);
-Token LexerContext_tokenizeNumber(LexerContext* lexer, char* c);
-Token LexerContext_tokenizeWord(LexerContext* lexer, char* c);
+Token Lexer_nextToken(Lexer* lexer);
+Token Lexer_tokenizeNumber(Lexer* lexer, char* c);
+Token Lexer_tokenizeWord(Lexer* lexer, char* c);
 
 
