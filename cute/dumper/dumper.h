@@ -4,5 +4,6 @@
 
 typedef struct
 {
+	CuteNode* root;
 
 } Dumper;
