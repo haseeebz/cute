@@ -1,18 +1,25 @@
 #include "engine/engine.h"
+#include "engine/instr.h"
 #include <stdio.h>
 
 int main()
 {
 	CuteEngine* engine = CuteEngine_setup("file.bin");
 
-	OpCode codes[] = {10, 9, 7, 10};
-	CuteEngine_write(engine, codes, 3);
-
-	OpCode* file_codes = CuteEngine_load(engine);
-	for (int i = 0; i < 3; i++)
+	OpCode codes[] = 
 	{
-		printf("%d\n", file_codes[i]);
-	}
+		opLOADi, 0, 120,
+		opLOADi, 1, 100,
+		opADDi, 0, 1, 2,
+		opOUT, 2,
+		opHALT
+	};
+
+	//CuteEngine_write(engine, codes, sizeof(codes));
+
+	CuteEngine_load(engine);
+	CuteEngine_run(engine);
+	
 	CuteEngine_end(engine);
 	return 0;
 }

@@ -3,63 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "engine.h"
-
-
-Stack* Stack_new(int capacity)
-{
-	Stack* stack = malloc(sizeof(Stack));
-	stack->capacity = capacity;
-	stack->size = 0;
-	stack->items = malloc(sizeof(int32_t)*capacity);
-	return stack;
-}
-
-
-void Stack_del(Stack* stack)
-{
-	free(stack->items);
-	free(stack);
-}
-
-
-void Stack_resize(Stack* stack, int new_cap)
-{
-	if (new_cap <= stack->capacity) {return;}
-
-	int32_t* items = malloc(sizeof(int32_t)*new_cap);
-
-	for (int i = 0; i < stack->size; i++)
-	{
-		items[i] = stack->items[i];
-	}
-
-	free(stack->items);
-	stack->items = items;
-}	
-
-
-void Stack_push(Stack* stack, int32_t x)
-{
-	if (stack->size >= stack->capacity)
-	{
-		Stack_resize(stack, stack->capacity * 2);
-	}
-
-	stack->items[stack->size] = x;
-	stack->size++;
-}
-
-
-int32_t Stack_pop(Stack* stack)
-{
-	return stack->items[stack->size--];
-}
-
-
-int32_t Stack_peek(Stack* stack)
-{
-	return stack->items[stack->size-1];
-}
+#include "instr.h"
 
 
 CuteEngine* CuteEngine_setup(char* filepath)
@@ -70,8 +14,6 @@ CuteEngine* CuteEngine_setup(char* filepath)
 	engine->filepath = malloc(sizeof(char)*len);
 	strncpy(engine->filepath, filepath, len);
 
-	engine->stack = Stack_new(len);
-
 	engine->pc = 0;
 
 	return engine;
@@ -81,11 +23,11 @@ CuteEngine* CuteEngine_setup(char* filepath)
 void CuteEngine_end(CuteEngine* engine)
 {
 	free(engine->filepath);
-	free(engine->stack);
 	free(engine);
 }
 
-OpCode* CuteEngine_load(CuteEngine* engine)
+
+void CuteEngine_load(CuteEngine* engine)
 {
 	FILE* file = fopen(engine->filepath, "rb");
 
@@ -98,18 +40,59 @@ OpCode* CuteEngine_load(CuteEngine* engine)
 
 	OpCode* codes = malloc(sizeof(OpCode)*100);
 
-	OpCode code;
+	OpCodeByte raw;
 	int index = 0;
 
-	while (fread(&code, sizeof(OpCode), 1, file) == 1)
+	while (fread(&raw, sizeof(OpCodeByte), 1, file) == 1)
 	{
-		codes[index] = code;
+		codes[index] = (OpCode) raw;
 		index++;
 	}
 
-	fclose(file);
+	if (file != NULL) { fclose(file); }
 
-	return codes;
+	engine->codes = codes;
+}
+
+
+void CuteEngine_run(CuteEngine* engine)
+{
+	OpCode code;
+	int8_t regr;
+	int32_t res;
+
+	while (1)
+	{
+		code = engine->codes[engine->pc++];
+
+		switch (code) 
+		{
+		case opLOADi:
+			regr = engine->codes[engine->pc++];
+			engine->iregisters[regr] = engine->codes[engine->pc++];
+			break;
+		case opADDi:
+			regr = engine->codes[engine->pc++];
+			res = engine->iregisters[regr];
+
+			regr = engine->codes[engine->pc++];
+			res = res + engine->iregisters[regr];
+
+			regr = engine->codes[engine->pc++];
+			engine->iregisters[regr] = res;
+			break;
+
+		case opSUBi:
+			printf("opSUBi\n"); break;
+		case opOUT:
+			regr = engine->codes[engine->pc++];
+			printf("%d\n", engine->iregisters[regr]);
+			break;
+		case opHALT: 
+			return;
+		break;
+		}
+	}
 }
 
 
@@ -123,8 +106,14 @@ void CuteEngine_write(CuteEngine* engine, OpCode* code, int count)
 		fclose(file);
 		exit(EXIT_FAILURE);
 	}
-
-	fwrite(code, sizeof(OpCode), count, file);
+	
+	OpCodeByte raw;
+	for (int i = 0; i < count; i++)
+	{
+		raw = (OpCodeByte) code[i];
+		fwrite(&raw, sizeof(OpCodeByte), 1, file);
+	}
+	
 
 	fclose(file);
 }
