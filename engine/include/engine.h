@@ -1,20 +1,27 @@
 #include <stdint.h>
 #include "../instr.h"
+#include "../memory.h"
 
 #pragma once 
 
-#define iREGR 8
-#define fREGR 8
+#define REG_COUNT 8
+
+
+ 
 
 typedef struct
 {
-	int32_t iregisters[iREGR];
-	float fregisters[fREGR];
+	int32_t iregisters[REG_COUNT];
+	float fregisters[REG_COUNT];
 
 	int pc;
 	OpCode* codes;
+
+	StackFrame frame;
+
 	char* filepath;
 } CuteEngine;
+
 
 
 CuteEngine* CuteEngine_setup(char* filepath);

@@ -4,6 +4,9 @@
 #include <string.h>
 #include "include/engine.h"
 #include "instr.h"
+#include "memory.h"
+
+#include "operations.c"
 
 
 CuteEngine* CuteEngine_setup(char* filepath)
@@ -55,47 +58,6 @@ void CuteEngine_load(CuteEngine* engine)
 }
 
 
-void CuteEngine_run(CuteEngine* engine)
-{
-	OpCode code;
-	int8_t regr;
-	int32_t res;
-
-	while (1)
-	{
-		code = engine->codes[engine->pc++];
-
-		switch (code) 
-		{
-		case opLOADi:
-			regr = engine->codes[engine->pc++];
-			engine->iregisters[regr] = engine->codes[engine->pc++];
-			break;
-		case opADDi:
-			regr = engine->codes[engine->pc++];
-			res = engine->iregisters[regr];
-
-			regr = engine->codes[engine->pc++];
-			res = res + engine->iregisters[regr];
-
-			regr = engine->codes[engine->pc++];
-			engine->iregisters[regr] = res;
-			break;
-
-		case opSUBi:
-			printf("opSUBi\n"); break;
-		case opOUT:
-			regr = engine->codes[engine->pc++];
-			printf("%d\n", engine->iregisters[regr]);
-			break;
-		case opHALT: 
-			return;
-		break;
-		}
-	}
-}
-
-
 void CuteEngine_write(CuteEngine* engine, OpCode* code, int count)
 {
 	FILE* file = fopen(engine->filepath, "wb");
@@ -117,3 +79,30 @@ void CuteEngine_write(CuteEngine* engine, OpCode* code, int count)
 
 	fclose(file);
 }
+
+
+
+
+void CuteEngine_run(CuteEngine* engine)
+{
+	OpCode code;
+	int8_t regr;
+	int32_t res;
+
+	while (1)
+	{
+		code = engine->codes[engine->pc++];
+
+		switch (code)
+		{
+		case opEXIT:
+			return;
+		
+		case opLOADi:
+			regr = engine->codes[engine->pc];
+			engine->iregisters[regr] = engine->codes[engine->pc];
+		}
+	}
+}
+
+

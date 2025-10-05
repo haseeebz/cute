@@ -5,10 +5,27 @@ typedef uint8_t OpCodeByte;
 
 typedef enum
 {
-	opLOADi = 0x01, // Expects a register and an integar
-	opADDi = 0x02,
-	opSUBi = 0x03,
-	opOUT = 0x04,
-	opHALT = 0x05,
+	opEXIT  = 0x01, // Causes Engine to stop running.
+
+	opLOADi = 0x02, // Rx Address - Loads the value at Address into Rx
+	opLOADf = 0x03,	
+
+	opSTRi  = 0x04, // Rx Address - Stores the thing at Rx into Address
+	opSTRf  = 0x05,	
+
+	opLCONi = 0x06, // Rx 4 Bytes - Loads the next x bytes into Rx
+	opLCONf = 0x07,
+
+	opADDi  = 0x11,	// Rx Ry - Stores result in Rx
+	opSUBi  = 0x12,
+	opMULi  = 0x13,
+	opDIVi  = 0x14,
+
+	opADDf  = 0x15,
+	opSUBf  = 0x16,
+	opMULf  = 0x17,
+	opDIVf  = 0x18,
+
+	opOUT   = 0x88, // For printing, temporary instruction
 } OpCode;
 
