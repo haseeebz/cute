@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "instr.h"
+#include "../instr.h"
 
 #pragma once 
 

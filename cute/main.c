@@ -1,6 +1,6 @@
-#include "engine/engine.h"
-#include "engine/instr.h"
 #include <stdio.h>
+#include "../engine/include/engine.h"
+
 
 int main()
 {
