@@ -1,27 +1,18 @@
 #include <stdint.h>
 #include "../instr.h"
-#include "../memory.h"
+#include "../frame.h"
 
 #pragma once 
-
-#define REG_COUNT 8
-
-
  
-
 typedef struct
 {
-	int32_t iregisters[REG_COUNT];
-	float fregisters[REG_COUNT];
-
 	int pc;
 	OpCode* codes;
 
-	StackFrame frame;
+	ExecutionStack* exestack;
 
 	char* filepath;
 } CuteEngine;
-
 
 
 CuteEngine* CuteEngine_setup(char* filepath);
