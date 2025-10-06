@@ -8,17 +8,16 @@ int main()
 
 	OpCode codes[] = 
 	{
-		opLOADi, 1, 10,
-		opLOADi, 2, 10,
-		opADDi, 0, 1, 2,
-
-		opSTRi, 0, 0,
-		opREADi, 5, 0,
-		opOUT, 5,
+		opLOADi, 10,
+		opLOADi, 12,
+		opMULi,
+		opLOADi, 10,
+		opDIVi,
+		opOUT,
 		opEXIT
 	};
 
-	CuteEngine_write(engine, codes, sizeof(codes));
+	//CuteEngine_write(engine, codes, sizeof(codes));
 	CuteEngine_load(engine);
 	CuteEngine_run(engine);
 	CuteEngine_end(engine);

@@ -88,7 +88,9 @@ void CuteEngine_write(CuteEngine* engine, OpCode* code, int count)
 void CuteEngine_run(CuteEngine* engine)
 {
 	OpCode code;
-
+	StackItem res;
+	StackItem item1;
+	StackItem item2;
 
 	while (1)
 	{
@@ -96,9 +98,55 @@ void CuteEngine_run(CuteEngine* engine)
 		
 		switch (code)
 		{
-			
 
+		case opEXIT:
+
+			return;
+
+
+		case opLOADi:
+
+			res.i = engine->codes[engine->pc++];
+			ExecutionStack_push(engine->exestack, res);
+			break;
 		
+		case opADDi:
+
+			item2= ExecutionStack_pop(engine->exestack);
+			item1 = ExecutionStack_pop(engine->exestack);
+			res.i = item1.i + item2.i;
+			ExecutionStack_push(engine->exestack, res);
+			break;
+
+		case opSUBi:
+
+			item2 = ExecutionStack_pop(engine->exestack);
+			item1 = ExecutionStack_pop(engine->exestack);
+			res.i = item1.i - item2.i;
+			ExecutionStack_push(engine->exestack, res);
+			break;
+
+		case opMULi:
+
+			item2 = ExecutionStack_pop(engine->exestack);
+			item1 = ExecutionStack_pop(engine->exestack);
+			res.i = item1.i * item2.i;
+			ExecutionStack_push(engine->exestack, res);
+			break;
+
+		case opDIVi:
+
+			item2 = ExecutionStack_pop(engine->exestack);
+			item1 = ExecutionStack_pop(engine->exestack);
+			res.i = item1.i / item2.i;
+			ExecutionStack_push(engine->exestack, res);
+			break;
+
+		case opOUT:
+
+			res = ExecutionStack_pop(engine->exestack);
+			printf("%d\n", res.i);
+			break;
 		}
 	}
 }
