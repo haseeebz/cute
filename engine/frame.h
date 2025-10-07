@@ -12,6 +12,7 @@ typedef union
 typedef struct
 {
 	StackItem* items;
+	StackItem memory[10];
 	int size;
 	int capacity;
 } ExecutionStack;

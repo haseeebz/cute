@@ -3,6 +3,9 @@
 #include "../frame.h"
 
 #pragma once 
+
+#define DEBUG
+
  
 typedef struct
 {
