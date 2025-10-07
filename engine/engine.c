@@ -174,6 +174,7 @@ void CuteEngine_run(CuteEngine* engine)
 			printf("	Multiplied Integar [%d] and [%d]\n", item1.i, item2.i); 
 			#endif
 
+
 			break;
 
 		case opDIVi:
@@ -201,9 +202,9 @@ void CuteEngine_run(CuteEngine* engine)
 			item1 = ExecutionStack_pop(engine->exestack);
 			if (item1.i != 0)
 			{
-				engine->pc = engine->pc + engine->codes[engine->pc++];
+				engine->pc = engine->codes[engine->pc];
 				#ifdef DEBUG 
-				printf("	Jumped to [%d] Offset = [%d]\n", engine->pc, engine->pc-1); 
+				printf("	Jumped to [%d]\n", engine->pc); 
 				#endif
 				continue;
 			}
@@ -218,11 +219,11 @@ void CuteEngine_run(CuteEngine* engine)
 		case opEQi:
 			item2 = ExecutionStack_pop(engine->exestack);
 			item1 = ExecutionStack_pop(engine->exestack);
-			res.i = (item1.i == item2.i);
+			res.i = (item1.i != item2.i);
 			ExecutionStack_push(engine->exestack, res);
 
 			#ifdef DEBUG 
-			printf("	Statement was equal.\n"); 
+			printf("	Statement equal = %d\n", res.i); 
 			#endif
 
 			break;
@@ -236,6 +237,9 @@ void CuteEngine_run(CuteEngine* engine)
 
 			printf("%d\n", res.i);
 			break;
+
+		default:
+			return;
 		}
 	}
 }

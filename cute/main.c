@@ -9,14 +9,22 @@ int main()
 	OpCode codes[] = 
 	{
 		opLCONi, 
-		64,
-		opLCONi, 
-		32,
+		1,
 		opSTORi,
 		0,
 		opLOADi,
 		0,
+		opLCONi,
+		2,
+		opADDi,
+		opSTORi,
+		0,
 		opOUT,
+		opLCONi,
+		128,
+		opEQi,
+		opJMPe,
+		4,
 		opEXIT
 	};
 

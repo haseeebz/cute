@@ -4,7 +4,6 @@
 
 #pragma once 
 
-#define DEBUG
 
  
 typedef struct
