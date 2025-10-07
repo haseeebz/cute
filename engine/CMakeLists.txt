@@ -6,6 +6,8 @@ add_library(
 	frame.c
 )
 
+target_compile_options(engineLib PRIVATE -Wall -Wextra -g)
+
 target_include_directories(engineLib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

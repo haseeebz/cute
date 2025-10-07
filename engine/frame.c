@@ -33,6 +33,7 @@ void ExecutionStack_resize(ExecutionStack* stack, int capacity)
 	free(stack->items);
 
 	stack->items = items;
+	stack->capacity = capacity;
 }
 
 
@@ -51,4 +52,9 @@ StackItem ExecutionStack_pop(ExecutionStack* stack)
 {
 	stack->size--;
 	return stack->items[stack->size];
+}
+
+StackItem ExecutionStack_peek(ExecutionStack* stack)
+{
+	return stack->items[stack->size-1];
 }

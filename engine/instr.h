@@ -9,11 +9,15 @@ typedef enum
 
 	opLOADi  = 0x10,
 	opSTORi  = 0x11,
+
+	opEQi    = 0x12, // 0 for false, otherwise true 
+	opJMPx   = 0x20, // Jump to a given index in the bytecode if the last stack
 	
 	opADDi   = 0xA1, 
 	opSUBi   = 0xA2, 
 	opMULi   = 0xA3, 
 	opDIVi   = 0xA4, 
+
 
 	opOUT    = 0x88
 } OpCode;

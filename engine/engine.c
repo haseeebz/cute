@@ -142,9 +142,27 @@ void CuteEngine_run(CuteEngine* engine)
 			ExecutionStack_push(engine->exestack, res);
 			break;
 
+		case opEQi:
+			item2 = ExecutionStack_pop(engine->exestack);
+			item1 = ExecutionStack_peek(engine->exestack);
+			res.i = (item1.i == item2.i) ? 1 : 0;
+
+			ExecutionStack_push(engine->exestack, res);
+			break;
+
+		case opJMPx:
+			engine->pc = engine->codes[engine->pc++]; continue;
+			item1 = ExecutionStack_pop(engine->exestack);
+			if (item1.i != 0) 
+			{
+				engine->pc = engine->codes[engine->pc++];
+			}
+			else {engine->pc++;}
+			break;
+
 		case opOUT:
 
-			res = ExecutionStack_pop(engine->exestack);
+			res = ExecutionStack_peek(engine->exestack);
 			printf("%d\n", res.i);
 			break;
 		}

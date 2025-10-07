@@ -23,3 +23,4 @@ void ExecutionStack_resize(ExecutionStack* stack, int capacity);
 
 void ExecutionStack_push(ExecutionStack* stack, StackItem item);
 StackItem ExecutionStack_pop(ExecutionStack* stack);
+StackItem ExecutionStack_peek(ExecutionStack* stack);
