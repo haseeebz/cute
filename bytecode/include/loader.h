@@ -1,5 +1,6 @@
 #pragma once 
 #include "instr.h"
+#include <cstdint>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -9,7 +10,6 @@ extern "C" {
 
 typedef struct
 {
-	enum {charT, intT, floatT} type;
 	union {int32_t i; double d;} val;
 } ConstantValue;
 
@@ -40,7 +40,8 @@ void ProgramContext_del(ProgramContext* context);
 void ProgramContext_addInstruction(ProgramContext* context, Instruction instr);
 // Appends an instruction to the instructions field
 
-int ProgramContext_addConstant(ProgramContext* context, ConstantValue constant);
+int ProgramContext_addConstInt(ProgramContext* context, int32_t constant);
+int ProgramContext_addConstFloat(ProgramContext* context, double constant);
 // Adds a constant to the pool and returns its index for later referencing.
 
 
