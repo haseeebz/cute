@@ -1,16 +1,17 @@
 #pragma once 
 #include "instr.h"
-#include <cstdint>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #ifdef  __cplusplus 
 extern "C" {
 #endif
 
-typedef struct
+typedef union
 {
-	union {int32_t i; double d;} val;
+	int32_t i; double d;
 } ConstantValue;
 
 
@@ -28,13 +29,16 @@ typedef struct
 
 	ConstantValue* constant_pool;
 	size_t const_count;
+	size_t _const_cap;
 
 	Instruction* instrs;
+	size_t instr_count;
+	size_t _instr_cap;
 
 } ProgramContext;
 
 
-ProgramContext* ProgramContext_new();
+ProgramContext* ProgramContext_new(size_t size);
 void ProgramContext_del(ProgramContext* context);
 
 void ProgramContext_addInstruction(ProgramContext* context, Instruction instr);
@@ -45,6 +49,9 @@ int ProgramContext_addConstFloat(ProgramContext* context, double constant);
 // Adds a constant to the pool and returns its index for later referencing.
 
 
+int ProgramContext_loadFromFile(ProgramContext* context, char* filepath);
+
+int ProgramContext_writeToFile(ProgramContext* context, char* filepath);
 
 #ifdef  __cplusplus 
 }
