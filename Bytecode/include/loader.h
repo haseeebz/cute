@@ -9,9 +9,10 @@
 extern "C" {
 #endif
 
-typedef union
+typedef struct
 {
-	int32_t i; double d;
+	enum { constInt = 0x01, constDouble = 0x02} type;
+	union { int32_t i; double d; } val;
 } ConstantValue;
 
 
@@ -21,7 +22,6 @@ typedef struct
 	int32_t constant_pool_index;
 	int32_t instructions_index;
 } ProgramHeader;
-
 
 typedef struct 
 {
@@ -42,15 +42,11 @@ ProgramContext* ProgramContext_new(size_t size);
 void ProgramContext_del(ProgramContext* context);
 
 void ProgramContext_addInstruction(ProgramContext* context, Instruction instr);
-// Appends an instruction to the instructions field
 
-int ProgramContext_addConstInt(ProgramContext* context, int32_t constant);
-int ProgramContext_addConstFloat(ProgramContext* context, double constant);
-// Adds a constant to the pool and returns its index for later referencing.
+int ProgramContext_addConstant(ProgramContext* context, ConstantValue constant);
 
 
 int ProgramContext_loadFromFile(ProgramContext* context, char* filepath);
-
 int ProgramContext_writeToFile(ProgramContext* context, char* filepath);
 
 #ifdef  __cplusplus 

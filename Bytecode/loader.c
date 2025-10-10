@@ -1,6 +1,7 @@
 #include "include/instr.h"
 #include "include/loader.h"
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 
@@ -47,32 +48,67 @@ void ProgramContext_addInstruction(ProgramContext* context, Instruction instr)
 	context->instrs[context->instr_count] = instr;
 	context->instr_count++;
 }
-// Appends an instruction to the instructions field
 
-int ProgramContext_addConstInt(ProgramContext* context, int32_t constant)
+
+int ProgramContext_addConstant(ProgramContext* context, ConstantValue constant)
 {
-	int8_t bytes[4];
-	memcpy(&bytes, &constant, 4);
 
-	if (context->instr_count >= context->_instr_cap)
+	if (context->const_count >= context->_const_cap)
 	{
-		Instruction* instrs = malloc(sizeof(ConstantValue) * context->_instr_cap * 2);
+		ConstantValue* constants = malloc(sizeof(ConstantValue) * context->_const_cap * 2);
 		
 		for (int i = 0; i < context->instr_count; i++)
 		{
-			instrs[i] = context->instrs[i];
+			constants[i] = context->constant_pool[i];
 		}
 
-		free(context->instrs);
-		context->instrs = instrs;
-		context->_instr_cap = context->_instr_cap * 2;
+		free(context->constant_pool);
+		context->constant_pool = constants;
+		context->_const_cap = context->_const_cap * 2;
 	}
 
+	context->constant_pool[context->const_count] = constant;
+	context->const_count++;
+	return context->const_count-1;
 }
-int ProgramContext_addConstFloat(ProgramContext* context, double constant);
-// Adds a constant to the pool and returns its index for later referencing.
 
+
+int ProgramContext_writeToFile(ProgramContext* context, char* filepath)
+{
+	FILE* file = fopen(filepath, "wb");
+
+	if (file == NULL) {return -1;}
+	long fp_index;
+
+
+	fwrite(&context->header, sizeof(ProgramHeader), 1, file);
+
+	context->header.constant_pool_index = sizeof(ProgramHeader);
+
+
+	for (int i = 0; i < context->const_count; i++)
+	{
+		fwrite(&context->constant_pool[i].type, sizeof(int8_t), 1, file);
+
+		switch (context->constant_pool[i].type) 
+		{
+			case constInt:
+			fwrite(&context->constant_pool[i].val.i, sizeof(int32_t), 1, file);
+			break;
+			case constDouble:
+			fwrite(&context->constant_pool[i].val.d, sizeof(int32_t), 1, file);
+			break;
+		}
+	}
+
+	fp_index = ftell(file);
+	
+	context->header.instructions_index = fp_index;
+
+	fwrite(context->instrs, sizeof(Instruction), context->instr_count, file);
+	
+	return 0;
+}
 
 int ProgramContext_loadFromFile(ProgramContext* context, char* filepath);
 
-int ProgramContext_writeToFile(ProgramContext* context, char* filepath);
