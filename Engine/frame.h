@@ -22,3 +22,7 @@ void ExecutionFrame_resize(ExecutionFrame* stack, int capacity);
 void ExecutionFrame_push(ExecutionFrame* frame, Atom atom);
 Atom ExecutionFrame_pop(ExecutionFrame* frame);
 Atom ExecutionFrame_peek(ExecutionFrame* frame);
+
+
+void ExecutionFrame_readAtom(ExecutionFrame* frame, size_t index, Atom* atoms, size_t size);
+void ExecutionFrame_writeAtom(ExecutionFrame* frame, size_t index, Atom* atoms, size_t size);
