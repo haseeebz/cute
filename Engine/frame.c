@@ -1,60 +1,66 @@
 #include "frame.h"
+#include "atom.h"
+#include <stddef.h>
 #include <stdlib.h>
 
 
-ExecutionStack* ExecutionStack_new(int capacity)
+ExecutionFrame* ExecutionFrame_new(size_t stack_cap, size_t memory_size)
 {
-	ExecutionStack* stack = malloc(sizeof(ExecutionStack));
-	stack->items = malloc(sizeof(StackItem) * capacity);
-	stack->capacity = capacity;
-	stack->size = 0;
-	return stack;
+	ExecutionFrame* frame = malloc(sizeof(ExecutionFrame));
+	frame->stack = malloc(sizeof(Atom) * stack_cap);
+	frame->stack_cap = stack_cap;
+	frame->stack_size = 0;
+
+	frame->memory = malloc(sizeof(Atom) * memory_size);
+	frame->memory_size = memory_size;
+	return frame;
 }
 
 
-void ExecutionStack_del(ExecutionStack* stack)
+void ExecutionFrame_del(ExecutionFrame* frame)
 {
-	free(stack->items);
-	free(stack);
+	free(frame->stack);
+	free(frame->memory);
+	free(frame);
 }
 
 
-void ExecutionStack_resize(ExecutionStack* stack, int capacity)
+void ExecutionFrame_resize(ExecutionFrame* frame, int capacity)
 {
-	if (stack->capacity >= capacity) {return;}
+	if (frame->stack_cap >= capacity) {return;}
 
-	StackItem* items = malloc(sizeof(StackItem) * capacity);
+	Atom* new_stack = malloc(sizeof(Atom) * capacity);
 
-	for (int i = 0; i < stack->size; i++)
+	for (int i = 0; i < frame->stack_size; i++)
 	{
-		items[i] = stack->items[i];
+		new_stack[i] = frame->stack[i];
 	}
 
-	free(stack->items);
+	free(frame->stack);
 
-	stack->items = items;
-	stack->capacity = capacity;
+	frame->stack = new_stack;
+	frame->stack_cap = capacity;
 }
 
 
-void ExecutionStack_push(ExecutionStack* stack, StackItem item)
+void ExecutionFrame_push(ExecutionFrame* frame, Atom atom)
 {
-	if (stack->size >= stack->capacity)
+	if (frame->stack_size >= frame->stack_cap)
 	{
-		ExecutionStack_resize(stack, stack->capacity * 2);
+		ExecutionFrame_resize(frame, frame->stack_cap * 2);
 	}
 
-	stack->items[stack->size] = item;
-	stack->size++;
+	frame->stack[frame->stack_size] = atom;
+	frame->stack_size++;
 }
 
-StackItem ExecutionStack_pop(ExecutionStack* stack)
+Atom ExecutionFrame_pop(ExecutionFrame* frame)
 {
-	stack->size--;
-	return stack->items[stack->size];
+	frame->stack_size--;
+	return frame->stack[frame->stack_size];
 }
 
-StackItem ExecutionStack_peek(ExecutionStack* stack)
+Atom ExecutionFrame_peek(ExecutionFrame* frame)
 {
-	return stack->items[stack->size-1];
+	return frame->stack[frame->stack_size-1];
 }

@@ -1,27 +1,24 @@
-#include <stdint.h>
-
 #pragma once 
 
-
-typedef union
-{
-	int32_t i;
-	float f;
-} StackItem;
+#include <stddef.h>
+#include <stdint.h>
+#include "atom.h"
 
 typedef struct
 {
-	StackItem* items;
-	StackItem memory[10];
-	int size;
-	int capacity;
-} ExecutionStack;
+	Atom* stack;
+	size_t stack_cap;
+	size_t stack_size;
 
-ExecutionStack* ExecutionStack_new(int capacity);
-void ExecutionStack_del(ExecutionStack* stack);
+	Atom* memory;
+	size_t memory_size;
+} ExecutionFrame;
 
-void ExecutionStack_resize(ExecutionStack* stack, int capacity);
+ExecutionFrame* ExecutionFrame_new(size_t stack_cap, size_t memory_size);
+void ExecutionFrame_del(ExecutionFrame* frame);
 
-void ExecutionStack_push(ExecutionStack* stack, StackItem item);
-StackItem ExecutionStack_pop(ExecutionStack* stack);
-StackItem ExecutionStack_peek(ExecutionStack* stack);
+void ExecutionFrame_resize(ExecutionFrame* stack, int capacity);
+
+void ExecutionFrame_push(ExecutionFrame* frame, Atom atom);
+Atom ExecutionFrame_pop(ExecutionFrame* frame);
+Atom ExecutionFrame_peek(ExecutionFrame* frame);
