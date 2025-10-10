@@ -1,9 +1,13 @@
-#pragma once 
 #include "instr.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+#pragma once 
+
+#define MAGIC 0x10211225
+
 
 #ifdef  __cplusplus 
 extern "C" {
@@ -20,7 +24,9 @@ typedef struct
 {
 	int32_t magic;
 	int32_t constant_pool_index;
+	int32_t constant_count;
 	int32_t instructions_index;
+	int32_t instr_count;
 } ProgramHeader;
 
 typedef struct 
@@ -38,7 +44,7 @@ typedef struct
 } ProgramContext;
 
 
-ProgramContext* ProgramContext_new(size_t size);
+ProgramContext* ProgramContext_new();
 void ProgramContext_del(ProgramContext* context);
 
 void ProgramContext_addInstruction(ProgramContext* context, Instruction instr);

@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 project(cute C)
 
-add_subdirectory(engine)
-add_subdirectory(bytecode)
+# add_subdirectory(Engine)
+add_subdirectory(Bytecode)
 
 add_executable(cute
-    cute/main.c
+	Cute/main.c
 )
 
-target_link_libraries(cute PRIVATE engineLib)
+# target_link_libraries(cute PRIVATE engineLib)
 target_link_libraries(cute PRIVATE bytecodeLib)
 
 
