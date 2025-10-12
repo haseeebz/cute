@@ -23,9 +23,6 @@ typedef struct
 typedef struct
 {
 	int32_t magic;
-	int32_t constant_pool_index;
-	int32_t constant_count;
-	int32_t instructions_index;
 	int32_t instr_count;
 } ProgramHeader;
 
@@ -33,9 +30,9 @@ typedef struct
 {
 	ProgramHeader header;
 
-	ConstantValue* constant_pool;
-	size_t const_count;
-	size_t _const_cap;
+	//ConstantValue* constant_pool;
+	//size_t const_count;
+	//size_t _const_cap;
 
 	Instruction* instrs;
 	size_t instr_count;
@@ -49,11 +46,13 @@ void ProgramContext_del(ProgramContext* context);
 
 void ProgramContext_addInstruction(ProgramContext* context, Instruction instr);
 
-int ProgramContext_addConstant(ProgramContext* context, ConstantValue constant);
+int ProgramContext_addInt(ProgramContext* context, int32_t integar);
 
 
 int ProgramContext_loadFromFile(ProgramContext* context, char* filepath);
 int ProgramContext_writeToFile(ProgramContext* context, char* filepath);
+
+void ProgramContext_print(ProgramContext* context);
 
 #ifdef  __cplusplus 
 }
