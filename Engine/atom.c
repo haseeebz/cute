@@ -4,12 +4,12 @@
 #include <stdlib.h>
 
 
-ExecutionStack* ExecutionStack_new(int32_t capacity)
+ExecutionStack ExecutionStack_init(int32_t capacity)
 {
-	ExecutionStack* stack = malloc(sizeof(ExecutionStack));
-	stack->atoms = malloc(sizeof(Atom) * capacity);
-	stack->cap = capacity;
-	stack->count = 0;
+	ExecutionStack stack;
+	stack.atoms = malloc(sizeof(Atom) * capacity);
+	stack.cap = capacity;
+	stack.count = 0;
 	return stack;
 }
 
@@ -17,7 +17,7 @@ ExecutionStack* ExecutionStack_new(int32_t capacity)
 void ExecutionStack_del(ExecutionStack* stack)
 {
 	free(stack->atoms);
-	free(stack);
+	stack->cap = 0;
 }
 
 

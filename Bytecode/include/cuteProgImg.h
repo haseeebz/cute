@@ -45,7 +45,7 @@ typedef struct
 ProgramImage* ProgramImage_new();
 void ProgramImage_del(ProgramImage* program);
 
-void ProgramImage_appendInstruction(ProgramImage* program, Instruction instr);
+void ProgramImage_appendInstr(ProgramImage* program, Instruction instr);
 
 int ProgramImage_addConstant(ProgramImage* program, ProgramConst constant);
 

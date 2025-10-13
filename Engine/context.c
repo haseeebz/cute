@@ -8,17 +8,14 @@
 #include <stdlib.h>
 
 
-ExecutionContext* ExecutionContext_init(ProgramImage* program)
+void ExecutionContext_init(ExecutionContext* ctx)
 {
-	ExecutionContext* ctx = malloc(sizeof(ExecutionContext));
-	ctx->exestack = ExecutionStack_new(10);
-	ctx->program = program;
+	ctx->exestack = ExecutionStack_init(10);
 	ctx->pc = 0;
-	return ctx;
 }
 
 void ExecutionContext_end(ExecutionContext* ctx)
 {
-	ExecutionStack_del(ctx->exestack);
-	free(ctx);
+	ExecutionStack_del(&ctx->exestack);
+	ctx->pc = 0;
 }

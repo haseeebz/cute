@@ -19,7 +19,7 @@ void ProgramImage_del(ProgramImage* program)
 }
 
 
-void ProgramImage_appendInstruction(ProgramImage* program, Instruction instr)
+void ProgramImage_appendInstr(ProgramImage* program, Instruction instr)
 {
 	if (program->instr_count >= program->_instr_cap)
 	{
@@ -32,7 +32,7 @@ void ProgramImage_appendInstruction(ProgramImage* program, Instruction instr)
 
 		free(program->instrs);
 		program->instrs = instrs;
-		program->_instr_cap = program->_instr_cap+1 * 2;
+		program->_instr_cap = (program->_instr_cap + 1) * 2;
 	}
 
 	program->instrs[program->instr_count] = instr;

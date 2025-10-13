@@ -9,12 +9,11 @@
 
 typedef struct
 {
-	ProgramImage* program;
-	ExecutionStack* exestack;
+	ExecutionStack exestack;
 	int32_t pc;
 } ExecutionContext;
 
 
-ExecutionContext* ExecutionContext_init(ProgramImage* program);
+void ExecutionContext_init(ExecutionContext* ctx);
 void ExecutionContext_end(ExecutionContext* ctx);
 

@@ -5,8 +5,8 @@
 int main()
 {
 	CuteEngine engine;
-	CuteEngine_init(&engine,  ProgramImage);
-	CuteEngine_run(&engine);
+	CuteEngine_init(&engine);
+	CuteEngine_exec(&engine);
 	CuteEngine_end(&engine);	
 	return 0;
 }

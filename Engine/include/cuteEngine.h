@@ -8,7 +8,6 @@
 
 typedef struct
 {
-	ExecutionContext* ctx;
 	ProgramImage* program;
 } CuteEngine;
 
@@ -16,4 +15,4 @@ typedef struct
 void CuteEngine_init(CuteEngine* engine);
 void CuteEngine_end(CuteEngine* engine);
 
-void CuteEngine_exec(CuteEngine* engine, ProgramImage* program);
+void CuteEngine_exec(CuteEngine* engine);
