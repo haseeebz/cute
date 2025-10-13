@@ -11,9 +11,7 @@ int main()
 	ProgramSource_addInstruction(program, instrLCONi);
 	ProgramSource_addInstruction(program, instrEXIT);
 	
-	ProgramSource_print(program);
-
-	//ProgramSource_writeToFile(program, "file.bin");
+	ProgramSource_writeToFile(program, "file.bin");
 
 	ProgramSource_loadFromFile(program, "file.bin");
 	ProgramSource_print(program);

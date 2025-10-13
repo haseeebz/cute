@@ -92,10 +92,10 @@ int ProgramSource_loadFromFile(ProgramSource* program, char* filepath)
 	program->instrs = malloc(sizeof(InstrByte) * program->instr_count);
 
 	
-	int read = fread(&program->instrs, sizeof(InstrByte), program->instr_count, file); 
+	int read = fread(program->instrs, sizeof(InstrByte), program->instr_count, file); 
 	fclose(file);
 
-	printf("Read Instructions: %d, Total Count: %d", read, program->instr_count);
+	printf("Read Instructions: %d, Total Count: %zu\n", read, program->instr_count);
 	
 	return 0;
 }
@@ -114,7 +114,7 @@ void ProgramSource_print(ProgramSource* program)
 	
 	for (size_t i = 0; i < program->instr_count; i++)
 	{
-		printf("%d ", program->instrs[i]);
+		printf("%X ", program->instrs[i]);
 	}
 
 	printf("\n");
