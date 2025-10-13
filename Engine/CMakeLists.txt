@@ -1,14 +1,14 @@
 
 add_library(
-	cuteEngine
+	CuteEngine
 	STATIC
     engine.c
 	frame.c
 )
 
-target_compile_options(cuteEngine PRIVATE -Wall -Wextra -g)
-target_link_libraries(cuteEngine PUBLIC cuteEngine)
+target_compile_options(CuteEngine PRIVATE -Wall -Wextra -g)
+target_link_libraries(CuteEngine PUBLIC CuteEngine)
 
-target_include_directories(cuteEngine PUBLIC
+target_include_directories(CuteEngine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

@@ -1,33 +1,24 @@
-#include <stdio.h>
-#include "../Bytecode/include/instr.h"
-#include "../Bytecode/include/loader.h"
-
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-
+#include "cuteByte.h"
     
 int main()
 {
-
-	ProgramContext* ctx = ProgramContext_new();
+	ProgramSource* program = ProgramSource_new();
 	
-	ProgramContext_addInstruction(ctx, instrLCONi);
-	ProgramContext_addInt(ctx, 10);
-	ProgramContext_addInstruction(ctx, instrLCONi);
-	ProgramContext_addInt(ctx, 20);
-	ProgramContext_addInstruction(ctx, instrADDi);
-	ProgramContext_addInstruction(ctx, instrOUT);
-	ProgramContext_addInstruction(ctx, instrEXIT);
 
-
-	ProgramContext_writeToFile(ctx, "file.bin");
-	ProgramContext_print(ctx);
-
+	ProgramSource_addInstruction(program, instrLOADi);
+	ProgramSource_addInstruction(program, instrLOADi);
+	ProgramSource_addInstruction(program, instrSTORi);
+	ProgramSource_addInstruction(program, instrLCONi);
+	ProgramSource_addInstruction(program, instrEXIT);
 	
-	ProgramContext_loadFromFile(ctx, "file.bin");
-	ProgramContext_print(ctx);
+	ProgramSource_print(program);
 
-	ProgramContext_del(ctx);
+	//ProgramSource_writeToFile(program, "file.bin");
+
+	ProgramSource_loadFromFile(program, "file.bin");
+	ProgramSource_print(program);
+
+	ProgramSource_del(program);
+
 	return 0;
 }

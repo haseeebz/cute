@@ -1,5 +1,6 @@
 #include "include/cuteByte.h"
 
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -89,10 +90,12 @@ int ProgramSource_loadFromFile(ProgramSource* program, char* filepath)
 
 	program->instr_count = program->header.instr_count; 
 	program->instrs = malloc(sizeof(InstrByte) * program->instr_count);
+
 	
-	fread(&program->instrs, sizeof(InstrByte), program->instr_count, file); 
-	
+	int read = fread(&program->instrs, sizeof(InstrByte), program->instr_count, file); 
 	fclose(file);
+
+	printf("Read Instructions: %d, Total Count: %d", read, program->instr_count);
 	
 	return 0;
 }
@@ -109,9 +112,9 @@ void ProgramSource_print(ProgramSource* program)
 
 	printf("Instruction List:\n");
 	
-	for (int i = 0; i < program->instr_count; i++)
+	for (size_t i = 0; i < program->instr_count; i++)
 	{
-		printf("%02X ", program->instrs[i]);
+		printf("%d ", program->instrs[i]);
 	}
 
 	printf("\n");

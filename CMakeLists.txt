@@ -10,8 +10,8 @@ add_executable(
 	Cute/main.c
 )
 
-target_link_libraries(cute PRIVATE cuteBytecode)
-# target_link_libraries(cute PRIVATE engineLib)
+target_link_libraries(cute PRIVATE CuteBytecode)
+# target_link_libraries(cute PRIVATE CuteEngine)
 
 target_compile_options(cute PRIVATE -Wall -Wextra -g -I.)
 
