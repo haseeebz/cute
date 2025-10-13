@@ -3,7 +3,7 @@ project(cute C)
 
 
 add_subdirectory(Bytecode)
-# add_subdirectory(Engine)
+add_subdirectory(Engine)
 
 add_executable(
 	cute
@@ -11,7 +11,7 @@ add_executable(
 )
 
 target_link_libraries(cute PRIVATE CuteBytecode)
-# target_link_libraries(cute PRIVATE CuteEngine)
+target_link_libraries(cute PRIVATE CuteEngine)
 
 target_compile_options(cute PRIVATE -Wall -Wextra -g -I.)
 
