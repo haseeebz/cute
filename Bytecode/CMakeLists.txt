@@ -1,10 +1,11 @@
+
 add_library(
-	bytecodeLib
+	cuteBytecode
 	STATIC
-    loader.c
+    source.c
 )
 
-target_compile_options(bytecodeLib PRIVATE -Wall -Wextra -g)
+target_compile_options(cuteBytecode PRIVATE -Wall -Wextra -g)
 
 target_include_directories(bytecodeLib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
