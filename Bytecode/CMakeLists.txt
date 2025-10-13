@@ -2,7 +2,7 @@
 add_library(
 	CuteBytecode
 	STATIC
-    source.c
+    image.c
 )
 
 target_compile_options(CuteBytecode PRIVATE -Wall -Wextra -g)
