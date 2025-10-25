@@ -12,6 +12,7 @@ typedef enum
     instrDivI = 0x04,
     instrMulI = 0x05,
 
+    instrEqI = 0x09,
     instrStation = 0x06,
     instrJump = 0x07,
 

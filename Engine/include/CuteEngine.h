@@ -10,6 +10,7 @@ typedef struct
     Instr instrs[100];
     int pc;
     ExeStack stack;
+    int stations[8];
 } CuteEngine;
 
 

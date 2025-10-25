@@ -12,12 +12,14 @@ void CuteEngine_init(CuteEngine *engine)
     engine->pc = 0;
 
     Instr instrs[] = {
-        instrPushI,10,
-        instrPushI,12,
+        instrPushI,1000000000,
+        instrPushI,0,
+        instrStation, 0,
+        instrPushI, 1,
         instrAddI,
-        instrPushI,10,
-        instrMulI,
         instrOutI,
+        instrEqI,
+        instrJump, 0,
         instrHalt,
     };
 
@@ -79,6 +81,27 @@ void CuteEngine_run(CuteEngine *engine)
             printf("%d\n", i1);
             break;
 
+        
+        case instrEqI:
+            i2 = ExeStack_peek(&engine->stack)->val.i;
+            i1 = engine->stack.obj[engine->stack.count-2].val.i;
+            ExeStack_push(&engine->stack, (CuteObj) {.val.i = (i1 == i2 ? 1 : 0)});
+            break;
+
+
+        case instrStation:
+            i1 = engine->instrs[engine->pc++];
+            engine->stations[i1] = engine->pc;
+            break;
+
+        case instrJump:
+            i2 = engine->instrs[engine->pc++];
+            i1 = ExeStack_pop(&engine->stack).val.i;
+            if (!i1)
+            {
+                engine->pc = engine->stations[i2];
+            }
+            break;
         }
     }
 }
