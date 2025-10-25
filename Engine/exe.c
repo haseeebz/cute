@@ -11,7 +11,7 @@ void ExeStack_init(ExeStack *stack, int initial_capacity)
     stack->count = 0;
     stack->obj = (CuteObj*) malloc(stack->cap * sizeof(CuteObj));
 
-    if (stack->obj)
+    if (!stack->obj)
     {
         fprintf(stderr, "Memory allocation failed\n");
         exit(EXIT_FAILURE);
