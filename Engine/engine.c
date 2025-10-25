@@ -1,7 +1,8 @@
+#include "exe/cell.h"
 #include "include/CuteEngine.h"
 #include "CuteByte.h"
 
-#include "exe.h"
+#include "exe/stack.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -48,31 +49,31 @@ void CuteEngine_run(CuteEngine *engine)
 
         case instrPushConstI:
             i1 = engine->instrs[engine->pc++];
-            ExeStack_push(&engine->stack, (CuteObj) {.val.i = i1});
+            ExeStack_push(&engine->stack, (CuteCell) {.val.i = i1});
             break;
 
         case instrAddI:
             i2 = ExeStack_pop(&engine->stack).val.i;
             i1 = ExeStack_pop(&engine->stack).val.i;
-            ExeStack_push(&engine->stack, (CuteObj) {.val.i = i1 + i2});
+            ExeStack_push(&engine->stack, (CuteCell) {.val.i = i1 + i2});
             break;
 
         case instrSubI:
             i2 = ExeStack_pop(&engine->stack).val.i;
             i1 = ExeStack_pop(&engine->stack).val.i;
-            ExeStack_push(&engine->stack, (CuteObj) {.val.i = i1 - i2});
+            ExeStack_push(&engine->stack, (CuteCell) {.val.i = i1 - i2});
             break;
 
         case instrMulI:
             i2 = ExeStack_pop(&engine->stack).val.i;
             i1 = ExeStack_pop(&engine->stack).val.i;
-            ExeStack_push(&engine->stack, (CuteObj) {.val.i = i1 * i2});
+            ExeStack_push(&engine->stack, (CuteCell) {.val.i = i1 * i2});
             break;
 
         case instrDivI:
             i2 = ExeStack_pop(&engine->stack).val.i;
             i1 = ExeStack_pop(&engine->stack).val.i;
-            ExeStack_push(&engine->stack, (CuteObj) {.val.i = i1 / i2});
+            ExeStack_push(&engine->stack, (CuteCell) {.val.i = i1 / i2});
             break;
 
         case instrOutI:
@@ -89,7 +90,7 @@ void CuteEngine_run(CuteEngine *engine)
         case instrJmpE:
             i2 = ExeStack_peek(&engine->stack)->val.i;
             i1 = engine->stack.obj[engine->stack.count-2].val.i;
-            ExeStack_push(&engine->stack, (CuteObj) {.val.i = (i1 == i2 ? 1 : 0)});
+            ExeStack_push(&engine->stack, (CuteCell) {.val.i = (i1 == i2 ? 1 : 0)});
             i2 = engine->instrs[engine->pc++];
             i1 = ExeStack_pop(&engine->stack).val.i;
             if (!i1)

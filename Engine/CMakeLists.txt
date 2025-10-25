@@ -1,11 +1,13 @@
 
+file(GLOB EXE_SRC "${CMAKE_CURRENT_SOURCE_DIR}/exe/*.c")
 
 add_library (
 	CuteEngine
 	STATIC
 
-    exe.c
+    ${EXE_SRC}
     engine.c
+   
 )
 
 target_link_libraries(CuteEngine PRIVATE CuteByte)

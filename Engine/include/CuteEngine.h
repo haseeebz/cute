@@ -1,7 +1,7 @@
 #include "CuteByte.h"
 #include <sys/types.h>
 
-#include "../exe.h"
+#include "../exe/stack.h"
 
 #pragma once
 
