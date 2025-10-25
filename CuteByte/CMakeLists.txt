@@ -1,24 +1,20 @@
 
-
 add_library (
-	CuteEngine
+	CuteByte
 	STATIC
-
-    exe.c
-    engine.c
+    bytes.c
 )
 
-target_link_libraries(CuteEngine PRIVATE CuteByte)
 
 target_compile_options (
-    CuteEngine 
+    CuteByte
     PRIVATE 
     -Wall -Wextra -g
 )
 
 
 target_include_directories (
-    CuteEngine 
+    CuteByte
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

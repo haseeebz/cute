@@ -3,6 +3,7 @@ project(cute C)
 
 
 add_subdirectory(Engine)
+add_subdirectory(CuteByte)
 
 
 add_executable (
@@ -11,6 +12,8 @@ add_executable (
 )
 
 target_link_libraries(cute PRIVATE CuteEngine)
+target_link_libraries(cute PRIVATE CuteByte)
+
 
 target_compile_options (
     cute

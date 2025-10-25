@@ -1,5 +1,5 @@
 #include "include/CuteEngine.h"
-#include "include/CuteInstr.h"
+#include "CuteByte.h"
 
 #include "exe.h"
 #include <stdint.h>
@@ -11,19 +11,18 @@ void CuteEngine_init(CuteEngine *engine)
     ExeStack_init(&engine->stack, 8);
     engine->pc = 0;
 
-    Instr instrs[] = {
-        instrPushI,1000000000,
-        instrPushI,0,
+    CtInstr instrs[] = {
+        instrPushConstI,1000000000,
+        instrPushConstI,0,
         instrStation, 0,
-        instrPushI, 1,
+        instrPushConstI, 1,
         instrAddI,
         instrOutI,
-        instrEqI,
-        instrJump, 0,
+        instrJmpE, 0,
         instrHalt,
     };
 
-    for (int i = 0; i < sizeof(instrs)/sizeof(Instr); i++)
+    for (int i = 0; i < sizeof(instrs)/sizeof(CtInstr); i++)
     {
         engine->instrs[i] = instrs[i];
     }
@@ -32,7 +31,7 @@ void CuteEngine_init(CuteEngine *engine)
 
 void CuteEngine_run(CuteEngine *engine)
 {
-    Instr instr;
+    CtInstr instr;
     int32_t i1;
     int32_t i2;
 
@@ -47,7 +46,7 @@ void CuteEngine_run(CuteEngine *engine)
             printf("Halting the engine.\n");
             return;
 
-        case instrPushI:
+        case instrPushConstI:
             i1 = engine->instrs[engine->pc++];
             ExeStack_push(&engine->stack, (CuteObj) {.val.i = i1});
             break;
@@ -81,20 +80,16 @@ void CuteEngine_run(CuteEngine *engine)
             printf("%d\n", i1);
             break;
 
-        
-        case instrEqI:
-            i2 = ExeStack_peek(&engine->stack)->val.i;
-            i1 = engine->stack.obj[engine->stack.count-2].val.i;
-            ExeStack_push(&engine->stack, (CuteObj) {.val.i = (i1 == i2 ? 1 : 0)});
-            break;
-
 
         case instrStation:
             i1 = engine->instrs[engine->pc++];
             engine->stations[i1] = engine->pc;
             break;
 
-        case instrJump:
+        case instrJmpE:
+            i2 = ExeStack_peek(&engine->stack)->val.i;
+            i1 = engine->stack.obj[engine->stack.count-2].val.i;
+            ExeStack_push(&engine->stack, (CuteObj) {.val.i = (i1 == i2 ? 1 : 0)});
             i2 = engine->instrs[engine->pc++];
             i1 = ExeStack_pop(&engine->stack).val.i;
             if (!i1)

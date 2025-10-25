@@ -1,4 +1,4 @@
-#include "CuteInstr.h"
+#include "CuteByte.h"
 #include <sys/types.h>
 
 #include "../exe.h"
@@ -7,7 +7,7 @@
 
 typedef struct
 {
-    Instr instrs[100];
+    CtInstr instrs[100];
     int pc;
     ExeStack stack;
     int stations[8];
