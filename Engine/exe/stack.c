@@ -3,16 +3,16 @@
 #include <stdlib.h>
 
 #include "stack.h"
-#include "cell.h"
+#include "atom.h"
 
 
 void ExeStack_init(ExeStack *stack, int initial_capacity) 
 {
     stack->cap = initial_capacity > 0 ? initial_capacity : 8;
     stack->count = 0;
-    stack->obj = (CuteCell*) malloc(stack->cap * sizeof(CuteCell));
+    stack->atoms = (CtAtom*) malloc(stack->cap * sizeof(CtAtom));
 
-    if (!stack->obj)
+    if (!stack->atoms)
     {
         fprintf(stderr, "Memory allocation failed\n");
         exit(EXIT_FAILURE);
@@ -22,45 +22,45 @@ void ExeStack_init(ExeStack *stack, int initial_capacity)
 
 void ExeStack_resize(ExeStack *stack, int new_cap) 
 {
-    CuteCell *new_mem = realloc(stack->obj, new_cap * sizeof(CuteCell));
+    CtAtom *new_mem = realloc(stack->atoms, new_cap * sizeof(CtAtom));
     if (!new_mem) {
         fprintf(stderr, "Stack resize failed\n");
         exit(EXIT_FAILURE);
     }
-    stack->obj = new_mem;
+    stack->atoms = new_mem;
     stack->cap = new_cap;
 }
 
 
-void ExeStack_push(ExeStack *stack, CuteCell value) 
+void ExeStack_push(ExeStack *stack, CtAtom atom) 
 {
     if (stack->count >= stack->cap)
         ExeStack_resize(stack, stack->cap * 2);
-    stack->obj[stack->count++] = value;
+    stack->atoms[stack->count++] = atom;
 }
 
 
-CuteCell ExeStack_pop(ExeStack *stack) 
+CtAtom ExeStack_pop(ExeStack *stack) 
 {
     if (stack->count == 0) {
         fprintf(stderr, "Stack underflow\n");
         exit(EXIT_FAILURE);
     }
-    return stack->obj[--stack->count];
+    return stack->atoms[--stack->count];
 }
 
 
-CuteCell *ExeStack_peek(ExeStack *stack) 
+CtAtom *ExeStack_peek(ExeStack *stack) 
 {
     if (stack->count == 0) return NULL;
-    return &stack->obj[stack->count - 1];
+    return &stack->atoms[stack->count - 1];
 }
 
 
 void ExeStack_end(ExeStack *stack) 
 {
-    free(stack->obj);
-    stack->obj = NULL;
+    free(stack->atoms);
+    stack->atoms = NULL;
     stack->count = 0;
     stack->cap = 0;
 }
