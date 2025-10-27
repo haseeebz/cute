@@ -1,6 +1,11 @@
+#include <stddef.h>
+#include <stdint.h>
+
 
 #pragma once
  
+
+typedef int8_t CtInstrSize;
 
 typedef enum
 {
@@ -38,10 +43,18 @@ typedef enum
     instrOutF = 0x61,
     // For debugging
 
-    instrStation = 0x88,
-    // Tells the engine to store the current pc at a given station // requires an index
-
-    instrJmpE = 0x90, 
-    // Pops the last two entries and jumps if they are equal
-    
 } CtInstr;
+
+
+typedef struct
+{
+    size_t instr_count;
+    size_t instr_cap;
+    CtInstrSize* instrs;
+} ProgramContext;
+
+
+void ProgramContext_init(ProgramContext* ctx, size_t capacity);
+void ProgramContext_end(ProgramContext* ctx);
+void ProgramContext_read(ProgramContext* ctx, char* filepath);
+void ProgramContext_write(ProgramContext* ctx, char* filepath);

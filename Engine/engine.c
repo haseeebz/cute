@@ -23,22 +23,34 @@ void CuteEngine_init(CuteEngine *engine)
         instrHalt,
     };
 
-    for (int i = 0; i < sizeof(instrs)/sizeof(CtInstr); i++)
+    ProgramContext ctx;
+    ProgramContext_init(&ctx, sizeof(instrs)/sizeof(CtInstr));
+    ctx.instr_count = sizeof(instrs)/sizeof(CtInstr);
+
+    for (int i = 0; i < ctx.instr_count; i++)
     {
-        engine->instrs[i] = instrs[i];
+        ctx.instrs[i] = instrs[i];
     }
+    
+    ProgramContext_write(&ctx, "file.bin");
+    ProgramContext_end(&ctx);
+
+    
+    ProgramContext_read(&ctx, "file.bin");
+    engine->ctx = ctx;
 }
 
 
 void CuteEngine_run(CuteEngine *engine)
 {
+    CtInstrSize *instrs = engine->ctx.instrs;
     CtInstr instr;
     int32_t i1;
     int32_t i2;
 
     while (1)
     {
-        instr = engine->instrs[engine->pc++];
+        instr = (CtInstr) instrs[engine->pc++];
 
         switch (instr) 
         {
@@ -48,7 +60,7 @@ void CuteEngine_run(CuteEngine *engine)
             return;
 
         case instrPushConstI:
-            i1 = engine->instrs[engine->pc++];
+            i1 = instrs[engine->pc++];
             ExeStack_push(&engine->stack, (CtAtom) {.val.i = i1});
             break;
 
@@ -90,4 +102,5 @@ void CuteEngine_run(CuteEngine *engine)
 void CuteEngine_end(CuteEngine *engine)
 {
     ExeStack_end(&engine->stack);
+    ProgramContext_end(&engine->ctx);
 }

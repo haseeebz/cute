@@ -7,7 +7,7 @@
 
 typedef struct
 {
-    CtInstr instrs[100];
+    ProgramContext ctx;
     int pc;
     ExeStack stack;
     int stations[8];
