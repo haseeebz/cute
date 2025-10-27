@@ -2,7 +2,7 @@
 #include "include/CuteEngine.h"
 #include "CuteByte.h"
 
-#include "exe/atom.h"
+#include "CuteAtom.h"
 #include "exe/stack.h"
 
 #include <stdint.h>
@@ -61,32 +61,32 @@ void CuteEngine_run(CuteEngine *engine)
 
         case instrPushConstI:
             i1 = instrs[engine->pc++];
-            ExeStack_push(&engine->stack, (CtAtom) {.val.i = i1});
+            ExeStack_push(&engine->stack, (ctAtom) {.val.i = i1});
             break;
 
 
         case instrAddI:
             i2 = ExeStack_pop(&engine->stack).val.i;
             i1 = ExeStack_pop(&engine->stack).val.i;
-            ExeStack_push(&engine->stack, (CtAtom) {.val.i = i1 + i2});
+            ExeStack_push(&engine->stack, (ctAtom) {.val.i = i1 + i2});
             break;
 
         case instrSubI:
             i2 = ExeStack_pop(&engine->stack).val.i;
             i1 = ExeStack_pop(&engine->stack).val.i;
-            ExeStack_push(&engine->stack, (CtAtom) {.val.i = i1 - i2});
+            ExeStack_push(&engine->stack, (ctAtom) {.val.i = i1 - i2});
             break;
 
         case instrMulI:
             i2 = ExeStack_pop(&engine->stack).val.i;
             i1 = ExeStack_pop(&engine->stack).val.i;
-            ExeStack_push(&engine->stack, (CtAtom) {.val.i = i1 * i2});
+            ExeStack_push(&engine->stack, (ctAtom) {.val.i = i1 * i2});
             break;
 
         case instrDivI:
             i2 = ExeStack_pop(&engine->stack).val.i;
             i1 = ExeStack_pop(&engine->stack).val.i;
-            ExeStack_push(&engine->stack, (CtAtom) {.val.i = i1 / i2});
+            ExeStack_push(&engine->stack, (ctAtom) {.val.i = i1 / i2});
             break;
 
         case instrOutI:

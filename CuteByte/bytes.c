@@ -34,13 +34,6 @@ void ProgramContext_read(ProgramContext* ctx, char* filepath)
 
     fread(ctx->instrs, sizeof(CtInstrSize), ctx->instr_count, fp);
 
-    printf("Instr Count: %d\n", ctx->instr_count);
-
-    for (int i = 0; i < ctx->instr_count; i++)
-    {
-        printf("Read instruction: %X\n", ctx->instrs[i]);
-    }
-
 
     fclose(fp);
 }
@@ -55,10 +48,6 @@ void ProgramContext_write(ProgramContext* ctx, char* filepath)
     fwrite(&ctx->instr_count, sizeof(size_t), 1, fp);
     fwrite(ctx->instrs, sizeof(CtInstrSize), ctx->instr_count, fp);
 
-    for (int i = 0; i < ctx->instr_count; i++)
-    {
-        printf("Wrote instruction: %X\n", ctx->instrs[i]);
-    }
 
     fclose(fp);
 }
