@@ -3,6 +3,7 @@
 #include "tokenizer.hpp"
 
 #include <cctype>
+#include <iostream>
 #include <string>
 
 
@@ -58,5 +59,28 @@ void Tokenizer::tokenizeNumber()
 
 void Tokenizer::tokenizeSymbol()
 {
+	Token token(TokenType::tokenSymbol, (std::string) &currStr[strIndex]);
+	tokens.push_back(token);
+}
 
+
+void Tokenizer::printTokens()
+{
+	Token tok;
+	for (uint i = 0; i < tokens.size(); i++)
+	{
+		tok = tokens[i];
+
+		if (tok.type == TokenType::tokenInt)
+		{
+			std::cout << "[Int " << tok.str << "] ";
+		}
+		else if (tok.type == TokenType::tokenSymbol)
+		{
+			std::cout << "[Sym" << tok.str << "] ";
+		}
+
+	}
+
+	std::cout << std::endl;
 }

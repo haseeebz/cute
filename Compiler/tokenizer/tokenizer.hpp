@@ -20,4 +20,5 @@ class Tokenizer
 	void tokenizeSymbol();
 
 	std::vector<Token> getTokens();
+	void printTokens();
 };
