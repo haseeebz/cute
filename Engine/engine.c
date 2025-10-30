@@ -15,27 +15,7 @@ void CuteEngine_init(CuteEngine *engine)
 
     engine->pc = 0;
 
-    CtInstr instrs[] = {
-        instrPushConstI,10,
-        instrPushConstI, 1,
-        instrAddI,
-        instrOutI,
-        instrHalt,
-    };
-
-    ProgramContext ctx;
-    ProgramContext_init(&ctx, sizeof(instrs)/sizeof(CtInstr));
-    ctx.instr_count = sizeof(instrs)/sizeof(CtInstr);
-
-    for (int i = 0; i < ctx.instr_count; i++)
-    {
-        ctx.instrs[i] = instrs[i];
-    }
-    
-    ProgramContext_write(&ctx, "file.bin");
-    ProgramContext_end(&ctx);
-
-    
+	ProgramContext ctx;
     ProgramContext_read(&ctx, "file.bin");
     engine->ctx = ctx;
 }

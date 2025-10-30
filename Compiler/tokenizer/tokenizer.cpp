@@ -85,3 +85,9 @@ void Tokenizer::printTokens()
 
 	std::cout << std::endl;
 }
+
+
+std::vector<Token> Tokenizer::getTokens()
+{
+	return tokens;
+}
