@@ -5,6 +5,10 @@
 
 #pragma once 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 // Primitives
 typedef int32_t ctInt32;
@@ -58,3 +62,6 @@ struct _ctAtom
 
 typedef struct _ctAtom ctAtom;
 
+#ifdef __cplusplus
+}
+#endif

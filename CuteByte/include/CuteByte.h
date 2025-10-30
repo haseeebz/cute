@@ -4,6 +4,9 @@
 
 #pragma once
  
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef int8_t CtInstrSize;
 
@@ -58,3 +61,8 @@ void ProgramContext_init(ProgramContext* ctx, size_t capacity);
 void ProgramContext_end(ProgramContext* ctx);
 void ProgramContext_read(ProgramContext* ctx, char* filepath);
 void ProgramContext_write(ProgramContext* ctx, char* filepath);
+
+
+#ifdef __cplusplus
+}
+#endif
