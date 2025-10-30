@@ -15,5 +15,7 @@ struct Token
 {
 	TokenType type;
 	std::string str;
+
+	Token(TokenType t, std::string s);
 };
 
