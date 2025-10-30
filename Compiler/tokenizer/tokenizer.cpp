@@ -59,7 +59,8 @@ void Tokenizer::tokenizeNumber()
 
 void Tokenizer::tokenizeSymbol()
 {
-	Token token(TokenType::tokenSymbol, (std::string) &currStr[strIndex]);
+	char sym = currStr[strIndex];
+	Token token(TokenType::tokenSymbol, (std::string) &sym);
 	tokens.push_back(token);
 }
 
@@ -77,7 +78,7 @@ void Tokenizer::printTokens()
 		}
 		else if (tok.type == TokenType::tokenSymbol)
 		{
-			std::cout << "[Sym" << tok.str << "] ";
+			std::cout << "[Sym " << tok.str << "] ";
 		}
 
 	}
