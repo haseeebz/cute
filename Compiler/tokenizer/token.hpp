@@ -1,4 +1,4 @@
-#include <string>
+#include <sys/types.h>
 #pragma once 
 
 
@@ -14,9 +14,10 @@ enum TokenType
 struct Token
 {
 	TokenType type;
-	std::string str;
+	uint start;
+	uint len;
 
 	Token() = default;
-	Token(TokenType t, std::string s);
+	Token(TokenType t, uint start, uint len) : type(t), start(start), len(len) {};
 };
 
