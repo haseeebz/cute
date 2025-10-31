@@ -11,11 +11,11 @@ class Tokenizer
 	std::vector<Token> tokens;
 
 	uint currIndex;
-	std::string currStr;
+	std::string currSrc;
 
 	public:
 
-	void tokenize(std::string str);
+	void tokenize(std::string input_file);
 	void tokenizeNumber();
 	void tokenizeSymbol();
 

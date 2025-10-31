@@ -5,13 +5,13 @@
 int main()
 {
 	CuteCompiler compiler;
-	compiler.compile("12 10 + 10 * 20 -");
+	compiler.compile("code.ct");
 
 
-    CuteEngine engine;
-    CuteEngine_init(&engine);
-    CuteEngine_run(&engine);
-    CuteEngine_end(&engine);
+    //CuteEngine engine;
+    //CuteEngine_init(&engine);
+    //CuteEngine_run(&engine);
+    //CuteEngine_end(&engine);
 	
     return 0;
 }

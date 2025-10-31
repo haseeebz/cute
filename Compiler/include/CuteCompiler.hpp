@@ -13,7 +13,7 @@ class CuteCompiler
 	
 	public:
 
-	void compile(std::string str);
+	void compile(std::string filepath);
 };
 
 
