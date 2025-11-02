@@ -1,11 +1,13 @@
 
-file(GLOB LEXER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tokenizer/*.cpp")
+file(GLOB TOKENIZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tokenizer/*.cpp")
+file(GLOB PARSER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/parser/*.cpp")
 
 add_library (
 	CuteCompiler
 	STATIC
 
-    ${LEXER_SRC}
+    ${TOKENIZER_SRC}
+	${PARSER_SRC}
     compiler.cpp 
 
 )

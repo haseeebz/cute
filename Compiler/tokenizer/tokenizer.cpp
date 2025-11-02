@@ -74,7 +74,8 @@ void Tokenizer::tokenizeNumber()
 
 void Tokenizer::tokenizeSymbol()
 {
-	Token tok(TokenType::tokenSymbol, (std::string) &currSrc[currIndex]);
+	char sym = currSrc[currIndex];
+	Token tok(TokenType::tokenSymbol, (std::string) &sym);
 	tokens.push_back(tok);
 }
 

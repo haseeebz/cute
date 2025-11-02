@@ -1,7 +1,7 @@
 #include <string>
 
-#include "../tokenizer/token.hpp"
 #include "../tokenizer/tokenizer.hpp"
+#include "../parser/parser.hpp"
 
 
 #pragma once
@@ -10,6 +10,7 @@
 class CuteCompiler
 {
 	Tokenizer tokenizer;
+	Parser parser;
 	
 	public:
 

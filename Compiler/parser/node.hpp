@@ -17,7 +17,8 @@ enum NodeType
 {
 	nodeInt,
 	nodeFloat,
-	nodeBinaryOp
+	nodeBinaryOp,
+	nodeEmpty
 };
 
 
@@ -40,12 +41,15 @@ struct Node
 		BinaryOp bop;
 	};
 
-	Node(int i): i(i) {};
-	Node(float f): f(f) {};
+	Node() : type(NodeType::nodeEmpty) {};
+	Node(int i): type(NodeType::nodeInt), i(i) {};
+	Node(float f): type(NodeType::nodeFloat), f(f) {};
 
-	Node(BinaryOpType op, Node* lhs, Node* rhs): bop{.op = op, .lhs = lhs, .rhs = rhs} {};
+	Node(BinaryOpType op, Node* lhs, Node* rhs): type(NodeType::nodeBinaryOp), bop{.op = op, .lhs = lhs, .rhs = rhs} {};
 
 	~Node();
+
+	void print(int depth);
 };
 
 
