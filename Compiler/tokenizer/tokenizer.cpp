@@ -41,7 +41,7 @@ void Tokenizer::tokenizeNumber()
 	bool is_float = false;
 	char c;
 	Token tok;
-	tok.start = currIndex;
+	
 	
 	while (true) 
 	{
@@ -49,12 +49,14 @@ void Tokenizer::tokenizeNumber()
 
 		if (std::isdigit(c))
 		{
+			tok.str.push_back(c);
 			currIndex++;
 			continue;
 		}
 
 		if (c == '.')
 		{
+			tok.str.push_back(c);
 			is_float = true;
 			currIndex++;
 			continue;
@@ -65,16 +67,14 @@ void Tokenizer::tokenizeNumber()
 	}
 
 	tok.type = is_float ? TokenType::tokenFloat : TokenType::tokenInt;
-	tok.len = currIndex - tok.start + 1;
-
-
+	
 	tokens.push_back(tok);
 }
 
 
 void Tokenizer::tokenizeSymbol()
 {
-	Token tok(TokenType::tokenSymbol, currIndex, 1);
+	Token tok(TokenType::tokenSymbol, (std::string) &currSrc[currIndex]);
 	tokens.push_back(tok);
 }
 
@@ -84,12 +84,6 @@ std::vector<Token> Tokenizer::getTokens()
 	return tokens;
 }
 
-
-std::string Tokenizer::retrieveToken(Token& token)
-{
-	std::string tok_str = currSrc.substr(token.start, token.len);
-	return tok_str;
-}	
 
 
 void Tokenizer::printTokens()
@@ -110,7 +104,7 @@ void Tokenizer::printTokens()
 		break;
 		}
 
-		std::cout << currSrc.substr(tok.start, tok.len) << "] ";
+		std::cout << tok.str << "] ";
     }
 
 	std::cout << std::endl;

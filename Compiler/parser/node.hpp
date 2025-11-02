@@ -23,20 +23,29 @@ enum NodeType
 
 struct Node
 {
+	
+	struct BinaryOp
+	{
+		BinaryOpType op;
+		Node* lhs;
+		Node* rhs;
+	};
+
 	NodeType type;
-	union val
+
+	union
 	{
 		int i;
 		float f;
-
-		struct bop
-		{
-			BinaryOpType bop;
-			Node* rhs;
-			Node* lhs;
-		};
-
+		BinaryOp bop;
 	};
+
+	Node(int i): i(i) {};
+	Node(float f): f(f) {};
+
+	Node(BinaryOpType op, Node* lhs, Node* rhs): bop{.op = op, .lhs = lhs, .rhs = rhs} {};
+
+	~Node();
 };
 
 

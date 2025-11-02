@@ -10,6 +10,7 @@ class Parser
 {
 	Node root;
 	
+	Node* parseExpr();
 
 	public:
 
