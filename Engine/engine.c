@@ -25,8 +25,8 @@ void CuteEngine_run(CuteEngine *engine)
 {
     CtInstrSize *instrs = engine->ctx.instrs;
     CtInstr instr;
-    int32_t i1;
-    int32_t i2;
+    int64_t i1;
+    int64_t i2;
 
     while (1)
     {
@@ -39,7 +39,7 @@ void CuteEngine_run(CuteEngine *engine)
             printf("Halting the engine.\n");
             return;
 
-        case instrPushConstI:
+        case instrLoadCoI:
             i1 = instrs[engine->pc++];
             ExeStack_push(&engine->stack, (ctAtom) {.val.i = i1});
             break;
@@ -71,7 +71,7 @@ void CuteEngine_run(CuteEngine *engine)
 
         case instrOutI:
             i1 = ExeStack_peek(&engine->stack)->val.i;
-            printf("%d\n", i1);
+            printf("%ld\n", i1);
             break;
 
         }
