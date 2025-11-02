@@ -4,18 +4,16 @@
 #include <stdlib.h>
 
 
-void ProgramContext_init(ProgramContext* ctx, size_t capacity)
+void ProgramContext_init(ProgramContext* ctx, CtInstrSize* instrs, size_t count)
 {
-    ctx->instr_cap = capacity;
-    ctx->instr_count = 0;
-    ctx->instrs = malloc(sizeof(CtInstrSize) * capacity);
+    ctx->instr_count = count;
+    ctx->instrs = instrs;
 }
 
 
 void ProgramContext_end(ProgramContext* ctx)
 {
     free(ctx->instrs);
-    ctx->instr_cap = 0;
     ctx->instr_count = 0;
 }
 
@@ -26,14 +24,8 @@ void ProgramContext_read(ProgramContext* ctx, char* filepath)
 
     if (!fp) {printf("ERROR: File could not be opened for reading.\n"); exit(EXIT_FAILURE);}
 
-    size_t count;
-    fread(&count, sizeof(size_t), 1, fp);
-
-    ProgramContext_init(ctx, count);
-    ctx->instr_count = count;
-
+    fread(&ctx->instr_count, sizeof(size_t), 1, fp);
     fread(ctx->instrs, sizeof(CtInstrSize), ctx->instr_count, fp);
-
 
     fclose(fp);
 }
@@ -47,7 +39,6 @@ void ProgramContext_write(ProgramContext* ctx, char* filepath)
 
     fwrite(&ctx->instr_count, sizeof(size_t), 1, fp);
     fwrite(ctx->instrs, sizeof(CtInstrSize), ctx->instr_count, fp);
-
 
     fclose(fp);
 }
