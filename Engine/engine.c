@@ -16,7 +16,7 @@ void CuteEngine_init(CuteEngine *engine)
     engine->pc = 0;
 
 	ProgramContext ctx;
-    ProgramContext_read(&ctx, "file.bin");
+    ProgramContext_read(&ctx, "code.bin");
     engine->ctx = ctx;
 }
 

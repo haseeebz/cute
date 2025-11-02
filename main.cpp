@@ -8,10 +8,10 @@ int main()
 	compiler.compile("code.ct");
 
 
-    //CuteEngine engine;
-    //CuteEngine_init(&engine);
-    //CuteEngine_run(&engine);
-    //CuteEngine_end(&engine);
+    CuteEngine engine;
+    CuteEngine_init(&engine);
+    CuteEngine_run(&engine);
+    CuteEngine_end(&engine);
 	
     return 0;
 }

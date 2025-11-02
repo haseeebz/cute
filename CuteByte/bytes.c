@@ -25,6 +25,7 @@ void ProgramContext_read(ProgramContext* ctx, char* filepath)
     if (!fp) {printf("ERROR: File could not be opened for reading.\n"); exit(EXIT_FAILURE);}
 
     fread(&ctx->instr_count, sizeof(size_t), 1, fp);
+	ctx->instrs = malloc(sizeof(CtInstrSize) * ctx->instr_count);
     fread(ctx->instrs, sizeof(CtInstrSize), ctx->instr_count, fp);
 
     fclose(fp);
