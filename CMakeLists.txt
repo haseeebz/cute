@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(cute C CXX)
 
-add_subdirectory(CuteByte)
+add_subdirectory(Bytecode)
 add_subdirectory(Engine)
 add_subdirectory(Compiler)
 
@@ -14,7 +14,7 @@ add_executable (
 
 target_link_libraries(cute PRIVATE CuteCompiler)
 target_link_libraries(cute PRIVATE CuteEngine)
-target_link_libraries(cute PRIVATE CuteByte)
+target_link_libraries(cute PRIVATE CuteBytecode)
 
 
 target_compile_options (

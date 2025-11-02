@@ -10,7 +10,7 @@ add_library (
    
 )
 
-target_link_libraries(CuteEngine PRIVATE CuteByte)
+target_link_libraries(CuteEngine PRIVATE CuteBytecode)
 
 target_compile_options (
     CuteEngine 

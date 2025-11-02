@@ -14,7 +14,7 @@ add_library (
 
 )
 
-target_link_libraries(CuteCompiler PRIVATE CuteByte CuteEngine)
+target_link_libraries(CuteCompiler PRIVATE CuteBytecode)
 
 target_compile_options (
     CuteCompiler

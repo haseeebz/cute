@@ -1,20 +1,20 @@
 
 add_library (
-	CuteByte
+	CuteBytecode
 	STATIC
     bytes.c
 )
 
 
 target_compile_options (
-    CuteByte
+    CuteBytecode
     PRIVATE 
     -Wall -Wextra -g
 )
 
 
 target_include_directories (
-    CuteByte
+    CuteBytecode
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
