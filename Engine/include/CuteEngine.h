@@ -23,7 +23,7 @@ typedef struct
 
 
 void CuteEngine_init(CuteEngine *engine);
-void CuteEngine_run(CuteEngine *engine);
+void CuteEngine_run(CuteEngine *engine, char* filepath);
 void CuteEngine_end(CuteEngine *engine);
 
 #ifdef __cplusplus

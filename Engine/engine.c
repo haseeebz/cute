@@ -14,15 +14,16 @@ void CuteEngine_init(CuteEngine *engine)
     ExeStack_init(&engine->stack, 8);
 
     engine->pc = 0;
-
-	ProgramContext ctx;
-    ProgramContext_read(&ctx, "code.bin");
-    engine->ctx = ctx;
+    
 }
 
 
-void CuteEngine_run(CuteEngine *engine)
+void CuteEngine_run(CuteEngine *engine, char* filepath)
 {
+	ProgramContext ctx;
+	ProgramContext_read(&ctx, filepath);
+    engine->ctx = ctx;
+
     CtInstrSize *instrs = engine->ctx.instrs;
     CtInstr instr;
     int64_t i1;

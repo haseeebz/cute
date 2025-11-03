@@ -2,17 +2,18 @@
 #include "CuteByte.h"
 #include "parser/node.hpp"
 
+#include <iostream>
 #include <string>
 
 
-void CuteCompiler::compile(std::string filepath)
+void CuteCompiler::compile(std::string filepath, std::string outfile)
 {
 	tokenizer.tokenize(filepath);
+	std::cout << "Tokenized Source : ";
 	tokenizer.printTokens();
-
 	Node* root = parser.parse(tokenizer.getTokens());
 
-	writer.setOutFile("code.bin");
+	writer.setOutFile(outfile);
 	writer.write(root);
 
 	delete root;
