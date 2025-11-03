@@ -10,9 +10,9 @@
 std::map<BinaryOpType, int> BinaryPrecedence = 
 {
 	{binaryADD, 1},
-	{binarySUB, 2},
-	{binaryMUL, 3},
-	{binaryDIV, 4}
+	{binarySUB, 1},
+	{binaryMUL, 2},
+	{binaryDIV, 2}
 };
 
 
@@ -39,6 +39,14 @@ Node* Parser::parseExpr(int previous_precedence)
 	{
 		lhs = new Node(std::stoi(tok.str));
 	}
+	else if (tok.type == TokenType::tokenSymbol)
+	{
+		if (tok.str[0] == '(')
+		{
+			lhs = parseExpr(0);
+		}
+
+	}
 
 	while (currTok < tokens.size())
 	{
@@ -46,6 +54,11 @@ Node* Parser::parseExpr(int previous_precedence)
 
 		if (tok.type == TokenType::tokenSymbol)
 		{
+			if (tok.str[0] == ')')
+			{
+				break;	
+			}
+
 			BinaryOpType op = getBinaryOp(tok.str);
 			int precedence = BinaryPrecedence[op];
 

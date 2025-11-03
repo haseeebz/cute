@@ -21,19 +21,21 @@ void ByteCodeWriter::recurseNode(Node* node)
 		CtInstrSize op;
 		switch (node->bop.op) 
 		{
-		case binaryADD: op = instrAddI; break;
-		case binarySUB:	op = instrSubI; break;
-		case binaryMUL:	op = instrMulI; break;
-		case binaryDIV: op = instrDivI; break;
+		case binaryADD: op = instrAddI; std::cout << "Add "<< std::endl; break;
+		case binarySUB:	op = instrSubI; std::cout << "Sub "<< std::endl; break;
+		case binaryMUL:	op = instrMulI; std::cout << "Mul "<< std::endl; break;
+		case binaryDIV: op = instrDivI; std::cout << "Div "<< std::endl; break;
 		}
 
 		this->instructions.push_back(op);
+		this->instructions.push_back(instrOutI);
 		return;
 	}
 
 	if (node->type == NodeType::nodeInt)
 	{
 		CtInstrSize num = (CtInstrSize) node->i;
+		std::cout << "LoadCoI " << (int) num << std::endl;
 		this->instructions.push_back(instrLoadCoI);
 		this->instructions.push_back(num);
 		return;
