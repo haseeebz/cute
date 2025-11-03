@@ -5,17 +5,20 @@
 #include <iostream>
 #include <string>
 
+#include "internals.hpp"
+
 
 void CuteCompiler::compile(std::string filepath, std::string outfile)
 {
 	tokenizer.tokenize(filepath);
 
-	std::cout << "Tokenized Source:\n";
-	tokenizer.printTokens();
+	ctDebug("Tokenized Source:\n");
+	ctDebug(tokenizer.toString());
 
 	Node* root = parser.parse(tokenizer.getTokens());
-	std::cout << "Parsed Code:\n";
-	root->print();
+	
+	ctDebug("Parsed Code:\n")
+	ctDebug(root->str());
 
 	writer.setOutFile(outfile);
 	writer.write(root);

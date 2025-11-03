@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <string>
 
 #pragma once 
 
@@ -49,7 +50,7 @@ struct Node
 
 	~Node();
 
-	void print(bool endline = true);
+	std::string str(bool endline = true);
 };
 
 

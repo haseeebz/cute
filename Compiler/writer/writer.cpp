@@ -21,21 +21,20 @@ void ByteCodeWriter::recurseNode(Node* node)
 		CtInstrSize op;
 		switch (node->bop.op) 
 		{
-		case binaryADD: op = instrAddI; std::cout << "Add "<< std::endl; break;
-		case binarySUB:	op = instrSubI; std::cout << "Sub "<< std::endl; break;
-		case binaryMUL:	op = instrMulI; std::cout << "Mul "<< std::endl; break;
-		case binaryDIV: op = instrDivI; std::cout << "Div "<< std::endl; break;
+		case binaryADD: op = instrAddI; std::cout << "Add "; break;
+		case binarySUB:	op = instrSubI; std::cout << "Sub "; break;
+		case binaryMUL:	op = instrMulI; std::cout << "Mul "; break;
+		case binaryDIV: op = instrDivI; std::cout << "Div "; break;
 		}
 
 		this->instructions.push_back(op);
-		this->instructions.push_back(instrOutI);
 		return;
 	}
 
 	if (node->type == NodeType::nodeInt)
 	{
 		CtInstrSize num = (CtInstrSize) node->i;
-		std::cout << "LoadCoI " << (int) num << std::endl;
+		std::cout << "LoadCoI " << (int) num << " ";
 		this->instructions.push_back(instrLoadCoI);
 		this->instructions.push_back(num);
 		return;
@@ -52,7 +51,9 @@ void ByteCodeWriter::setOutFile(std::string filepath)
 void ByteCodeWriter::write(Node* root)
 {
 	this->root = root;
+	std::cout << "Bytecode:\n";
 	this->recurseNode(this->root);
+	std::cout << std::endl;
 
 	this->instructions.push_back(instrOutI);
 	this->instructions.push_back(instrHalt);

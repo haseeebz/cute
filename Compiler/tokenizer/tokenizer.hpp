@@ -21,5 +21,6 @@ class Tokenizer
 
 	std::vector<Token> getTokens();
 	std::string retrieveToken(Token& token);
-	void printTokens();
+	
+	std::string toString();
 };

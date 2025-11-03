@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "node.hpp"
 
 
@@ -12,32 +13,36 @@ Node::~Node()
 }
 
 
-void Node::print(bool endline)
+std::string Node::str(bool endline)
 {
+	std::string str;
+
 	char BinaryMap[] = {'+', '-', '*', '/'};
 
 
 	if (type == NodeType::nodeInt)
 	{
-		std::cout << i;
+		str.append(std::to_string(i));
 	}
 
 	if (type == NodeType::nodeBinaryOp)
 	{
-		std::cout << "(" << BinaryMap[bop.op];
-		std::cout << " ";
-		bop.lhs->print(false);
-		std::cout << " ";
-		bop.rhs->print(false);
-		std::cout << ")";
+		str.append("(");
+		str.push_back(BinaryMap[bop.op]);
+		str.append(" ");
+		str.append(bop.lhs->str(false));
+		str.append(" ");
+		str.append(bop.rhs->str(false));
+		str.append(")");
 	}
 
 	if (type == NodeType::nodeEmpty)
 	{
-		std::cout << "null";
+		str.append("null");
 	}
 
 
 
-	if (endline) {std::cout << std::endl;}
+	if (endline) {str.push_back('\n');}
+	return str;
 }

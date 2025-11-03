@@ -88,8 +88,9 @@ std::vector<Token> Tokenizer::getTokens()
 
 
 
-void Tokenizer::printTokens()
+std::string Tokenizer::toString()
 {
+	std::string str;
 	Token tok;
 
 	for (uint i = 0; i < tokens.size(); i++)
@@ -98,16 +99,18 @@ void Tokenizer::printTokens()
 
 		switch (tok.type) 
 		{
-		case tokenInt: 	  std::cout << "[Int ";
+		case tokenInt: 	  str.append("[ Int ");
 		break;
-		case tokenFloat:  std::cout << "[Float ";
+		case tokenFloat:  str.append("[ Float ");
 		break;
-		case tokenSymbol: std::cout << "[Sym ";
+		case tokenSymbol: str.append("[ Sym ");
 		break;
 		}
 
-		std::cout << tok.str << "] ";
+		str.append(tok.str);
+		str.append(" ] ");
     }
 
-	std::cout << std::endl;
+	str.append("\n");
+	return str;
 }

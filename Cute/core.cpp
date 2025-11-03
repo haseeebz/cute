@@ -3,7 +3,6 @@
 #include "CuteCompiler.hpp"
 
 #include "include/CuteCore.hpp"
-#include <iostream>
 #include <string>
 
 
@@ -26,13 +25,11 @@ void CuteCore::run(int argc, char* argv[])
 	if (this->compileFlag)
 	{
 		compiler.compile(this->filepath, this->outfile);
-		std::cout << "Code successfully compiled to " << this->outfile << std::endl;
 		return;
 	}
 
 	if (this->engineFlag)
 	{
-		std::cout << "Running file: " << this->filepath << "\nOutput:\n";
 		CuteEngine_run(&this->engine, this->filepath.data());
 		return;
 	}
@@ -49,9 +46,7 @@ void CuteCore::parseArgs(int argc, char* argv[])
 		if (arg == "--compile")
 		{
 			this->filepath = argv[++i];
-			std::cout << "Source: " << this->filepath << std::endl;
 			this->outfile = std::string(this->filepath).append(".out");
-			std::cout << "Output: " << this->outfile << std::endl;
 			compileFlag = true;
 			return;
 		}
