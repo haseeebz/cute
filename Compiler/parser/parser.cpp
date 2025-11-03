@@ -20,8 +20,6 @@ Node* Parser::parse(std::vector<Token> tokens)
 {
 	this->tokens = tokens;
 	root = parseExpr(0);
-	std::cout << "Parsed Code: \n";
-	root->print(0);
 	return root;
 };
 

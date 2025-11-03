@@ -49,9 +49,9 @@ void CuteCore::parseArgs(int argc, char* argv[])
 		if (arg == "--compile")
 		{
 			this->filepath = argv[++i];
-			std::cout << this->filepath << std::endl;
+			std::cout << "Source: " << this->filepath << std::endl;
 			this->outfile = std::string(this->filepath).append(".out");
-			std::cout << this->outfile << std::endl;
+			std::cout << "Output: " << this->outfile << std::endl;
 			compileFlag = true;
 			return;
 		}

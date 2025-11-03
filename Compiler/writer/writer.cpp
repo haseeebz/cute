@@ -63,5 +63,5 @@ void ByteCodeWriter::write(Node* root)
 	}
 
 	ProgramContext_write(&this->ctx, this->outfile.data());
-	//ProgramContext_end(&this->ctx);
+	ProgramContext_end(&this->ctx);
 }

@@ -17,7 +17,7 @@ void Tokenizer::tokenize(std::string input_file)
 	std::ostringstream buffer;
 	buffer << stream.rdbuf();
 	currSrc = buffer.str();
-	std::cout << "Source (" << input_file << "):\n" << currSrc << "\n";
+
 	char c;
 	
 	for (currIndex = 0; currIndex < currSrc.length(); currIndex++)
