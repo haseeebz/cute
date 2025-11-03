@@ -49,7 +49,7 @@ struct Node
 
 	~Node();
 
-	void print(int depth);
+	void print(bool endline = true);
 };
 
 

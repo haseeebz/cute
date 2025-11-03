@@ -12,29 +12,32 @@ Node::~Node()
 }
 
 
-void Node::print(int depth = 0)
+void Node::print(bool endline)
 {
 	char BinaryMap[] = {'+', '-', '*', '/'};
 
-	for (int i = 0; i < depth; i++)
-	{
-		std::cout << "  ";
-	}
 
 	if (type == NodeType::nodeInt)
 	{
-		std::cout << i << std::endl;
+		std::cout << i;
 	}
 
 	if (type == NodeType::nodeBinaryOp)
 	{
-		std::cout << BinaryMap[bop.op] << std::endl;
-		bop.lhs->print(depth + 1);
-		bop.rhs->print(depth + 1);
+		std::cout << "(" << BinaryMap[bop.op];
+		std::cout << " ";
+		bop.lhs->print(false);
+		std::cout << " ";
+		bop.rhs->print(false);
+		std::cout << ")";
 	}
 
 	if (type == NodeType::nodeEmpty)
 	{
-		std::cout << "#empty" << std::endl;
+		std::cout << "null";
 	}
+
+
+
+	if (endline) {std::cout << std::endl;}
 }
