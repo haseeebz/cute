@@ -15,6 +15,7 @@ class ByteCodeWriter
 	std::vector<CtInstrSize> instructions;
 
 	void recurseNode(Node* node);
+	void logToFile(std::string msg);
 
 	public:
 
