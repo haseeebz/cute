@@ -30,7 +30,7 @@ void ByteCodeWriter::recurseNode(Node* node)
 		this->recurseNode(node->bop.lhs);
 		this->recurseNode(node->bop.rhs);
 
-		CtInstrSize op;
+		ctInstrSize op;
 		switch (node->bop.op) 
 		{
 		case binaryADD: op = instrAddI; logToFile("Add"); break;
@@ -45,7 +45,7 @@ void ByteCodeWriter::recurseNode(Node* node)
 
 	if (node->type == NodeType::nodeInt)
 	{
-		CtInstrSize num = (CtInstrSize) node->i;
+		ctInstrSize num = (ctInstrSize) node->i;
 		logToFile(std::format("LoadCoI  {}", num));
 		this->instructions.push_back(instrLoadCoI);
 		this->instructions.push_back(num);
@@ -75,14 +75,14 @@ void ByteCodeWriter::write(Node* root)
 	
 	ctDebug(std::format("Bytecode written to file: {}\n", this->outfile));
 
-	this->ctx.instrs = new CtInstrSize[this->instructions.size()];
-	this->ctx.instr_count = this->instructions.size();
+	this->img.instrs = new ctInstrSize[this->instructions.size()];
 
-	for (uint i = 0; i < this->ctx.instr_count; i++)
+	this->img.header.instr_count = this->instructions.size();
+
+	for (uint i = 0; i < this->img.header.instr_count; i++)
 	{
-		this->ctx.instrs[i] = this->instructions[i];
+		this->img.instrs[i] = this->instructions[i];
 	}
 
-	ProgramContext_write(&this->ctx, this->outfile.data());
-	ProgramContext_end(&this->ctx);
+	ctProgramImage_write(&this->img, this->outfile.data());
 }

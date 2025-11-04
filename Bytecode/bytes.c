@@ -4,42 +4,42 @@
 #include <stdlib.h>
 
 
-void ProgramContext_init(ProgramContext* ctx, CtInstrSize* instrs, size_t count)
+
+void ctProgramImage_free(ctProgramImage* img)
 {
-    ctx->instr_count = count;
-    ctx->instrs = instrs;
+	if (img->instrs != NULL)
+	{
+		free(img->instrs);
+	}
+	img->header.instr_count = 0;
 }
 
 
-void ProgramContext_end(ProgramContext* ctx)
+ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath)
 {
-    free(ctx->instrs);
-    ctx->instr_count = 0;
+	FILE* fp = fopen(filepath, "rb");
+
+	if (!fp) {return ctImageError_FileNotFound;}
+
+	int bytes_read;
+
+	bytes_read = fread(&img->header, sizeof(ctProgramHeader), 1, fp);
+
+	img->instrs = malloc(sizeof(ctInstrSize) * img->header.instr_count);
+	bytes_read = fread(img->instrs, sizeof(ctInstrSize), img->header.instr_count, fp);
+
+	return ctImageError_Success;
 }
 
 
-void ProgramContext_read(ProgramContext* ctx, char* filepath)
+ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath)
 {
-    FILE* fp = fopen(filepath, "rb");
+	FILE* fp = fopen(filepath, "wb");
 
-    if (!fp) {printf("ERROR: File could not be opened for reading.\n"); exit(EXIT_FAILURE);}
+	if (!fp) {return ctImageError_FileNotFound;}
 
-    fread(&ctx->instr_count, sizeof(size_t), 1, fp);
-	ctx->instrs = malloc(sizeof(CtInstrSize) * ctx->instr_count);
-    fread(ctx->instrs, sizeof(CtInstrSize), ctx->instr_count, fp);
+	fwrite(&img->header, sizeof(ctProgramHeader), 1, fp);
+	fwrite(img->instrs, sizeof(ctInstrSize), img->header.instr_count, fp);
 
-    fclose(fp);
-}
-
-
-void ProgramContext_write(ProgramContext* ctx, char* filepath)
-{
-    FILE* fp = fopen(filepath, "wb");
-
-    if (!fp) {printf("ERROR: File could not be opened for writing.\n"); exit(EXIT_FAILURE);}
-
-    fwrite(&ctx->instr_count, sizeof(size_t), 1, fp);
-    fwrite(ctx->instrs, sizeof(CtInstrSize), ctx->instr_count, fp);
-
-    fclose(fp);
+	return ctImageError_Success;
 }

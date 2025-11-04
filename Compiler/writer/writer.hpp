@@ -9,10 +9,10 @@
 class ByteCodeWriter
 {
 	Node* root;
-	ProgramContext ctx;
+	ctProgramImage img;
 	std::string outfile;
 
-	std::vector<CtInstrSize> instructions;
+	std::vector<ctInstrSize> instructions;
 
 	void recurseNode(Node* node);
 	void logToFile(std::string msg);

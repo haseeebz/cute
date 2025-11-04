@@ -20,18 +20,16 @@ void CuteEngine_init(CuteEngine *engine)
 
 void CuteEngine_run(CuteEngine *engine, char* filepath)
 {
-	ProgramContext ctx;
-	ProgramContext_read(&ctx, filepath);
-    engine->ctx = ctx;
+	ctProgramImage_read(&engine->img, filepath);
 
-    CtInstrSize *instrs = engine->ctx.instrs;
-    CtInstr instr;
+    ctInstrSize *instrs = engine->img.instrs;
+    ctInstr instr;
     int64_t i1;
     int64_t i2;
 
     while (1)
     {
-        instr = (CtInstr) instrs[engine->pc++];
+        instr = (ctInstr) instrs[engine->pc++];
 
         switch (instr) 
         {
@@ -83,5 +81,5 @@ void CuteEngine_run(CuteEngine *engine, char* filepath)
 void CuteEngine_end(CuteEngine *engine)
 {
     ExeStack_end(&engine->stack);
-    ProgramContext_end(&engine->ctx);
+    ctProgramImage_free(&engine->img);
 }

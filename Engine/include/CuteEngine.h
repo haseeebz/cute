@@ -15,7 +15,7 @@ extern "C" {
 
 typedef struct
 {
-    ProgramContext ctx;
+    ctProgramImage img;
     int pc;
     ExeStack stack;
     int stations[8];

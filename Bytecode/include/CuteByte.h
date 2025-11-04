@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdint.h>
+#include <sys/types.h>
 
 
 #pragma once
@@ -8,36 +9,57 @@
 extern "C" {
 #endif
 
-typedef int8_t CtInstrSize;
+// probably important
+typedef int8_t ctInstrSize;
 
+
+// main instruction set
 typedef enum
 {
 
-    instrHalt = 0x00,
+    instrHalt       = 0x00,
 	
-	instrLoadCoI = 0x10,
+	instrLoadCoI    = 0x10,
 	
-	instrAddI = 0x20,
-	instrSubI = 0x21,
-	instrMulI = 0x22,
-	instrDivI = 0x23,
+	instrAddI       = 0x20,
+	instrSubI       = 0x21,
+	instrMulI       = 0x22,
+	instrDivI       = 0x23,
 
-	instrOutI = 0x30,
+	instrOutI       = 0x30,
 
-} CtInstr;
+} ctInstr;
+
+
+// program image defs
+
+typedef struct
+{
+	u_int32_t magic;
+	u_int32_t instr_count;
+} ctProgramHeader;
 
 
 typedef struct
 {
-    size_t instr_count;
-    CtInstrSize* instrs;
-} ProgramContext;
+	ctProgramHeader header;
+	ctInstrSize* instrs;
+} ctProgramImage;
 
 
-void ProgramContext_init(ProgramContext* ctx, CtInstrSize* instrs, size_t count);
-void ProgramContext_end(ProgramContext* ctx);
-void ProgramContext_read(ProgramContext* ctx, char* filepath);
-void ProgramContext_write(ProgramContext* ctx, char* filepath);
+// to make error handling easier
+
+typedef enum
+{
+
+	ctImageError_Success = 0x00,
+	ctImageError_FileNotFound = 0x01,
+
+} ctImageError;
+
+void ctProgramImage_free(ctProgramImage* img);
+ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath);
+ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath);
 
 
 #ifdef __cplusplus
