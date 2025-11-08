@@ -58,7 +58,7 @@ void Tokenizer::tokenizeNumber()
 	
 	while (true) 
 	{
-		if (currIndex > currSrc->length()) {break;}
+		if (currIndex >= currSrc->length()) {break;}
 		c = currSrc->at(currIndex);
 
 		if (std::isdigit(c))
@@ -99,7 +99,7 @@ void Tokenizer::tokenizeWord()
 
 	while (true)
 	{
-		if (currIndex > currSrc->length()) {break;}
+		if (currIndex >= currSrc->length()) {break;}
 		c = currSrc->at(currIndex);
 
 		if (std::isalpha(c))
