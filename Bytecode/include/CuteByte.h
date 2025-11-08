@@ -20,6 +20,8 @@ typedef enum
     instrHalt       = 0x00,
 	
 	instrLoadCoI    = 0x10,
+	instrStoreI     = 0x11,
+	instrLoadI      = 0x12,
 	
 	instrAddI       = 0x20,
 	instrSubI       = 0x21,
@@ -39,10 +41,17 @@ typedef struct
 	u_int32_t instr_count;
 } ctProgramHeader;
 
+typedef struct 
+{
+	u_int32_t id;
+	u_int16_t arg_count;
+	u_int32_t local_var_space;
+} ctFunctionMeta;
 
 typedef struct
 {
 	ctProgramHeader header;
+	ctFunctionMeta main;
 	ctInstrSize* instrs;
 } ctProgramImage;
 

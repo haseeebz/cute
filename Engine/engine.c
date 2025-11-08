@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 
 void CuteEngine_init(CuteEngine *engine)
@@ -26,6 +27,8 @@ void CuteEngine_run(CuteEngine *engine, char* filepath)
     ctInstr instr;
     int64_t i1;
     int64_t i2;
+
+	ctAtom* local_space = malloc(sizeof(ctAtom) * engine->img.main.local_var_space);
 
     while (1)
     {
@@ -72,7 +75,16 @@ void CuteEngine_run(CuteEngine *engine, char* filepath)
             i1 = ExeStack_peek(&engine->stack)->val.i;
             printf("%ld\n", i1);
             break;
+		
+		case instrLoadI:
+			i1 = instrs[engine->pc++];
+            ExeStack_push(&engine->stack, local_space[i1]);
+			break;
 
+		case instrStoreI:
+			i1 = instrs[engine->pc++];
+            local_space[i1] = ExeStack_pop(&engine->stack);
+			break;
         }
     }
 }

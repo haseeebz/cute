@@ -24,6 +24,7 @@ ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath)
 	int bytes_read;
 
 	bytes_read = fread(&img->header, sizeof(ctProgramHeader), 1, fp);
+	bytes_read = fread(&img->main, sizeof(ctProgramHeader), 1, fp);
 
 	img->instrs = malloc(sizeof(ctInstrSize) * img->header.instr_count);
 	bytes_read = fread(img->instrs, sizeof(ctInstrSize), img->header.instr_count, fp);
@@ -39,6 +40,7 @@ ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath)
 	if (!fp) {return ctImageError_FileNotFound;}
 
 	fwrite(&img->header, sizeof(ctProgramHeader), 1, fp);
+	fwrite(&img->main, sizeof(ctProgramHeader), 1, fp);
 	fwrite(img->instrs, sizeof(ctInstrSize), img->header.instr_count, fp);
 
 	return ctImageError_Success;
