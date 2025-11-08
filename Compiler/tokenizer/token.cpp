@@ -31,7 +31,7 @@ Token TokenStream::next()
 
 std::string TokenStream::viewToken(Token* token)
 {
-	std::string str(this->srcStr.substr(token->start, token->end - token->start));
+	std::string str(this->srcStr.substr(token->start, token->end - token->start + 1));
 	return str;
 }
 

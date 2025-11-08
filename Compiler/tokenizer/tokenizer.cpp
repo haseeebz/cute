@@ -40,10 +40,10 @@ TokenStream Tokenizer::tokenize(std::string input_file)
 			continue;
 		}
 
-
 		tokenizeSymbol();
 	}
 
+	this->currStream.add(Token(TokenType::tokenEOF, 0,0));
 
 	return this->currStream;
 }
@@ -58,6 +58,7 @@ void Tokenizer::tokenizeNumber()
 	
 	while (true) 
 	{
+		if (currIndex > currSrc->length()) {break;}
 		c = currSrc->at(currIndex);
 
 		if (std::isdigit(c))
@@ -72,11 +73,11 @@ void Tokenizer::tokenizeNumber()
 			currIndex++;
 			continue;
 		}
-
-		currIndex--;
-		end = currIndex;
 		break;
 	}
+
+	currIndex--;
+	end = currIndex;
 
 	TokenType type = is_float ? TokenType::tokenFloat : TokenType::tokenInt;
 	
@@ -86,7 +87,7 @@ void Tokenizer::tokenizeNumber()
 
 void Tokenizer::tokenizeSymbol()
 {
-	this->currStream.add(Token(TokenType::tokenSymbol, currIndex, currIndex+1));
+	this->currStream.add(Token(TokenType::tokenSymbol, currIndex, currIndex));
 }
 
 
@@ -98,6 +99,7 @@ void Tokenizer::tokenizeWord()
 
 	while (true)
 	{
+		if (currIndex > currSrc->length()) {break;}
 		c = currSrc->at(currIndex);
 
 		if (std::isalpha(c))
@@ -106,10 +108,11 @@ void Tokenizer::tokenizeWord()
 			continue;
 		}
 
-		currIndex--;
-		end = currIndex;
 		break;
 	}
+
+	currIndex--;
+	end = currIndex;
 
 	this->currStream.add(Token(TokenType::tokenWord, start, end));
 }

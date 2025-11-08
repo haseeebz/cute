@@ -93,5 +93,4 @@ void CuteEngine_run(CuteEngine *engine, char* filepath)
 void CuteEngine_end(CuteEngine *engine)
 {
     ExeStack_end(&engine->stack);
-    ctProgramImage_free(&engine->img);
-}
+};
