@@ -2,6 +2,8 @@
 #include "parser.hpp"
 
 #include "../tokenizer/token.hpp"
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -9,10 +11,11 @@
 
 std::map<BinaryOpType, int> BinaryPrecedence = 
 {
-	{binaryADD, 1},
-	{binarySUB, 1},
-	{binaryMUL, 2},
-	{binaryDIV, 2}
+	{binaryASSIGN, 1},
+	{binaryADD, 2},
+	{binarySUB, 2},
+	{binaryMUL, 3},
+	{binaryDIV, 3}
 };
 
 
@@ -38,6 +41,10 @@ Node* Parser::parseExpr(int previous_precedence)
 	if (tok.type == TokenType::tokenInt)
 	{
 		lhs = new Node(std::stoi(tok.str));
+	}
+	else if (tok.type == TokenType::tokenWord)
+	{
+		lhs = new Node(tok.str);
 	}
 	else if (tok.type == TokenType::tokenSymbol)
 	{
@@ -83,9 +90,13 @@ BinaryOpType Parser::getBinaryOp(std::string sym)
 {
 	switch (sym[0]) 
 	{
+		case '=': return BinaryOpType::binaryASSIGN;
 		case '+': return BinaryOpType::binaryADD;
 		case '-': return BinaryOpType::binarySUB;
 		case '*': return BinaryOpType::binaryMUL;
 		case '/': return BinaryOpType::binaryDIV;
 	}
+
+	printf("Invalid Symbol\n");
+	exit(EXIT_FAILURE);
 }

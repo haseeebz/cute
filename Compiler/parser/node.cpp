@@ -17,12 +17,17 @@ std::string Node::str(bool endline)
 {
 	std::string str;
 
-	char BinaryMap[] = {'+', '-', '*', '/'};
+	char BinaryMap[] = {'=', '+', '-', '*', '/'};
 
 
 	if (type == NodeType::nodeInt)
 	{
 		str.append(std::to_string(i));
+	}
+
+	if (type == NodeType::nodeIdentifier)
+	{
+		str.append(this->idf);
 	}
 
 	if (type == NodeType::nodeBinaryOp)
