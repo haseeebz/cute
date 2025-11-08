@@ -27,7 +27,7 @@ void ByteCodeWriter::recurseNode(Node* node)
 {
 	if (node->type == NodeType::nodeBinaryOp)
 	{
-		this->recurseNode(node->bop.lhs);
+		bool assign = false;
 		this->recurseNode(node->bop.rhs);
 
 		ctInstrSize op;
@@ -37,9 +37,44 @@ void ByteCodeWriter::recurseNode(Node* node)
 		case binarySUB:	op = instrSubI; logToFile("Sub"); break;
 		case binaryMUL:	op = instrMulI; logToFile("Mul"); break;
 		case binaryDIV: op = instrDivI; logToFile("Div"); break;
+		case binaryASSIGN: op = instrStoreI; assign = true; logToFile("Store"); break;
+		}
+
+
+	
+		if (!assign) {this->recurseNode(node->bop.lhs);}
+		else {
+			if (!idf_map.contains(node->bop.lhs->idf))
+			{
+				idf_map[node->bop.lhs->idf] = idf_id;
+				idf_id++;
+			}
+
+			int id = idf_map[node->bop.lhs->idf];
+			ctInstrSize num = (ctInstrSize) id;
+			logToFile(std::format("{}", num));
+			this->instructions.push_back(num);
 		}
 
 		this->instructions.push_back(op);
+		return;
+	}
+
+	if (node->type == NodeType::nodeIdentifier)
+	{
+		logToFile(std::format("LoadI"));
+		this->instructions.push_back(instrLoadI);
+
+		if (!idf_map.contains(node->idf))
+		{
+			idf_map[node->idf] = idf_id;
+			idf_id++;
+		}
+
+		int id = idf_map[node->idf];
+		ctInstrSize num = (ctInstrSize) id;
+		logToFile(std::format("{}", num));
+		this->instructions.push_back(num);
 		return;
 	}
 

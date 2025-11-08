@@ -61,7 +61,7 @@ Node* Parser::parseExpr(int previous_precedence)
 
 		if (tok.type == TokenType::tokenSymbol)
 		{
-			if (tok.str[0] == ')')
+			if (tok.str[0] == ')' or tok.str[0] == ';')
 			{
 				break;	
 			}

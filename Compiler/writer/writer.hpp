@@ -1,3 +1,4 @@
+#include <map>
 #include <string>
 #include <vector>
 
@@ -11,6 +12,9 @@ class ByteCodeWriter
 	Node* root;
 	ctProgramImage img;
 	std::string outfile;
+
+	std::map<std::string, int> idf_map;
+	int idf_id;
 
 	std::vector<ctInstrSize> instructions;
 
