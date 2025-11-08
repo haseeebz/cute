@@ -9,20 +9,22 @@
 #include "tokenizer.hpp"
 
 
-void Tokenizer::tokenize(std::string input_file)
+TokenStream Tokenizer::tokenize(std::string input_file)
 {
 	std::ifstream stream(input_file);
 
 	// TODO : File Check
 	std::ostringstream buffer;
 	buffer << stream.rdbuf();
-	currSrc = buffer.str();
+	this->currStream = TokenStream(buffer.str());
 
+	this->currSrc = &this->currStream.srcStr;
+	
 	char c;
 	
-	for (currIndex = 0; currIndex < currSrc.length(); currIndex++)
+	for (currIndex = 0; currIndex < currSrc->length(); currIndex++)
 	{
-		c = currSrc[currIndex];
+		c = currSrc->at(currIndex);
 
 		if (c == ' ' or c == '\n') {continue;}
 
@@ -41,6 +43,9 @@ void Tokenizer::tokenize(std::string input_file)
 
 		tokenizeSymbol();
 	}
+
+
+	return this->currStream;
 }
 
 
@@ -48,101 +53,64 @@ void Tokenizer::tokenizeNumber()
 {
 	bool is_float = false;
 	char c;
-	Token tok;
-	
+	uint start, end;
+	start = currIndex;
 	
 	while (true) 
 	{
-		c = currSrc[currIndex];
+		c = currSrc->at(currIndex);
 
 		if (std::isdigit(c))
 		{
-			tok.str.push_back(c);
 			currIndex++;
 			continue;
 		}
 
 		if (c == '.')
 		{
-			tok.str.push_back(c);
 			is_float = true;
 			currIndex++;
 			continue;
 		}
 
 		currIndex--;
+		end = currIndex;
 		break;
 	}
 
-	tok.type = is_float ? TokenType::tokenFloat : TokenType::tokenInt;
+	TokenType type = is_float ? TokenType::tokenFloat : TokenType::tokenInt;
 	
-	tokens.push_back(tok);
+	this->currStream.add(Token(type, start, end));
 }
 
 
 void Tokenizer::tokenizeSymbol()
 {
-	char sym = currSrc[currIndex];
-	Token tok(TokenType::tokenSymbol, (std::string) &sym);
-	tokens.push_back(tok);
+	this->currStream.add(Token(TokenType::tokenSymbol, currIndex, currIndex+1));
 }
+
 
 void Tokenizer::tokenizeWord()
 {
-	std::string str;
 	char c;
+	uint start, end;
+	start = currIndex;
 
 	while (true)
 	{
-		c = currSrc[currIndex];
+		c = currSrc->at(currIndex);
 
 		if (std::isalpha(c))
 		{
-			str.push_back(c);
 			currIndex++;
 			continue;
 		}
 
+		currIndex--;
+		end = currIndex;
 		break;
 	}
 
-	Token tok(TokenType::tokenWord, str);
-	tokens.push_back(tok);
+	this->currStream.add(Token(TokenType::tokenWord, start, end));
 }
 
-
-std::vector<Token> Tokenizer::getTokens()
-{
-	return tokens;
-}
-
-
-
-std::string Tokenizer::toString()
-{
-	std::string str;
-	Token tok;
-
-	for (uint i = 0; i < tokens.size(); i++)
-	{
-		tok = tokens[i];
-
-		switch (tok.type) 
-		{
-		case tokenInt: 	  str.append("[ Int ");
-		break;
-		case tokenFloat:  str.append("[ Float ");
-		break;
-		case tokenSymbol: str.append("[ Sym ");
-		break;
-		case tokenWord: str.append("[ Word ");
-		break;
-		}
-
-		str.append(tok.str);
-		str.append(" ] ");
-    }
-
-	str.append("\n");
-	return str;
-}

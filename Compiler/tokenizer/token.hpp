@@ -1,7 +1,7 @@
 #include <string>
 #include <sys/types.h>
+#include <vector>
 #pragma once 
-
 
 
 enum TokenType 
@@ -9,16 +9,33 @@ enum TokenType
 	tokenInt,
 	tokenFloat,
 	tokenSymbol,
-	tokenWord
+	tokenWord,
+	tokenEOF
 };
 
 
 struct Token
 {
 	TokenType type;
-	std::string str;
+	uint start;
+	uint end;
 
 	Token() = default;
-	Token(TokenType t, std::string s) : type(t), str(s) {};
+	Token(TokenType t, uint s, uint e) : type(t), start(s), end(e) {};
 };
 
+
+struct TokenStream
+{
+	std::string srcStr;
+
+	std::vector<Token> tokens;
+	uint curr_token;
+
+	TokenStream() {};
+	TokenStream(std::string src);
+	void add(Token token);
+	Token next();
+	std::string viewToken(Token* token);
+	std::string toString();
+};

@@ -8,20 +8,17 @@
 
 class Tokenizer 
 {
-	std::vector<Token> tokens;
+	TokenStream currStream;
 
+	std::string* currSrc;
 	uint currIndex;
-	std::string currSrc;
 
 	public:
 
-	void tokenize(std::string input_file);
+	TokenStream tokenize(std::string input_file);
 	void tokenizeNumber();
 	void tokenizeSymbol();
 	void tokenizeWord();
 
-	std::vector<Token> getTokens();
-	std::string retrieveToken(Token& token);
-	
 	std::string toString();
 };
