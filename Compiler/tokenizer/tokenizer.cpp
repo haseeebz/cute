@@ -32,6 +32,13 @@ void Tokenizer::tokenize(std::string input_file)
 			continue;
 		}
 
+		if (std::isalpha(c))
+		{
+			tokenizeWord();
+			continue;
+		}
+
+
 		tokenizeSymbol();
 	}
 }
@@ -80,6 +87,29 @@ void Tokenizer::tokenizeSymbol()
 	tokens.push_back(tok);
 }
 
+void Tokenizer::tokenizeWord()
+{
+	std::string str;
+	char c;
+
+	while (true)
+	{
+		c = currSrc[currIndex];
+
+		if (std::isalpha(c))
+		{
+			str.push_back(c);
+			currIndex++;
+			continue;
+		}
+
+		break;
+	}
+
+	Token tok(TokenType::tokenWord, str);
+	tokens.push_back(tok);
+}
+
 
 std::vector<Token> Tokenizer::getTokens()
 {
@@ -104,6 +134,8 @@ std::string Tokenizer::toString()
 		case tokenFloat:  str.append("[ Float ");
 		break;
 		case tokenSymbol: str.append("[ Sym ");
+		break;
+		case tokenWord: str.append("[ Word ");
 		break;
 		}
 

@@ -18,6 +18,7 @@ class Tokenizer
 	void tokenize(std::string input_file);
 	void tokenizeNumber();
 	void tokenizeSymbol();
+	void tokenizeWord();
 
 	std::vector<Token> getTokens();
 	std::string retrieveToken(Token& token);

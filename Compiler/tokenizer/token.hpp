@@ -8,7 +8,8 @@ enum TokenType
 {
 	tokenInt,
 	tokenFloat,
-	tokenSymbol
+	tokenSymbol,
+	tokenWord
 };
 
 
