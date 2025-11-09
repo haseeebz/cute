@@ -1,4 +1,3 @@
-
 #include <sys/types.h>
 
 
@@ -16,13 +15,14 @@ extern "C" {
 typedef struct
 {
     ctProgramImage img;
-    int pc;
+
+	size_t pc;
     ExeStack stack;
-    int stations[8];
 } CuteEngine;
 
 
 void CuteEngine_init(CuteEngine *engine);
+void CuteEngine_loadImage(CuteEngine *engine, char* filepath);
 void CuteEngine_run(CuteEngine *engine, char* filepath);
 void CuteEngine_end(CuteEngine *engine);
 

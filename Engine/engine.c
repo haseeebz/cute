@@ -19,9 +19,30 @@ void CuteEngine_init(CuteEngine *engine)
 }
 
 
+void CuteEngine_loadImage(CuteEngine *engine, char* filepath)
+{
+	ctImageError code = ctProgramImage_read(&engine->img, filepath);
+
+	if (code != ctImageError_Success)
+	{
+		switch (code) 
+		{
+		case ctImageError_FileNotFound:
+			printf("File not found: %s\n", filepath);
+			break;
+		case ctImageError_ByteReadFailure:
+			printf("Bytes could not be read. Faulty Image: %s\n", filepath);
+			break;
+		}
+
+		exit(EXIT_FAILURE);
+	}
+}
+
+
 void CuteEngine_run(CuteEngine *engine, char* filepath)
 {
-	ctProgramImage_read(&engine->img, filepath);
+	CuteEngine_loadImage(engine, filepath);
 
     ctInstrSize *instrs = engine->img.instrs;
     ctInstr instr;
