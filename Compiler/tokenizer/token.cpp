@@ -58,6 +58,12 @@ std::string TokenStream::viewToken(Token* token)
 }
 
 
+char TokenStream::viewSymToken(Token* token)
+{
+	return this->srcStr[token->start];
+}
+
+
 std::string TokenStream::toString()
 {
 	Token* tok;
