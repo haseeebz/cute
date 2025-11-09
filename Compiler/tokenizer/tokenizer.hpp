@@ -1,5 +1,4 @@
 #include <string>
-#include <vector>
 #include <sys/types.h>
 
 #include "token.hpp"

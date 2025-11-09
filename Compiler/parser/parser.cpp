@@ -2,11 +2,7 @@
 #include "parser.hpp"
 
 #include "../tokenizer/token.hpp"
-#include <cstdio>
-#include <cstdlib>
-#include <iostream>
-#include <string>
-#include <vector>
+
 
 
 std::map<char, int> BinaryOpPrecedence = 
@@ -18,61 +14,54 @@ std::map<char, int> BinaryOpPrecedence =
 };
 
 
-Node* Parser::parse(std::vector<Token> tokens)
+ctNode* Parser::parse(TokenStream* tokens)
 {
-	this->tokens = tokens;
-	root = parseExpr(0);
-	return root;
+	this->currStream = tokens;
+	return parseExpr(0);
 };
 
 
-Node* Parser::parseExpr(int previous_precedence)
+ctNode* Parser::parseExpr(int previous_precedence)
 {
-	Node* lhs;
-	Node* rhs;
+	ctNode* lhs;
+	ctNode* rhs;
 
 	Token tok;
 
-	if (currTok >= tokens.size()) {return new Node();}
-
-	tok = tokens[currTok++];
+	tok = this->currStream->next();
 
 	if (tok.type == TokenType::tokenInt)
 	{
-		lhs = new Node(std::stoi(tok.str));
-	}
-	else if (tok.type == TokenType::tokenWord)
-	{
-		lhs = new Node(tok.str);
+		lhs = new ctIntNode(this->currStream->viewToken(&tok));
 	}
 	else if (tok.type == TokenType::tokenSymbol)
 	{
-		if (tok.str[0] == '(')
+		if (this->currStream->viewSymToken(&tok) == '(')
 		{
 			lhs = parseExpr(0);
 		}
 
 	}
 
-	while (currTok < tokens.size())
+	while (tok.type != TokenType::tokenEOF)
 	{
-		tok = tokens[currTok++];
+		tok = this->currStream->next();
 
 		if (tok.type == TokenType::tokenSymbol)
 		{
-			if (tok.str[0] == ')' or tok.str[0] == ';')
+			if (this->currStream->viewSymToken(&tok) == ')')
 			{
 				break;	
 			}
 
-			BinaryOpType op = getBinaryOp(tok.str);
-			int precedence = BinaryPrecedence[op];
+			char op = this->currStream->viewSymToken(&tok);
+			int precedence = BinaryOpPrecedence[op];
 
 			if (precedence > previous_precedence)
 			{
 				rhs = parseExpr(precedence);
-				lhs = new Node(op, lhs, rhs);
-				currTok--;
+				lhs = new ctBinaryOpNode(op, lhs, rhs);
+				this->currStream->backtrack();
 			}
 			else 
 			{
@@ -85,17 +74,3 @@ Node* Parser::parseExpr(int previous_precedence)
 }
 
 
-BinaryOpType Parser::getBinaryOp(std::string sym)
-{
-	switch (sym[0]) 
-	{
-		case '=': return BinaryOpType::binaryASSIGN;
-		case '+': return BinaryOpType::binaryADD;
-		case '-': return BinaryOpType::binarySUB;
-		case '*': return BinaryOpType::binaryMUL;
-		case '/': return BinaryOpType::binaryDIV;
-	}
-
-	printf("Invalid Symbol\n");
-	exit(EXIT_FAILURE);
-}

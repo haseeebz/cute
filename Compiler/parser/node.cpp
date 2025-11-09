@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include "node.hpp"
 
 
@@ -33,13 +32,15 @@ void PrintVisitor::visit(ctBinaryOpNode* node)
 	printDepth();
 	std::cout << "BinaryOp(\n";
 
-	printDepth();
-	std::cout << node->op << "\n";
-
 	depth++;
+	printDepth();
+	std::cout << '[' << node->op << ']' << "\n";
 	node->lhs->accept(this);
 	node->rhs->accept(this);
 	depth--;
+
+	printDepth();
+	std::cout << ")\n";
 }
 
 

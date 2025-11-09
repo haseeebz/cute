@@ -1,6 +1,5 @@
 #include "CuteCompiler.hpp"
-#include "CuteByte.h"
-//#include "parser/node.hpp"
+#include "parser/node.hpp"
 
 #include <string>
 
@@ -14,13 +13,17 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 
 	ctDebug("Tokenized Source:\n");
 	ctDebug(stream.toString());
-	return;
-	/*
-	Node* root = parser.parse(tokenizer.t);
+
+	
+	ctNode* root = parser.parse(&stream);
 	
 	ctDebug("Parsed Code:\n")
-	ctDebug(root->str());
+	PrintVisitor printer;
+	root->accept(&printer);
 
+	//ctDebug(root->str());
+
+	/*
 	writer.setOutFile(outfile);
 	writer.write(root);
 
