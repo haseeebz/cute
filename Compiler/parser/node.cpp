@@ -3,51 +3,49 @@
 #include "node.hpp"
 
 
-Node::~Node()
+void PrintVisitor::printDepth()
 {
-	if (type == NodeType::nodeBinaryOp)
+	for (uint i = 0; i < depth; i++)
 	{
-		delete bop.lhs;
-		delete bop.rhs;
+		std::cout << "	";
 	}
 }
 
 
-std::string Node::str(bool endline)
+void PrintVisitor::visit(ctIntNode* node) 
 {
-	std::string str;
+	printDepth();
 
-	char BinaryMap[] = {'=', '+', '-', '*', '/'};
-
-
-	if (type == NodeType::nodeInt)
-	{
-		str.append(std::to_string(i));
-	}
-
-	if (type == NodeType::nodeIdentifier)
-	{
-		str.append(this->idf);
-	}
-
-	if (type == NodeType::nodeBinaryOp)
-	{
-		str.append("(");
-		str.push_back(BinaryMap[bop.op]);
-		str.append(" ");
-		str.append(bop.lhs->str(false));
-		str.append(" ");
-		str.append(bop.rhs->str(false));
-		str.append(")");
-	}
-
-	if (type == NodeType::nodeEmpty)
-	{
-		str.append("null");
-	}
+	std::cout << "Int(" << node->raw << ")\n";
+}
 
 
+void PrintVisitor::visit(ctFloatNode* node)
+{
+	printDepth();
 
-	if (endline) {str.push_back('\n');}
-	return str;
+	std::cout << "Float(" << node->raw << ")\n";
+}
+
+
+void PrintVisitor::visit(ctBinaryOpNode* node)
+{
+	printDepth();
+	std::cout << "BinaryOp(\n";
+
+	printDepth();
+	std::cout << node->op << "\n";
+
+	depth++;
+	node->lhs->accept(this);
+	node->rhs->accept(this);
+	depth--;
+}
+
+
+void PrintVisitor::visit(ctIdentifierNode* node) 
+{
+	printDepth();
+
+	std::cout << "Identifier(" << node->val << ")\n";
 }

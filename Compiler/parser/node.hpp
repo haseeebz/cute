@@ -4,57 +4,85 @@
 #pragma once 
 
 
-enum BinaryOpType
-{
-	binaryASSIGN,
-	binaryADD,
-	binarySUB,
-	binaryMUL,
-	binaryDIV,
-};
-
 // Node definition
 
-enum NodeType
+struct ctNode;
+
+struct ctIntNode;
+struct ctFloatNode;
+struct ctBinaryOpNode;
+struct ctIdentifierNode;
+
+
+struct ctNodeVisitor
 {
-	nodeInt,
-	nodeFloat,
-	nodeIdentifier,
-	nodeBinaryOp,
-	nodeEmpty
+	virtual void visit(ctIntNode* node);
+	virtual void visit(ctFloatNode* node);
+	virtual void visit(ctBinaryOpNode* node);
+	virtual void visit(ctIdentifierNode* node);
 };
 
 
-struct Node
+struct ctNode
 {
-	
-	struct BinaryOp
-	{
-		BinaryOpType op;
-		Node* lhs;
-		Node* rhs;
-	};
-
-	NodeType type;
-
-	union
-	{
-		int i;
-		float f;
-		BinaryOp bop;
-		std::string idf;
-	};
-
-	Node() : type(NodeType::nodeEmpty) {};
-	Node(int i): type(NodeType::nodeInt), i(i) {};
-	Node(float f): type(NodeType::nodeFloat), f(f) {};
-	Node(std::string idf): type(NodeType::nodeIdentifier), idf(idf) {};
-
-	Node(BinaryOpType op, Node* lhs, Node* rhs): type(NodeType::nodeBinaryOp), bop{.op = op, .lhs = lhs, .rhs = rhs} {};
-
-	~Node();
-
-	std::string str(bool endline = true);
+	virtual void accept(ctNodeVisitor* visitor) = 0;
+	virtual ~ctNode() = default;
 };
 
 
+
+// Node types
+
+struct ctIntNode : public ctNode
+{
+	std::string raw;
+
+	ctIntNode(std::string raw) : raw(raw) {};
+	void accept(ctNodeVisitor* visitor) {visitor->visit(this);}
+};
+
+
+struct ctFloatNode : public ctNode
+{
+	std::string raw;
+
+	ctFloatNode(std::string raw) : raw(raw) {};
+	void accept(ctNodeVisitor* visitor) {visitor->visit(this);}
+};
+
+
+struct ctBinaryOpNode : public ctNode
+{
+	char op;
+	ctNode* lhs;
+	ctNode* rhs;
+
+	ctBinaryOpNode(char op, ctNode* lhs, ctNode* rhs) : op(op), lhs(lhs), rhs(rhs) {};
+	~ctBinaryOpNode() {delete lhs; delete rhs;}
+
+	void accept(ctNodeVisitor* visitor) {visitor->visit(this);}
+};
+
+
+struct ctIdentifierNode : public ctNode
+{
+	std::string val;
+
+	ctIdentifierNode(std::string val): val(val) {};
+
+	void accept(ctNodeVisitor* visitor) {visitor->visit(this);}
+};
+
+
+// Visitors
+
+struct PrintVisitor: public ctNodeVisitor
+{
+	uint depth = 0;
+	void printDepth();
+
+	void visit(ctIntNode* node);
+	void visit(ctFloatNode* node);
+	void visit(ctBinaryOpNode* node);
+	void visit(ctIdentifierNode* node);
+};
