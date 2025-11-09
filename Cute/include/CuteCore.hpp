@@ -11,6 +11,7 @@ class CuteCore
 	void parseArgs(int argc, char* argv[]);
 
 	bool compileFlag;
+	bool assembleFlag;
 	bool engineFlag;
 
 	std::string filepath;

@@ -22,6 +22,12 @@ void CuteCore::run(int argc, char* argv[])
 {
 	this->parseArgs(argc, argv);
 
+	if (this->assembleFlag)
+	{
+		compiler.assemble(this->filepath, this->outfile);
+		return;
+	}
+
 	if (this->compileFlag)
 	{
 		compiler.compile(this->filepath, this->outfile);
@@ -48,6 +54,14 @@ void CuteCore::parseArgs(int argc, char* argv[])
 			this->filepath = argv[++i];
 			this->outfile = std::string(this->filepath).append(".out");
 			compileFlag = true;
+			return;
+		}
+
+		if (arg == "--assemble")
+		{
+			this->filepath = argv[++i];
+			this->outfile = std::string(this->filepath).append(".out");
+			assembleFlag = true;
 			return;
 		}
 

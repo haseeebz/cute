@@ -17,6 +17,7 @@ class CuteCompiler
 	public:
 
 	void compile(std::string filepath, std::string outfile);
+	void assemble(std::string filepath, std::string outfile);
 };
 
 
