@@ -9,13 +9,12 @@
 #include <vector>
 
 
-std::map<BinaryOpType, int> BinaryPrecedence = 
+std::map<char, int> BinaryOpPrecedence = 
 {
-	{binaryASSIGN, 1},
-	{binaryADD, 2},
-	{binarySUB, 2},
-	{binaryMUL, 3},
-	{binaryDIV, 3}
+	{'+', 1},
+	{'-', 1},
+	{'*', 2},
+	{'/', 2},
 };
 
 

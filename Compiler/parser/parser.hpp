@@ -6,18 +6,15 @@
 
 #pragma once 
 
-extern std::map<BinaryOpType, int> BinaryPrecedence;
+extern std::map<char, int> BinaryOpPrecedence;
 
 class Parser
 {
-	Node* root;
-	std::vector<Token> tokens;
-	uint currTok = 0;
+	TokenStream* currStream;
 	
-	Node* parseExpr(int previous_precedence);
-	BinaryOpType getBinaryOp(std::string sym);
+	ctNode* parseExpr(int previous_precedence);
 
 	public:
 
-	Node* parse(std::vector<Token> tokens);
+	ctNode* parse(TokenStream* tokens);
 };
