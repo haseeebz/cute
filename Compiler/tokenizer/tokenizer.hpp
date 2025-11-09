@@ -19,6 +19,4 @@ class Tokenizer
 	void tokenizeNumber();
 	void tokenizeSymbol();
 	void tokenizeWord();
-
-	std::string toString();
 };

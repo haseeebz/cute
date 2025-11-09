@@ -22,25 +22,25 @@ TokenStream Tokenizer::tokenize(std::string input_file)
 	
 	char c;
 	
-	for (currIndex = 0; currIndex < currSrc->length(); currIndex++)
+	for (this->currIndex = 0; this->currIndex < this->currSrc->length(); this->currIndex++)
 	{
-		c = currSrc->at(currIndex);
+		c = this->currSrc->at(currIndex);
 
 		if (c == ' ' or c == '\n') {continue;}
 
 		if (std::isdigit(c))
 		{
-			tokenizeNumber();
+			this->tokenizeNumber();
 			continue;
 		}
 
 		if (std::isalpha(c))
 		{
-			tokenizeWord();
+			this->tokenizeWord();
 			continue;
 		}
 
-		tokenizeSymbol();
+		this->tokenizeSymbol();
 	}
 
 	this->currStream.add(Token(TokenType::tokenEOF, 0,0));
@@ -54,30 +54,30 @@ void Tokenizer::tokenizeNumber()
 	bool is_float = false;
 	char c;
 	uint start, end;
-	start = currIndex;
+	start = this->currIndex;
 	
 	while (true) 
 	{
-		if (currIndex >= currSrc->length()) {break;}
-		c = currSrc->at(currIndex);
+		if (this->currIndex >= this->currSrc->length()) {break;}
+		c = this->currSrc->at(currIndex);
 
 		if (std::isdigit(c))
 		{
-			currIndex++;
+			this->currIndex++;
 			continue;
 		}
 
 		if (c == '.')
 		{
 			is_float = true;
-			currIndex++;
+			this->currIndex++;
 			continue;
 		}
 		break;
 	}
 
-	currIndex--;
-	end = currIndex;
+	this->currIndex--;
+	end = this->currIndex;
 
 	TokenType type = is_float ? TokenType::tokenFloat : TokenType::tokenInt;
 	
@@ -87,7 +87,7 @@ void Tokenizer::tokenizeNumber()
 
 void Tokenizer::tokenizeSymbol()
 {
-	this->currStream.add(Token(TokenType::tokenSymbol, currIndex, currIndex));
+	this->currStream.add(Token(TokenType::tokenSymbol, this->currIndex, this->currIndex));
 }
 
 
@@ -95,24 +95,24 @@ void Tokenizer::tokenizeWord()
 {
 	char c;
 	uint start, end;
-	start = currIndex;
+	start = this->currIndex;
 
 	while (true)
 	{
-		if (currIndex >= currSrc->length()) {break;}
-		c = currSrc->at(currIndex);
+		if (this->currIndex >= this->currSrc->length()) {break;}
+		c = this->currSrc->at(currIndex);
 
 		if (std::isalpha(c))
 		{
-			currIndex++;
+			this->currIndex++;
 			continue;
 		}
 
 		break;
 	}
 
-	currIndex--;
-	end = currIndex;
+	this->currIndex--;
+	end = this->currIndex;
 
 	this->currStream.add(Token(TokenType::tokenWord, start, end));
 }

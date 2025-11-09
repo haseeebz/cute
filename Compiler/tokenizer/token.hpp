@@ -36,6 +36,8 @@ struct TokenStream
 	TokenStream(std::string src);
 	void add(Token token);
 	Token next();
+	Token peek();
+	void backtrack();
 	std::string viewToken(Token* token);
 	std::string toString();
 };

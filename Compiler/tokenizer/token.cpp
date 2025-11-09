@@ -29,12 +29,33 @@ Token TokenStream::next()
 }
 
 
+Token TokenStream::peek()
+{
+	if (this->curr_token >= this->tokens.size())
+	{
+		return Token(TokenType::tokenEOF, 0,0);
+	}
+
+	return this->tokens[this->curr_token];
+}
+
+
+void TokenStream::backtrack()
+{
+	if (this->curr_token <= 0)
+	{
+		this->curr_token = 0;
+		return;
+	}
+	this->curr_token--;
+}
+
+
 std::string TokenStream::viewToken(Token* token)
 {
 	std::string str(this->srcStr.substr(token->start, token->end - token->start + 1));
 	return str;
 }
-
 
 
 std::string TokenStream::toString()
@@ -48,15 +69,15 @@ std::string TokenStream::toString()
 
 		switch (tok->type) 
 		{
-		case tokenInt: 	  str.append("[ Int ");
+		case tokenInt: 	   str.append("[ Int ");
 		break;
-		case tokenFloat:  str.append("[ Float ");
+		case tokenFloat:   str.append("[ Float ");
 		break;
-		case tokenSymbol: str.append("[ Sym ");
+		case tokenSymbol:  str.append("[ Sym ");
+		break; 
+		case tokenWord:    str.append("[ Word ");
 		break;
-		case tokenWord: str.append("[ Word ");
-		break;
-		case tokenEOF: str.append("[ EOF ]"); continue;
+		case tokenEOF:     str.append("[ EOF ]"); continue;
 		break;
 		}
 
