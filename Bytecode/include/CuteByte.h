@@ -63,6 +63,8 @@ typedef enum
 
 	ctImageError_Success = 0x00,
 	ctImageError_FileNotFound = 0x01,
+	ctImageError_ByteReadFailure = 0x02,
+	ctImageError_ByteWriteFailure = 0x03,
 
 } ctImageError;
 
