@@ -88,6 +88,8 @@ typedef enum
     instrAccessCon       = 0x35,
     instrDelCon          = 0x36,
 
+	instrOut             = 0x88,
+
 } ctInstr;
 
 

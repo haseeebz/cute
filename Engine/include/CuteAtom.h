@@ -49,7 +49,7 @@ struct _ctAtom
         ctInt32   i;
         ctFloat32 f;
         ctInt8    by;
-    } val;
+    };
     
 };
 
