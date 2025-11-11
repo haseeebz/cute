@@ -1,26 +1,25 @@
 
-file(GLOB EXE_SRC "${CMAKE_CURRENT_SOURCE_DIR}/exe/*.c")
+#file(GLOB WRITER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/writer/*.cpp")
 
 add_library (
 	CuteEngine
 	STATIC
 
-    ${EXE_SRC}
     engine.c
-   
+
 )
 
 target_link_libraries(CuteEngine PRIVATE CuteBytecode)
 
 target_compile_options (
-    CuteEngine 
+    CuteEngine
     PRIVATE 
     -Wall -Wextra -g
 )
 
 
 target_include_directories (
-    CuteEngine 
+    CuteEngine
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

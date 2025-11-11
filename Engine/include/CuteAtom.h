@@ -13,9 +13,7 @@ extern "C" {
 // Primitives
 typedef int32_t ctInt32;
 typedef float   ctFloat32;
-typedef int8_t  ctChar;
-typedef bool    ctBool;
-typedef uint8_t ctByte;
+typedef int8_t  ctInt8;
 
 // Special Primitives
 // These will be distributed over 2 atoms
@@ -34,9 +32,7 @@ typedef enum
     typeInt64,
     typeFloat32,
     typeFloat64,
-    typeChar,
-    typeBool,
-    typeByte
+    typeInt8
 
 } AtomType;
 
@@ -52,9 +48,7 @@ struct _ctAtom
     {
         ctInt32   i;
         ctFloat32 f;
-        ctChar    c;
-        ctBool    b;
-        ctByte    by;
+        ctInt8    by;
     } val;
     
 };
