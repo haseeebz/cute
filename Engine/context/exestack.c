@@ -17,7 +17,7 @@ void ctExeStack_push(ctExeStack *stack, ctAtom atom)
 {
     if (stack->count >= stack->cap)
 	{
-		fprintf(stderr, "Stack overflow\n");
+		fprintf(stderr, "Stack overflow. Count:%d, Cap:%d\n", stack->count, stack->cap);
         exit(EXIT_FAILURE);
 	}
     stack->atoms[stack->count++] = atom;

@@ -10,7 +10,7 @@ extern "C" {
 #endif
 
 // probably important
-typedef int8_t ctInstrSize;
+typedef uint8_t ctInstrSize;
 
 
 // main instruction set
@@ -88,7 +88,7 @@ typedef enum
     instrAccessCon       = 0x35,
     instrDelCon          = 0x36,
 
-	instrOut             = 0x88,
+	instrOut             = 0x37,
 
 } ctInstr;
 

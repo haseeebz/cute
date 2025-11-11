@@ -1,11 +1,12 @@
 
-#file(GLOB WRITER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/writer/*.cpp")
+file(GLOB CONTEXT_SRC "${CMAKE_CURRENT_SOURCE_DIR}/context/*.c")
 
 add_library (
 	CuteEngine
 	STATIC
 
     engine.c
+	${CONTEXT_SRC}
 
 )
 

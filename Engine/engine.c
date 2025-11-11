@@ -17,7 +17,7 @@ void CuteEngine_init()
 
 void CuteEngine_end()
 {
-	exit(EXIT_FAILURE);
+	exit(EXIT_SUCCESS);
 }
 
 
@@ -44,6 +44,7 @@ void CuteEngine_loadImage(char* filepath)
 CtContext* CuteEngine_newContext()
 {
 	CtContext* ctx = malloc(sizeof(CtContext));
+	ctExeStack_init(&ctx->exestack);
 	ctx->img = &ctEngine.img;
 	ctx->pc = 0;
 
@@ -52,7 +53,7 @@ CtContext* CuteEngine_newContext()
 
 void CuteEngine_endContext(CtContext** ctx)
 {
-	free(ctx);
+	free(*ctx);
 	ctx = NULL;
 }
 
@@ -64,12 +65,14 @@ void CuteEngine_runMain()
 	CuteEngine_execLoop(ctx);
 
 	CuteEngine_endContext(&ctx);
+
+	CuteEngine_end();
 }
 
 
 void CuteEngine_execLoop(CtContext* ctx)
 {
-	ctInstr instr;
+	ctInstrSize instr;
 
 	ctInstrSize* instrs = ctx->img->instrs;
 
@@ -86,6 +89,7 @@ void CuteEngine_execLoop(CtContext* ctx)
 	{
 
 	instr = instrs[ctx->pc++];
+	
 
 	switch (instr) 
 	{
