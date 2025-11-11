@@ -75,6 +75,7 @@ void CuteEngine_execLoop(CtContext* ctx)
 	ctInstrSize instr;
 
 	ctInstrSize* instrs = ctx->img->instrs;
+	Constant* consts = ctx->img->consts;
 
 	int64_t i1;
 	int64_t i2;
@@ -106,8 +107,7 @@ void CuteEngine_execLoop(CtContext* ctx)
 			break;
 
         case instrLoadCoI32:
-			i1 = instrs[ctx->pc++];
-			a1.i = i1;
+			a1.i = consts[instrs[ctx->pc++]].i32;
 			ctExeStack_push(&ctx->exestack, a1);
 			break;
 

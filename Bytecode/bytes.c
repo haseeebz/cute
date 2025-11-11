@@ -11,7 +11,12 @@ void ctProgramImage_free(ctProgramImage* img)
 	{
 		free(img->instrs);
 	}
+	if (img->consts != NULL)
+	{
+		free(img->consts);
+	}
 	img->header.instr_count = 0;
+	img->header.const_count = 0;
 }
 
 
@@ -25,8 +30,9 @@ ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath)
 	items_read = fread(&img->header, sizeof(ctProgramHeader), 1, fp);
 	if (items_read != 1) {return ctImageError_ByteReadFailure;}
 
-	items_read = fread(&img->main, sizeof(ctProgramHeader), 1, fp);
-	if (items_read != 1) {return ctImageError_ByteReadFailure;}
+	img->consts = malloc(sizeof(Constant) * img->header.const_count);
+	items_read = fread(img->consts, sizeof(Constant), img->header.const_count, fp);
+	if (items_read != img->header.const_count) {return ctImageError_ByteReadFailure;}
 
 	img->instrs = malloc(sizeof(ctInstrSize) * img->header.instr_count);
 	items_read = fread(img->instrs, sizeof(ctInstrSize), img->header.instr_count, fp);
@@ -47,11 +53,12 @@ ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath)
 	items_written = fwrite(&img->header, sizeof(ctProgramHeader), 1, fp);
 	if (items_written != 1) {return ctImageError_ByteWriteFailure;}
 
-	items_written = fwrite(&img->main, sizeof(ctProgramHeader), 1, fp);
-	if (items_written != 1) {return ctImageError_ByteWriteFailure;}
+	items_written = fwrite(img->consts, sizeof(Constant), img->header.const_count, fp);
+	if (items_written != img->header.const_count) {return ctImageError_ByteWriteFailure;}
 
 	items_written = fwrite(img->instrs, sizeof(ctInstrSize), img->header.instr_count, fp);
 	if (items_written != img->header.instr_count) {return ctImageError_ByteWriteFailure;}
 
 	return ctImageError_Success;
 }
+

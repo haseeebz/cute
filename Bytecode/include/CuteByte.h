@@ -98,21 +98,28 @@ typedef enum
 
 typedef struct
 {
+	union
+	{
+		int64_t i64;
+		int32_t i32;
+		float 	f32;
+		double  f64;
+	};
+
+} Constant;
+
+
+typedef struct
+{
 	u_int32_t magic;
+	u_int32_t const_count;
 	u_int32_t instr_count;
 } ctProgramHeader;
-
-typedef struct 
-{
-	u_int32_t id;
-	u_int16_t arg_count;
-	u_int32_t local_var_space;
-} ctFunctionMeta;
 
 typedef struct
 {
 	ctProgramHeader header;
-	ctFunctionMeta main;
+	Constant* consts;
 	ctInstrSize* instrs;
 } ctProgramImage;
 
@@ -132,6 +139,9 @@ typedef enum
 void ctProgramImage_free(ctProgramImage* img);
 ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath);
 ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath);
+
+
+u_int32_t ctProgramImage_addConstant(Constant const);
 
 
 #ifdef __cplusplus

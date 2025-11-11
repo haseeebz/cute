@@ -4,7 +4,7 @@
 
 #pragma once 
 
-#define EXESTACK_SIZE 1024
+#define EXESTACK_SIZE 256
 
 
 typedef struct

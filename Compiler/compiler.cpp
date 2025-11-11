@@ -138,6 +138,12 @@ void CuteCompiler::assemble(std::string filepath, std::string outfile)
 	
 	std::vector<ctInstrSize> instrs;
 
+	std::vector<Constant> consts;
+	consts.push_back((Constant) {.i32 =10});
+	consts.push_back((Constant) {.i32 =10});
+
+	
+	
 	for (std::string code: codes)
 	{
 		
@@ -148,16 +154,17 @@ void CuteCompiler::assemble(std::string filepath, std::string outfile)
 		}
 		// I'll assume for now that if it is not in the Map, its an integar
 
-		instrs.push_back(std::stoi(code));
+		instrs.push_back((ctInstrSize) std::stoi(code));
 	}
 
 	ctProgramImage img;
 
 	img.header.instr_count = instrs.size();
 	img.instrs = instrs.data();
-	img.main.local_var_space = 10;
-	img.main.arg_count = 0;
-	img.main.id = 0;
 
-	ctProgramImage_write(&img, outfile.data());
+	img.header.const_count = consts.size();
+	img.consts = consts.data();
+
+	ctImageError code = ctProgramImage_write(&img, outfile.data());
+
 }
