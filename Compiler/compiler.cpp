@@ -139,8 +139,8 @@ void CuteCompiler::assemble(std::string filepath, std::string outfile)
 	std::vector<ctInstrSize> instrs;
 
 	std::vector<Constant> consts;
-	consts.push_back((Constant) {.i32 =10});
-	consts.push_back((Constant) {.i32 =10});
+	consts.push_back((Constant) {.f32 = 10});
+	consts.push_back((Constant) {.f32 = 1.5});
 
 	
 	

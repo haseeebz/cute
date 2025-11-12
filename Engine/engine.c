@@ -115,6 +115,8 @@ void CuteEngine_execLoop(CtContext* ctx)
 			break;
 
         case instrLoadCoF32:
+			a1.f = consts[instrs[ctx->pc++]].f32;
+			ctExeStack_push(&ctx->exestack, a1);
 			break;
 
         case instrLoadCoF64:
@@ -145,74 +147,63 @@ void CuteEngine_execLoop(CtContext* ctx)
 			break;
 
         case instrAddI32:
-			a2 = ctExeStack_pop(&ctx->exestack);
-			a1 = ctExeStack_pop(&ctx->exestack);
-			a1.i = a1.i + a2.i;
-			ctExeStack_push(&ctx->exestack, a1);
+			BasicBinaryOp(a1, a2, i, +, &ctx->exestack);
 			break;
 
         case instrAddI64:
 			break;
 
         case instrAddF32:
+			BasicBinaryOp(a1, a2, f, +, &ctx->exestack);
 			break;
 
         case instrAddF64:
 			break;
 
         case instrSubI32:
-			a2 = ctExeStack_pop(&ctx->exestack);
-			a1 = ctExeStack_pop(&ctx->exestack);
-			a1.i = a1.i - a2.i;
-			ctExeStack_push(&ctx->exestack, a1);
+			BasicBinaryOp(a1, a2, i, -, &ctx->exestack);
 			break;
 
         case instrSubI64:
 			break;
 
         case instrSubF32:
+			BasicBinaryOp(a1, a2, f, -, &ctx->exestack);
 			break;
 
         case instrSubF64:
 			break;
 
         case instrMulI32:
-			a2 = ctExeStack_pop(&ctx->exestack);
-			a1 = ctExeStack_pop(&ctx->exestack);
-			a1.i = a1.i * a2.i;
-			ctExeStack_push(&ctx->exestack, a1);
+			BasicBinaryOp(a1, a2, i, *, &ctx->exestack);
 			break;
 
         case instrMulI64:
 			break;
 
         case instrMulF32:
+			BasicBinaryOp(a1, a2, f, *, &ctx->exestack);
 			break;
 
         case instrMulF64:
 			break;
 
         case instrDivI32:
-			a2 = ctExeStack_pop(&ctx->exestack);
-			a1 = ctExeStack_pop(&ctx->exestack);
-			a1.i = a1.i / a2.i;
-			ctExeStack_push(&ctx->exestack, a1);
+			BasicBinaryOp(a1, a2, i, /, &ctx->exestack);
 			break;
 
         case instrDivI64:
 			break;
 
         case instrDivF32:
+			BasicBinaryOp(a1, a2, f, /, &ctx->exestack);
 			break;
 
         case instrDivF64:
 			break;
 
         case instrAnd:
-			a2 = ctExeStack_pop(&ctx->exestack);
-			a1 = ctExeStack_pop(&ctx->exestack);
-			a1.by = a1.by && a2.by;
-			ctExeStack_push(&ctx->exestack, a1);
+			BasicBinaryOp(a1, a2, by, &&, &ctx->exestack);
 			break;
 
         case instrOr:
@@ -260,7 +251,7 @@ void CuteEngine_execLoop(CtContext* ctx)
         case instrDelCon:
 		case instrOut:
 			a1 = *ctExeStack_peek(&ctx->exestack);
-			printf("%d\n", a1.i);
+			printf("%f\n", a1.f);
 			break;
     }
 
