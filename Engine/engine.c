@@ -1,8 +1,8 @@
 #include "CuteAtom.h"
 #include "CuteByte.h"
 #include "CuteEngine.h"
-#include "context/context.h"
-#include "context/exestack.h"
+#include "state/state.h"
+#include "state/exestack.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -41,47 +41,25 @@ void CuteEngine_loadImage(char* filepath)
 }
 
 
-CtContext* CuteEngine_newContext()
-{
-	CtContext* ctx = malloc(sizeof(CtContext));
-	ctExeStack_init(&ctx->exestack);
-	ctx->img = &ctEngine.img;
-	ctx->pc = 0;
-
-	return ctx;
-}
-
-void CuteEngine_endContext(CtContext** ctx)
-{
-	free(*ctx);
-	ctx = NULL;
-}
-
-
 void CuteEngine_runMain()
 {
-	CtContext* ctx = CuteEngine_newContext();
+	CtState state;
+	CtState_init(&state, &ctEngine.img);
 	
-	CuteEngine_execLoop(ctx);
+	CuteEngine_execLoop(&state);
 
-	CuteEngine_endContext(&ctx);
+	CtState_end(&state);
 
 	CuteEngine_end();
 }
 
 
-void CuteEngine_execLoop(CtContext* ctx)
+void CuteEngine_execLoop(CtState* state)
 {
 	ctInstrSize instr;
 
-	ctInstrSize* instrs = ctx->img->instrs;
-	Constant* consts = ctx->img->consts;
-
-	int64_t i1;
-	int64_t i2;
-
-	double f1;
-	double f2;
+	ctInstrSize* instrs = state->img->instrs;
+	Constant* consts = state->img->consts;
 
 	ctAtom a1;
 	ctAtom a2;
@@ -89,7 +67,7 @@ void CuteEngine_execLoop(CtContext* ctx)
 	while (1)
 	{
 
-	instr = instrs[ctx->pc++];
+	instr = instrs[state->pc++];
 	
 
 	switch (instr) 
@@ -107,16 +85,16 @@ void CuteEngine_execLoop(CtContext* ctx)
 			break;
 
         case instrLoadCoI32:
-			a1.i = consts[instrs[ctx->pc++]].i32;
-			ctExeStack_push(&ctx->exestack, a1);
+			a1.i = consts[instrs[state->pc++]].i32;
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrLoadCoI64:
 			break;
 
         case instrLoadCoF32:
-			a1.f = consts[instrs[ctx->pc++]].f32;
-			ctExeStack_push(&ctx->exestack, a1);
+			a1.f = consts[instrs[state->pc++]].f32;
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrLoadCoF64:
@@ -147,88 +125,88 @@ void CuteEngine_execLoop(CtContext* ctx)
 			break;
 
         case instrAddI32:
-			BasicBinaryOp(a1, a2, i, +, &ctx->exestack);
+			BasicBinaryOp(a1, a2, i, +, &state->exestack);
 			break;
 
         case instrAddI64:
 			break;
 
         case instrAddF32:
-			BasicBinaryOp(a1, a2, f, +, &ctx->exestack);
+			BasicBinaryOp(a1, a2, f, +, &state->exestack);
 			break;
 
         case instrAddF64:
 			break;
 
         case instrSubI32:
-			BasicBinaryOp(a1, a2, i, -, &ctx->exestack);
+			BasicBinaryOp(a1, a2, i, -, &state->exestack);
 			break;
 
         case instrSubI64:
 			break;
 
         case instrSubF32:
-			BasicBinaryOp(a1, a2, f, -, &ctx->exestack);
+			BasicBinaryOp(a1, a2, f, -, &state->exestack);
 			break;
 
         case instrSubF64:
 			break;
 
         case instrMulI32:
-			BasicBinaryOp(a1, a2, i, *, &ctx->exestack);
+			BasicBinaryOp(a1, a2, i, *, &state->exestack);
 			break;
 
         case instrMulI64:
 			break;
 
         case instrMulF32:
-			BasicBinaryOp(a1, a2, f, *, &ctx->exestack);
+			BasicBinaryOp(a1, a2, f, *, &state->exestack);
 			break;
 
         case instrMulF64:
 			break;
 
         case instrDivI32:
-			BasicBinaryOp(a1, a2, i, /, &ctx->exestack);
+			BasicBinaryOp(a1, a2, i, /, &state->exestack);
 			break;
 
         case instrDivI64:
 			break;
 
         case instrDivF32:
-			BasicBinaryOp(a1, a2, f, /, &ctx->exestack);
+			BasicBinaryOp(a1, a2, f, /, &state->exestack);
 			break;
 
         case instrDivF64:
 			break;
 
         case instrAnd:
-			BasicBinaryOp(a1, a2, by, &&, &ctx->exestack);
+			BasicBinaryOp(a1, a2, by, &&, &state->exestack);
 			break;
 
         case instrOr:
-			a2 = ctExeStack_pop(&ctx->exestack);
-			a1 = ctExeStack_pop(&ctx->exestack);
+			a2 = CtExeStack_pop(&state->exestack);
+			a1 = CtExeStack_pop(&state->exestack);
 			a1.by = a1.by || a2.by;
-			ctExeStack_push(&ctx->exestack, a1);
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrNot:
-			a1 = ctExeStack_pop(&ctx->exestack);
+			a1 = CtExeStack_pop(&state->exestack);
 			a1.i = !a1.i;
-			ctExeStack_push(&ctx->exestack, a1);
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrXor:
 			break;
 
         case instrCmpI32:
-			a2 = ctExeStack_pop(&ctx->exestack);
-			a1 = ctExeStack_pop(&ctx->exestack);
+			a2 = CtExeStack_pop(&state->exestack);
+			a1 = CtExeStack_pop(&state->exestack);
 			if (a1.i < a2.i) {a1.i = -1;}
 			else if (a1.i > a2.i) {a1.i = 1;}
 			else  {a1.i = 0;}
-			ctExeStack_push(&ctx->exestack, a1);
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrCmpI64:
@@ -250,7 +228,7 @@ void CuteEngine_execLoop(CtContext* ctx)
         case instrAccessCon:
         case instrDelCon:
 		case instrOut:
-			a1 = *ctExeStack_peek(&ctx->exestack);
+			a1 = *CtExeStack_peek(&state->exestack);
 			printf("%f\n", a1.f);
 			break;
     }

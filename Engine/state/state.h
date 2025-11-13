@@ -7,9 +7,11 @@
 
 typedef struct
 {
-	ctExeStack exestack;
+	CtExeStack exestack;
 	size_t pc;
 	ctProgramImage* img;
-	
-} CtContext;
+} CtState;
 
+
+void CtState_init(CtState* state, ctProgramImage* img);
+void CtState_end(CtState* state);

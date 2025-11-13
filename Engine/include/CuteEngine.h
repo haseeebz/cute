@@ -1,6 +1,6 @@
 #include "CuteByte.h"
 #include "CuteAtom.h"
-#include "../context/context.h"
+#include "../state/state.h"
 
 #pragma once 
 
@@ -10,10 +10,10 @@ extern "C" {
 #endif
 
 #define BasicBinaryOp(atom1, atom2, type, op, stack) \
-atom2 = ctExeStack_pop(stack); \
-atom1 = ctExeStack_pop(stack); \
+atom2 = CtExeStack_pop(stack); \
+atom1 = CtExeStack_pop(stack); \
 atom1.type = atom1.type op atom2.type; \
-ctExeStack_push(stack, atom1);
+CtExeStack_push(stack, atom1);
 
 
 
@@ -28,14 +28,12 @@ extern CuteEngine ctEngine;
 
 void CuteEngine_init();
 void CuteEngine_end();
+
 void CuteEngine_loadImage(char* filepath);
 
-CtContext* CuteEngine_newContext();
-void CuteEngine_endContext(CtContext** ctx);
+void CuteEngine_execLoop(CtState* state);
 
-void CuteEngine_runMain();
-void CuteEngine_execLoop(CtContext* ctx);
-
+void CuteEngine_runMain(); // main entry point
 
 
 

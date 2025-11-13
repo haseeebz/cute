@@ -1,12 +1,12 @@
 
-file(GLOB CONTEXT_SRC "${CMAKE_CURRENT_SOURCE_DIR}/context/*.c")
+file(GLOB STATE_SRC "${CMAKE_CURRENT_SOURCE_DIR}/state/*.c")
 
 add_library (
 	CuteEngine
 	STATIC
 
     engine.c
-	${CONTEXT_SRC}
+	${STATE_SRC}
 
 )
 

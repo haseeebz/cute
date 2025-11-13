@@ -6,14 +6,14 @@
 #include "CuteAtom.h"
 
 
-void ctExeStack_init(ctExeStack *stack)
+void CtExeStack_init(CtExeStack *stack)
 {
 	stack->cap = EXESTACK_SIZE;
 	stack->count = 0;
 }
 
 
-void ctExeStack_push(ctExeStack *stack, ctAtom atom) 
+void CtExeStack_push(CtExeStack *stack, ctAtom atom) 
 {
     if (stack->count >= stack->cap)
 	{
@@ -24,7 +24,7 @@ void ctExeStack_push(ctExeStack *stack, ctAtom atom)
 }
 
 
-ctAtom ctExeStack_pop(ctExeStack *stack) 
+ctAtom CtExeStack_pop(CtExeStack *stack) 
 {
     if (stack->count == 0) {
         fprintf(stderr, "Stack underflow\n");
@@ -34,7 +34,7 @@ ctAtom ctExeStack_pop(ctExeStack *stack)
 }
 
 
-ctAtom *ctExeStack_peek(ctExeStack *stack) 
+ctAtom *CtExeStack_peek(CtExeStack *stack) 
 {
     if (stack->count == 0) return NULL;
     return &stack->atoms[stack->count - 1];
