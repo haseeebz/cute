@@ -96,9 +96,11 @@ void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
 
 	Token token;
 
-	while (token.type != TokenType::tokenEOF)
+	while (true)
 	{
 		token = this->tokStream->next();
+
+		if (token.type == TokenType::tokenEOF) {break;}
 
 		if (token.type == TokenType::tokenSymbol)
 		{
@@ -125,6 +127,7 @@ void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
 				continue;
 			}
 
+			continue;
 		}
 
 		if (token.type == TokenType::tokenWord)

@@ -102,7 +102,7 @@ void Tokenizer::tokenizeWord()
 		if (this->currIndex >= this->currSrc->length()) {break;}
 		c = this->currSrc->at(currIndex);
 
-		if (std::isalpha(c))
+		if (std::isalpha(c) || std::isdigit(c))
 		{
 			this->currIndex++;
 			continue;
