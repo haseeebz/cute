@@ -151,6 +151,7 @@ void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
 	}
 
 
+
 	ctProgramImage img;
 
 	img.header.instr_count = this->currInstrs.size();
@@ -160,4 +161,15 @@ void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
 	img.consts = this->currConstants.data();
 
 	ctImageError code = ctProgramImage_write(&img, outfile.data());
+
+
+	if (code == ctImageError_Success)
+	{
+		std::cout << "Bytecode written to: " << outfile << std::endl;
+	}
+	else 
+	{
+		std::cout << "Bytecode assembly failed. Error: " << code << std::endl;
+	}
+	
 }

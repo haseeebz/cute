@@ -40,8 +40,8 @@ void CuteCompiler::assemble(std::string filepath, std::string outfile)
 {
 	TokenStream stream = tokenizer.tokenize(filepath);
 
-	ctDebug("Tokenized Source:\n");
-	ctDebug(stream.toString());
+	//ctDebug("Tokenized Source:\n");
+	//ctDebug(stream.toString());
 
 	this->assembler.assemble(&stream, outfile);
 }
