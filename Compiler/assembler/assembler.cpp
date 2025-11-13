@@ -83,7 +83,8 @@ std::map<std::string, ctInstr> CuteAssembler::getInstrMap()
 		{"AccessCon", instrAccessCon},
 		{"DelCon", instrDelCon},
 
-		{"Out", instrOut},
+		{"OutI32", instrOutI32},
+		{"OutF32", instrOutF32},
 	};
 
 	return instr_map;
@@ -120,7 +121,7 @@ void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
 			}
 
 
-			if (token.type == TokenType::tokenInt)
+			if (token.type == TokenType::tokenFloat)
 			{
 				float f = std::stof(this->tokStream->viewToken(&token));
 				this->currConstants.push_back((Constant) {.f32 = f});
@@ -132,7 +133,9 @@ void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
 
 		if (token.type == TokenType::tokenWord)
 		{
-			ctInstrSize instr = this->getInstrMap()[this->tokStream->viewToken(&token)];
+			std::string word = this->tokStream->viewToken(&token);
+			if (!this->getInstrMap().contains(word)) {goto Error;}
+			ctInstrSize instr = this->getInstrMap()[word];
 			this->currInstrs.push_back(instr);
 			continue;
 		}
@@ -171,5 +174,5 @@ void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
 	{
 		std::cout << "Bytecode assembly failed. Error: " << code << std::endl;
 	}
-	
+
 }

@@ -227,14 +227,17 @@ void CuteEngine_execLoop(CtState* state)
         case instrNewCon:
         case instrAccessCon:
         case instrDelCon:
-		case instrOut:
+		case instrOutI32:
+			a1 = *CtExeStack_peek(&state->exestack);
+			printf("%d\n", a1.i);
+			break;
+		case instrOutF32:
 			a1 = *CtExeStack_peek(&state->exestack);
 			printf("%f\n", a1.f);
 			break;
     }
-
 	
-    }
-}
+	}
 
+}
 
