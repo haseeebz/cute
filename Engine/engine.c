@@ -68,7 +68,6 @@ void CuteEngine_execLoop(CtState* state)
 	{
 
 	instr = instrs[state->pc++];
-	
 
 	switch (instr) 
 	{
@@ -76,6 +75,7 @@ void CuteEngine_execLoop(CtState* state)
 			return;
 
         case instrDupAtom:
+			CtExeStack_push(&state->exestack, *CtExeStack_peek(&state->exestack));
 			break;
 
         case instrPopAtom:
@@ -213,14 +213,36 @@ void CuteEngine_execLoop(CtState* state)
         case instrCmpF32:
         case instrCmpF64:
         case instrCmp2BoolEq:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by == 0) {a1.by = 1;} else {a1.by = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
         case instrCmp2BoolNe:
         case instrCmp2BoolLt:
         case instrCmp2BoolLe:
         case instrCmp2BoolGt:
         case instrCmp2BoolGe:
+
         case instrJmp:
+			a1.i = instrs[state->pc++];
+			state->pc = a1.i; 
+			break;
+
         case instrJmpTrue:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (!a1.by) {continue;} 
+			a1.i = instrs[state->pc++];
+			state->pc = a1.i; 
+			break;
+
         case instrJmpFalse:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by) {continue;} 
+			a1.i = instrs[state->pc++];
+			state->pc = a1.i; 
+			break;
+
         case instrCall:
         case instrCallVirtual:
         case instrReturn:
@@ -231,6 +253,7 @@ void CuteEngine_execLoop(CtState* state)
 			a1 = *CtExeStack_peek(&state->exestack);
 			printf("%d\n", a1.i);
 			break;
+
 		case instrOutF32:
 			a1 = *CtExeStack_peek(&state->exestack);
 			printf("%f\n", a1.f);
