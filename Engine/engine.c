@@ -203,15 +203,24 @@ void CuteEngine_execLoop(CtState* state)
         case instrCmpI32:
 			a2 = CtExeStack_pop(&state->exestack);
 			a1 = CtExeStack_pop(&state->exestack);
-			if (a1.i < a2.i) {a1.i = -1;}
-			else if (a1.i > a2.i) {a1.i = 1;}
-			else  {a1.i = 0;}
+			if (a1.i < a2.i) {a1.by = -1;}
+			else if (a1.i > a2.i) {a1.by = 1;}
+			else  {a1.by = 0;}
 			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrCmpI64:
         case instrCmpF32:
+			a2 = CtExeStack_pop(&state->exestack);
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.f < a2.f) {a1.by = -1;}
+			else if (a1.f > a2.f) {a1.by = 1;}
+			else  {a1.by = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
         case instrCmpF64:
+
         case instrCmp2BoolEq:
 			a1 = CtExeStack_pop(&state->exestack);
 			if (a1.by == 0) {a1.by = 1;} else {a1.by = 0;}
@@ -219,10 +228,34 @@ void CuteEngine_execLoop(CtState* state)
 			break;
 
         case instrCmp2BoolNe:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by != 0) {a1.by = 1;} else {a1.by = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
         case instrCmp2BoolLt:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by == -1) {a1.by = 1;} else {a1.by = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
         case instrCmp2BoolLe:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by <= 0) {a1.by = 1;} else {a1.by = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
         case instrCmp2BoolGt:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by == 1) {a1.by = 1;} else {a1.by = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
         case instrCmp2BoolGe:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by >= 0) {a1.by = 1;} else {a1.by = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
 
         case instrJmp:
 			a1.i = instrs[state->pc++];
