@@ -13,7 +13,7 @@ void CtExeStack_init(CtExeStack *stack)
 }
 
 
-void CtExeStack_push(CtExeStack *stack, ctAtom atom) 
+void CtExeStack_push(CtExeStack *stack, CtAtom atom) 
 {
     if (stack->count >= stack->cap)
 	{
@@ -24,7 +24,7 @@ void CtExeStack_push(CtExeStack *stack, ctAtom atom)
 }
 
 
-ctAtom CtExeStack_pop(CtExeStack *stack) 
+CtAtom CtExeStack_pop(CtExeStack *stack) 
 {
     if (stack->count == 0) {
         fprintf(stderr, "Stack underflow\n");
@@ -34,7 +34,7 @@ ctAtom CtExeStack_pop(CtExeStack *stack)
 }
 
 
-ctAtom *CtExeStack_peek(CtExeStack *stack) 
+CtAtom *CtExeStack_peek(CtExeStack *stack) 
 {
     if (stack->count == 0) return NULL;
     return &stack->atoms[stack->count - 1];
