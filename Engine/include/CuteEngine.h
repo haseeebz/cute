@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-#define BasicBinaryOp(atom1, atom2, type, op, stack) \
+#define mCtBinaryOp(atom1, atom2, type, op, stack) \
 atom2 = CtExeStack_pop(stack); \
 atom1 = CtExeStack_pop(stack); \
 atom1.type = atom1.type op atom2.type; \

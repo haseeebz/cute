@@ -11,14 +11,14 @@ extern "C" {
 
 
 // Primitives
-typedef int32_t ctInt32;
-typedef float   ctFloat32;
-typedef int8_t  ctInt8;
+typedef int32_t CtInt32;
+typedef float   CtFloat32;
+typedef int8_t  CtInt8;
 
 // Special Primitives
 // These will be distributed over 2 atoms
-typedef int64_t ctInt64;
-typedef double  ctFloat64;
+typedef int64_t CtInt64;
+typedef double  CtFloat64;
 
 
 
@@ -40,21 +40,21 @@ typedef enum
 
 // Main Atom def
 
-struct _ctAtom
+struct _CtAtom
 {
     AtomType type;
 
     union 
     {
-        ctInt32   i;
-        ctFloat32 f;
-        ctInt8    by;
+        CtInt32   i;
+        CtFloat32 f;
+        CtInt8    by;
     };
     
 };
 
 
-typedef struct _ctAtom ctAtom;
+typedef struct _CtAtom CtAtom;
 
 #ifdef __cplusplus
 }

@@ -61,8 +61,8 @@ void CuteEngine_execLoop(CtState* state)
 	ctInstrSize* instrs = state->img->instrs;
 	Constant* consts = state->img->consts;
 
-	ctAtom a1;
-	ctAtom a2;
+	CtAtom a1;
+	CtAtom a2;
 
 	while (1)
 	{
@@ -125,63 +125,63 @@ void CuteEngine_execLoop(CtState* state)
 			break;
 
         case instrAddI32:
-			BasicBinaryOp(a1, a2, i, +, &state->exestack);
+			mCtBinaryOp(a1, a2, i, +, &state->exestack);
 			break;
 
         case instrAddI64:
 			break;
 
         case instrAddF32:
-			BasicBinaryOp(a1, a2, f, +, &state->exestack);
+			mCtBinaryOp(a1, a2, f, +, &state->exestack);
 			break;
 
         case instrAddF64:
 			break;
 
         case instrSubI32:
-			BasicBinaryOp(a1, a2, i, -, &state->exestack);
+			mCtBinaryOp(a1, a2, i, -, &state->exestack);
 			break;
 
         case instrSubI64:
 			break;
 
         case instrSubF32:
-			BasicBinaryOp(a1, a2, f, -, &state->exestack);
+			mCtBinaryOp(a1, a2, f, -, &state->exestack);
 			break;
 
         case instrSubF64:
 			break;
 
         case instrMulI32:
-			BasicBinaryOp(a1, a2, i, *, &state->exestack);
+			mCtBinaryOp(a1, a2, i, *, &state->exestack);
 			break;
 
         case instrMulI64:
 			break;
 
         case instrMulF32:
-			BasicBinaryOp(a1, a2, f, *, &state->exestack);
+			mCtBinaryOp(a1, a2, f, *, &state->exestack);
 			break;
 
         case instrMulF64:
 			break;
 
         case instrDivI32:
-			BasicBinaryOp(a1, a2, i, /, &state->exestack);
+			mCtBinaryOp(a1, a2, i, /, &state->exestack);
 			break;
 
         case instrDivI64:
 			break;
 
         case instrDivF32:
-			BasicBinaryOp(a1, a2, f, /, &state->exestack);
+			mCtBinaryOp(a1, a2, f, /, &state->exestack);
 			break;
 
         case instrDivF64:
 			break;
 
         case instrAnd:
-			BasicBinaryOp(a1, a2, by, &&, &state->exestack);
+			mCtBinaryOp(a1, a2, by, &&, &state->exestack);
 			break;
 
         case instrOr:

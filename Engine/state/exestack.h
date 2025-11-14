@@ -9,7 +9,7 @@
 
 typedef struct
 {
-    ctAtom atoms[EXESTACK_SIZE];
+    CtAtom atoms[EXESTACK_SIZE];
     int count;
     int cap;
 } CtExeStack;
@@ -17,6 +17,6 @@ typedef struct
 
 void CtExeStack_init(CtExeStack *stack);
 
-void CtExeStack_push(CtExeStack *stack, ctAtom atom);
-ctAtom CtExeStack_pop(CtExeStack *stack);
-ctAtom *CtExeStack_peek(CtExeStack *stack);
+void CtExeStack_push(CtExeStack *stack, CtAtom atom);
+CtAtom CtExeStack_pop(CtExeStack *stack);
+CtAtom *CtExeStack_peek(CtExeStack *stack);
