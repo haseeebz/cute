@@ -2,6 +2,8 @@
 #include "parser.hpp"
 
 #include "../tokenizer/token.hpp"
+#include <iostream>
+#include <vector>
 
 
 
@@ -44,6 +46,9 @@ ctNode* Parser::parseStmt(int previous_precedence)
 	ctNode* rhs;
 
 	Token tok;
+	char sym;
+
+
 
 	tok = this->currStream->next();
 
@@ -53,7 +58,9 @@ ctNode* Parser::parseStmt(int previous_precedence)
 	}
 	else if (tok.type == TokenType::tokenSymbol)
 	{
-		if (this->currStream->viewSymToken(&tok) == '(')
+		sym = this->currStream->viewSymToken(&tok);
+
+		if (sym == '(')
 		{
 			lhs = (ctNode*) this->parseStmt(0);
 		}
@@ -62,37 +69,58 @@ ctNode* Parser::parseStmt(int previous_precedence)
 	else if (tok.type == TokenType::tokenWord)
 	{
 		lhs = new ctIdentifierNode(this->currStream->viewToken(&tok));
+		
+		if (this->currStream->peek().type == TokenType::tokenWord)
+		{
+			ctIdentifierListNode* list = new ctIdentifierListNode();
+			list->nodes.push_back((ctIdentifierNode*) lhs);
+			
+			while (this->currStream->peek().type == TokenType::tokenWord)
+			{
+				tok = this->currStream->next();
+				list->nodes.push_back(new ctIdentifierNode(this->currStream->viewToken(&tok)));
+			}
+
+			lhs = list;
+		}
 	}
+
+
 
 	while (tok.type != TokenType::tokenEOF)
 	{
 		tok = this->currStream->next();
 
-		if (tok.type == TokenType::tokenSymbol)
+		if (tok.type != TokenType::tokenSymbol)
 		{
-			if (this->currStream->viewSymToken(&tok) == ')')
-			{
-				break;	
-			}
-			else if (this->currStream->viewSymToken(&tok) == ';')
-			{
-				break;
-			}
+			std::cout << "Invalid Token\n";
+			break;
+		}
+	
+		sym = this->currStream->viewSymToken(&tok);
 
-			char op = this->currStream->viewSymToken(&tok);
-			int precedence = BinaryOpPrecedence[op];
+		if (this->currStream->viewSymToken(&tok) == ')')
+		{
+			break;	
+		}
+		else if (this->currStream->viewSymToken(&tok) == ';')
+		{
+			break;
+		}
 
-			if (precedence > previous_precedence)
-			{
-				rhs = (ctNode*)  this->parseStmt(precedence);
-				lhs = new ctBinaryOpNode(op, lhs, rhs);
-				this->currStream->backtrack();
-			}
-			else 
-			{
-				break;
-			}
-		} 
+		int precedence = BinaryOpPrecedence[sym];
+
+		if (precedence > previous_precedence)
+		{
+			rhs = (ctNode*) this->parseStmt(precedence);
+			lhs = new ctBinaryOpNode(sym, lhs, rhs);
+			this->currStream->backtrack();
+		}
+		else 
+		{
+			break;
+		}
+
 
 	}
 

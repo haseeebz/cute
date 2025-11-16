@@ -56,10 +56,10 @@ void PrintVisitor::visit(ctIdentifierListNode* node)
 {
 	printDepth();
 
-	std::cout << "IdentifierList(";
-	for (ctIdentifierNode idf: node->nodes)
+	std::cout << "IdentifierList( ";
+	for (ctIdentifierNode* idf: node->nodes)
 	{
-		std::cout << idf.val << " ";
+		std::cout << idf->val << " ";
 	}
 	std::cout << ")\n";
 }

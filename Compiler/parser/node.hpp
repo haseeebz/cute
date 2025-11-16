@@ -85,7 +85,9 @@ struct ctIdentifierNode : public ctNode
 
 struct ctIdentifierListNode : public ctNode
 {
-	std::vector<ctIdentifierNode> nodes;
+	std::vector<ctIdentifierNode*> nodes;
+
+	~ctIdentifierListNode() {for (ctIdentifierNode* node: this->nodes) {delete node;}}
 
 	inline void accept(NodeVisitor* visitor) {visitor->visit(this);}
 };
