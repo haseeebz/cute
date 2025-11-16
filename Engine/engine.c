@@ -64,6 +64,8 @@ void CuteEngine_execLoop(CtState* state)
 	CtAtom a1;
 	CtAtom a2;
 
+	CtAtom locals[10];
+
 	while (1)
 	{
 
@@ -101,24 +103,34 @@ void CuteEngine_execLoop(CtState* state)
 			break;
 		
         case instrLoadI32:
+			a1.i = instrs[state->pc++];
+			a2 = locals[a1.i];
+			CtExeStack_push(&state->exestack, a2);
 			break;
 
         case instrLoadI64:
 			break;
 
         case instrLoadF32:
+			a1.i = instrs[state->pc++];
+			a2 = locals[a1.i];
+			CtExeStack_push(&state->exestack, a2);
 			break;
 
         case instrLoadF64:
 			break;
 
         case instrStoreI32:
+			a1.i = instrs[state->pc++];
+			locals[a1.i] = CtExeStack_pop(&state->exestack);
 			break;
 
         case instrStoreI64:
 			break;
 
         case instrStoreF32:
+			a1.i = instrs[state->pc++];
+			locals[a1.i] = CtExeStack_pop(&state->exestack);
 			break;
 
         case instrStoreF64:
@@ -185,10 +197,7 @@ void CuteEngine_execLoop(CtState* state)
 			break;
 
         case instrOr:
-			a2 = CtExeStack_pop(&state->exestack);
-			a1 = CtExeStack_pop(&state->exestack);
-			a1.by = a1.by || a2.by;
-			CtExeStack_push(&state->exestack, a1);
+			mCtBinaryOp(a1, a2, by, ||, &state->exestack);
 			break;
 
         case instrNot:
