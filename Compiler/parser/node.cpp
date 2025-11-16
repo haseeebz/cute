@@ -50,3 +50,42 @@ void PrintVisitor::visit(ctIdentifierNode* node)
 
 	std::cout << "Identifier(" << node->val << ")\n";
 }
+
+
+void PrintVisitor::visit(ctIdentifierListNode* node)
+{
+	printDepth();
+
+	std::cout << "IdentifierList(";
+	for (ctIdentifierNode idf: node->nodes)
+	{
+		std::cout << idf.val << " ";
+	}
+	std::cout << ")\n";
+}
+
+
+void PrintVisitor::visit(ctStmtNode* node)
+{
+	printDepth();
+
+	std::cout << "Statement[\n";
+	depth++;
+	node->accept(this);
+	depth--;
+	std::cout << "]\n";
+
+}
+
+
+void PrintVisitor::visit(ctProgramNode* node)
+{
+	printDepth();
+
+	std::cout << "--Program Node--\n";
+	
+	for (ctStmtNode& child: node->stmts)
+	{
+		child.accept(this);
+	}
+}

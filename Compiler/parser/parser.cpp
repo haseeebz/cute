@@ -7,10 +7,11 @@
 
 std::map<char, int> BinaryOpPrecedence = 
 {
-	{'+', 1},
-	{'-', 1},
-	{'*', 2},
-	{'/', 2},
+	{'=', 1},
+	{'+', 2},
+	{'-', 2},
+	{'*', 3},
+	{'/', 3},
 };
 
 
@@ -42,6 +43,10 @@ ctNode* Parser::parseExpr(int previous_precedence)
 		}
 
 	}
+	else if (tok.type == TokenType::tokenWord)
+	{
+		lhs = new ctIdentifierNode(this->currStream->viewToken(&tok));
+	}
 
 	while (tok.type != TokenType::tokenEOF)
 	{
@@ -68,6 +73,7 @@ ctNode* Parser::parseExpr(int previous_precedence)
 				break;
 			}
 		} 
+
 	}
 
 	return lhs;

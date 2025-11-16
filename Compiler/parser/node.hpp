@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 #pragma once 
 
@@ -12,6 +13,9 @@ struct ctIntNode;
 struct ctFloatNode;
 struct ctBinaryOpNode;
 struct ctIdentifierNode;
+struct ctIdentifierListNode;
+struct ctProgramNode;
+struct ctStmtNode;
 
 
 struct NodeVisitor
@@ -20,6 +24,9 @@ struct NodeVisitor
 	virtual void visit(ctFloatNode* node) = 0;
 	virtual void visit(ctBinaryOpNode* node) = 0;
 	virtual void visit(ctIdentifierNode* node) = 0;
+	virtual void visit(ctIdentifierListNode* node) = 0;
+	virtual void visit(ctStmtNode* node) = 0;
+	virtual void visit(ctProgramNode* node) = 0;
 
 	virtual ~NodeVisitor() = default;
 };
@@ -33,7 +40,7 @@ struct ctNode
 
 
 
-// Node types
+// Abstract Nodes
 
 struct ctIntNode : public ctNode
 {
@@ -76,6 +83,37 @@ struct ctIdentifierNode : public ctNode
 };
 
 
+struct ctIdentifierListNode : public ctNode
+{
+	std::vector<ctIdentifierNode> nodes;
+
+	inline void accept(NodeVisitor* visitor) {visitor->visit(this);}
+};
+
+
+
+
+// High level program nodes
+
+struct ctStmtNode
+{
+	ctNode* root;
+
+	ctStmtNode(ctNode* node): root(node) {};
+
+	inline void accept(NodeVisitor* visitor) {visitor->visit(this);}
+};
+
+struct ctProgramNode :public ctNode
+{
+	std::vector<ctStmtNode> stmts;
+
+	ctProgramNode() = default;
+
+	inline void accept(NodeVisitor* visitor) {visitor->visit(this);}
+};
+
+
 // Visitors
 
 struct PrintVisitor: public NodeVisitor
@@ -87,6 +125,8 @@ struct PrintVisitor: public NodeVisitor
 	void visit(ctFloatNode* node);
 	void visit(ctBinaryOpNode* node);
 	void visit(ctIdentifierNode* node);
-
+	void visit(ctIdentifierListNode* node);
+	void visit(ctStmtNode* node);
+	void visit(ctProgramNode* node);
 	~PrintVisitor() {};
 };
