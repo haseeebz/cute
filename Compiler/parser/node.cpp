@@ -52,16 +52,13 @@ void PrintVisitor::visit(ctIdentifierNode* node)
 }
 
 
-void PrintVisitor::visit(ctIdentifierListNode* node)
+void PrintVisitor::visit(ctNestedIdentifierNode* node)
 {
 	printDepth();
 
-	std::cout << "IdentifierList( ";
-	for (ctIdentifierNode* idf: node->nodes)
-	{
-		std::cout << idf->val << " ";
-	}
-	std::cout << ")\n";
+	std::cout << "NestedIdentifier( " << node->val << " : ";
+	node->node->accept(this);
+	std::cout << " )\n";
 }
 
 

@@ -13,7 +13,7 @@ struct ctIntNode;
 struct ctFloatNode;
 struct ctBinaryOpNode;
 struct ctIdentifierNode;
-struct ctIdentifierListNode;
+struct ctNestedIdentifierNode;
 struct ctSourceNode;
 struct ctStmtNode;
 
@@ -24,7 +24,7 @@ struct NodeVisitor
 	virtual void visit(ctFloatNode* node) = 0;
 	virtual void visit(ctBinaryOpNode* node) = 0;
 	virtual void visit(ctIdentifierNode* node) = 0;
-	virtual void visit(ctIdentifierListNode* node) = 0;
+	virtual void visit(ctNestedIdentifierNode* node) = 0;
 	virtual void visit(ctStmtNode* node) = 0;
 	virtual void visit(ctSourceNode* node) = 0;
 
@@ -83,11 +83,12 @@ struct ctIdentifierNode : public ctNode
 };
 
 
-struct ctIdentifierListNode : public ctNode
+struct ctNestedIdentifierNode : public ctNode
 {
-	std::vector<ctIdentifierNode*> nodes;
+	std::string val;
+	ctIdentifierNode* node;
 
-	~ctIdentifierListNode() {for (ctIdentifierNode* node: this->nodes) {delete node;}}
+	~ctNestedIdentifierNode() {delete node;}
 
 	inline void accept(NodeVisitor* visitor) {visitor->visit(this);}
 };
@@ -128,7 +129,7 @@ struct PrintVisitor: public NodeVisitor
 	void visit(ctFloatNode* node);
 	void visit(ctBinaryOpNode* node);
 	void visit(ctIdentifierNode* node);
-	void visit(ctIdentifierListNode* node);
+	void visit(ctNestedIdentifierNode* node);
 	void visit(ctStmtNode* node);
 	void visit(ctSourceNode* node);
 	~PrintVisitor() {};

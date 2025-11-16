@@ -15,6 +15,8 @@ class Parser
 
 	ctNode* parseStmt(int previous_precedence);
 
+	ctNode* parseIdentifier();
+
 	public:
 
 	ctSourceNode* parse(TokenStream* tokens);

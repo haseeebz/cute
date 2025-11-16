@@ -68,21 +68,8 @@ ctNode* Parser::parseStmt(int previous_precedence)
 	}
 	else if (tok.type == TokenType::tokenWord)
 	{
-		lhs = new ctIdentifierNode(this->currStream->viewToken(&tok));
-		
-		if (this->currStream->peek().type == TokenType::tokenWord)
-		{
-			ctIdentifierListNode* list = new ctIdentifierListNode();
-			list->nodes.push_back((ctIdentifierNode*) lhs);
-			
-			while (this->currStream->peek().type == TokenType::tokenWord)
-			{
-				tok = this->currStream->next();
-				list->nodes.push_back(new ctIdentifierNode(this->currStream->viewToken(&tok)));
-			}
-
-			lhs = list;
-		}
+		this->currStream->backtrack();
+		lhs = this->parseIdentifier();
 	}
 
 
@@ -121,10 +108,24 @@ ctNode* Parser::parseStmt(int previous_precedence)
 			break;
 		}
 
-
 	}
 
 	return lhs;
 }
 
 
+
+ctNode* Parser::parseIdentifier()
+{
+	Token tok = this->currStream->next();
+	ctNode* node = new ctIdentifierNode(this->currStream->viewToken(&tok));
+		
+	tok = this->currStream->next();
+	if (tok.type == TokenType::tokenWord)
+	{
+		ctNestedIdentifierNode* nested = new ctNestedIdentifierNode();
+		nested->val = this->currStream->viewToken(&tok);
+		nested->node = (ctIdentifierNode*) this->parseIdentifier();
+	}
+	else if (tok.type == TokenType::tokenWord)
+}
