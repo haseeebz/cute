@@ -15,14 +15,30 @@ std::map<char, int> BinaryOpPrecedence =
 };
 
 
-ctNode* Parser::parse(TokenStream* tokens)
+ctSourceNode* Parser::parse(TokenStream* tokens)
 {
 	this->currStream = tokens;
-	return parseExpr(0);
+	ctSourceNode* node = this->parseSource();
+	return node;
 };
 
 
-ctNode* Parser::parseExpr(int previous_precedence)
+ctSourceNode* Parser::parseSource()
+{
+	ctSourceNode* src = new ctSourceNode();
+
+	while (this->currStream->peek().type != TokenType::tokenEOF)
+	{
+		ctNode* node = this->parseStmt(0);
+		ctStmtNode* stmt = new ctStmtNode(node);
+		src->stmts.push_back(stmt);
+	}
+
+	return src;
+}
+
+
+ctNode* Parser::parseStmt(int previous_precedence)
 {
 	ctNode* lhs;
 	ctNode* rhs;
@@ -39,7 +55,7 @@ ctNode* Parser::parseExpr(int previous_precedence)
 	{
 		if (this->currStream->viewSymToken(&tok) == '(')
 		{
-			lhs = parseExpr(0);
+			lhs = (ctNode*) this->parseStmt(0);
 		}
 
 	}
@@ -58,13 +74,17 @@ ctNode* Parser::parseExpr(int previous_precedence)
 			{
 				break;	
 			}
+			else if (this->currStream->viewSymToken(&tok) == ';')
+			{
+				break;
+			}
 
 			char op = this->currStream->viewSymToken(&tok);
 			int precedence = BinaryOpPrecedence[op];
 
 			if (precedence > previous_precedence)
 			{
-				rhs = parseExpr(precedence);
+				rhs = (ctNode*)  this->parseStmt(precedence);
 				lhs = new ctBinaryOpNode(op, lhs, rhs);
 				this->currStream->backtrack();
 			}

@@ -11,9 +11,11 @@ class Parser
 {
 	TokenStream* currStream;
 	
-	ctNode* parseExpr(int previous_precedence);
+	ctSourceNode* parseSource();
+
+	ctNode* parseStmt(int previous_precedence);
 
 	public:
 
-	ctNode* parse(TokenStream* tokens);
+	ctSourceNode* parse(TokenStream* tokens);
 };

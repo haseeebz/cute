@@ -71,21 +71,21 @@ void PrintVisitor::visit(ctStmtNode* node)
 
 	std::cout << "Statement[\n";
 	depth++;
-	node->accept(this);
+	node->root->accept(this);
 	depth--;
 	std::cout << "]\n";
 
 }
 
 
-void PrintVisitor::visit(ctProgramNode* node)
+void PrintVisitor::visit(ctSourceNode* node)
 {
 	printDepth();
 
 	std::cout << "--Program Node--\n";
 	
-	for (ctStmtNode& child: node->stmts)
+	for (ctStmtNode* child: node->stmts)
 	{
-		child.accept(this);
+		child->accept(this);
 	}
 }

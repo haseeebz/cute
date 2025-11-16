@@ -20,7 +20,7 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 	ctDebug(stream.toString());
 
 	
-	ctNode* root = parser.parse(&stream);
+	ctSourceNode* root = parser.parse(&stream);
 	
 	ctDebug("Parsed Code:\n")
 	PrintVisitor printer;
