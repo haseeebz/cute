@@ -114,19 +114,34 @@ void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
 			
 			token = this->tokStream->next();
 
+			if (token.type != TokenType::tokenWord) {goto Error;}
+			std::string type = this->tokStream->viewToken(&token);
 
-			if (token.type == TokenType::tokenInt)
+			Token num = this->tokStream->next();
+			std::string nums = this->tokStream->viewToken(&num);
+
+			if (type == "i32")
 			{
-				int i = std::stoi(this->tokStream->viewToken(&token));
+				int i = std::stoi(nums);
 				this->currConstants.push_back((Constant) {.i32 = i});
 				continue;
-			}
-
-
-			if (token.type == TokenType::tokenFloat)
+			} 
+			else if (type == "i64")
 			{
-				float f = std::stof(this->tokStream->viewToken(&token));
+				long i = std::stol(nums);
+				this->currConstants.push_back((Constant) {.i64 = i});
+				continue;
+			}
+			else if (type == "f32")
+			{
+				float f = std::stof(nums);
 				this->currConstants.push_back((Constant) {.f32 = f});
+				continue;
+			}
+			else if (type == "f64")
+			{
+				double f = std::stod(nums);
+				this->currConstants.push_back((Constant) {.f64 = f});
 				continue;
 			}
 
