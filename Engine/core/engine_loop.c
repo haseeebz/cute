@@ -16,15 +16,10 @@ void CuteEngine_execLoop(CtState* state)
 	ctInstrSize* instrs = state->img->instrs;
 	Constant* consts = state->img->consts;
 
-	int64_t i1;
-	int64_t i2;
-	int64_t i3;
-	int64_t p;
-	
-	double f1;
-	double f2;
+	CtAtom a1;
+	CtAtom a2;
 
-
+	uint64_t pt;
 
 	CtAtom locals[10];
 
@@ -49,155 +44,137 @@ void CuteEngine_execLoop(CtState* state)
 			break;
 
         case instrLoadCoI32:
-			i1 = consts[instrs[state->pc++]].i32;
-			CtExeStack_push(&state->exestack, (CtAtom) {.i = i1});
+			a1.i32 = consts[instrs[state->pc++]].i32;
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrLoadCoI64:
-			i1 = consts[instrs[state->pc++]].i64;
-			mCt64To32(i1, i1, i2);
-			CtExeStack_push(&state->exestack, (CtAtom) {.i = i1});
-			CtExeStack_push(&state->exestack, (CtAtom) {.i = i2});
+			a1.i64 = consts[instrs[state->pc++]].i64;
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrLoadCoF32:
-			f1 = consts[instrs[state->pc++]].f32;
-			CtExeStack_push(&state->exestack, (CtAtom) {.f = f1});
+			a1.f32 = consts[instrs[state->pc++]].f32;
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrLoadCoF64:
-			f1 = consts[instrs[state->pc++]].f64;
-			mCt64To32(f1, f1, f2);
-			CtExeStack_push(&state->exestack, (CtAtom) {.i = i1});
-			CtExeStack_push(&state->exestack, (CtAtom) {.i = i2});
+			a1.f64 = consts[instrs[state->pc++]].f64;
+			CtExeStack_push(&state->exestack, a1);
 			break;
 		
         case instrLoadI32:
-			p = instrs[state->pc++];
-			i1 = locals[p].i;
-			CtExeStack_push(&state->exestack, (CtAtom) {.i = i1});
+			pt = instrs[state->pc++];
+			a1.i32 = locals[pt].i32;
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrLoadI64:
-			p = instrs[state->pc++];
-			i1 = locals[p].i;
-			i2 = locals[p+1].i;
-			CtExeStack_push(&state->exestack, (CtAtom) {.i = i1});
-			CtExeStack_push(&state->exestack, (CtAtom) {.i = i2});
+			pt = instrs[state->pc++];
+			a1.i64 = locals[pt].i64;
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrLoadF32:
-			p = instrs[state->pc++];
-			f1 = locals[p].f;
-			CtExeStack_push(&state->exestack, (CtAtom) {.f = f1});
+			pt = instrs[state->pc++];
+			a1.f32 = locals[pt].f32;
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrLoadF64:
-			p = instrs[state->pc++];
-			f1 = locals[p].f;
-			f2 = locals[p+1].f;
-			CtExeStack_push(&state->exestack, (CtAtom) {.f = f1});
-			CtExeStack_push(&state->exestack, (CtAtom) {.f = f2});
+			pt = instrs[state->pc++];
+			a1.f64 = locals[pt].f64;
+			CtExeStack_push(&state->exestack, a1);
 			break;
 
         case instrStoreI32:
-			p = instrs[state->pc++];
-			locals[p] = CtExeStack_pop(&state->exestack);
+			pt = instrs[state->pc++];
+			locals[pt] = CtExeStack_pop(&state->exestack);
 			break;
 
         case instrStoreI64:
-			p = instrs[state->pc++];
-			locals[p+1] = CtExeStack_pop(&state->exestack); // low is popped first
-			locals[p] = CtExeStack_pop(&state->exestack);
+			pt = instrs[state->pc++];
+			locals[pt] = CtExeStack_pop(&state->exestack);
 			break;
 
         case instrStoreF32:
-			p = instrs[state->pc++];
-			locals[p] = CtExeStack_pop(&state->exestack);
+			pt = instrs[state->pc++];
+			locals[pt] = CtExeStack_pop(&state->exestack);
 			break;
 
         case instrStoreF64:
-			p = instrs[state->pc++];
-			locals[p+1] = CtExeStack_pop(&state->exestack); // low is popped first
-			locals[p] = CtExeStack_pop(&state->exestack);
+			pt = instrs[state->pc++];
+			locals[pt] = CtExeStack_pop(&state->exestack);
 			break;
 
         case instrAddI32:
-			mCtBinaryOp32(i, i1, i2, +, &state->exestack);
+			mCtBinaryOp(i32, a1, a2, +, &state->exestack);
 			break;
 
         case instrAddI64:
-			mCtBinaryOp64(i, i1, i2, i3, +, &state->exestack);
+			mCtBinaryOp(i64, a1, a2, +, &state->exestack);
 			break;
 
         case instrAddF32:
-			mCtBinaryOp32(f, f1, f2, +, &state->exestack);
+			mCtBinaryOp(f32, a1, a2, +, &state->exestack);
 			break;
 
         case instrAddF64:
-			mCtBinaryOp64(f, i1, i2, i3, +, &state->exestack);
+			mCtBinaryOp(f64, a1, a2, +, &state->exestack);
 			break;
 
         case instrSubI32:
-			mCtBinaryOp32(i, i1, i2, -, &state->exestack);
+			mCtBinaryOp(i32, a1, a2, -, &state->exestack);
 			break;
 
         case instrSubI64:
-			mCtBinaryOp64(i, i1, i2, i3, -, &state->exestack);
+			mCtBinaryOp(i64, a1, a2, -, &state->exestack);
 			break;
 
         case instrSubF32:
-			mCtBinaryOp32(f, f1, f2, -, &state->exestack);
+			mCtBinaryOp(f32, a1, a2, -, &state->exestack);
 			break;
 
         case instrSubF64:
-			mCtBinaryOp64(f, i1, i2, i3, -, &state->exestack);
+			mCtBinaryOp(f64, a1, a2, -, &state->exestack);
 			break;
 
         case instrMulI32:
-			mCtBinaryOp32(i, i1, i2, *, &state->exestack);
+			mCtBinaryOp(i32, a1, a2, *, &state->exestack);
 			break;
 
         case instrMulI64:
-			mCtBinaryOp64(i, i1, i2, i3, *, &state->exestack);
+			mCtBinaryOp(i64, a1, a2, *, &state->exestack);
 			break;
 
         case instrMulF32:
-			mCtBinaryOp32(f, f1, f2, *, &state->exestack);
+			mCtBinaryOp(f32, a1, a2, *, &state->exestack);
 			break;
 
         case instrMulF64:
-			mCtBinaryOp64(f, i1, i2, i3, *, &state->exestack);
+			mCtBinaryOp(f64, a1, a2, *, &state->exestack);
 			break;
 
         case instrDivI32:
-			mCtBinaryOp32(i, i1, i2, /, &state->exestack);
+			mCtBinaryOp(i32, a1, a2, /, &state->exestack);
 			break;
 
         case instrDivI64:
-			mCtBinaryOp64(i, i1, i2, i3, /, &state->exestack);
+			mCtBinaryOp(i64, a1, a2, /, &state->exestack);
 			break;
 
         case instrDivF32:
-			mCtBinaryOp32(f, f1, f2, /, &state->exestack);
+			mCtBinaryOp(f32, a1, a2, /, &state->exestack);
 			break;
 
         case instrDivF64:
-			mCtBinaryOp64(f, i1, i2, i3, /, &state->exestack);
+			mCtBinaryOp(f64, a1, a2, /, &state->exestack);
 			break;
 
         case instrXor:
 			break;
 
         case instrCmpI32:
-			i2 = CtExeStack_pop(&state->exestack).i;
-			i1 = CtExeStack_pop(&state->exestack).i;
-			if (i1 < i2) {i1 = -1;}
-			else if (i1 > i2) {i1 = 1;}
-			else  {i1 = 0;}
-			CtExeStack_push(&state->exestack, (CtAtom) {.i = i1});
-			break;
-
         case instrCmpI64:
         case instrCmpF32:
         case instrCmpF64:
@@ -208,8 +185,8 @@ void CuteEngine_execLoop(CtState* state)
         case instrCmp2BoolGt:
         case instrCmp2BoolGe:
         case instrJmp:
-			p = instrs[state->pc++];
-			state->pc = p;
+			pt = instrs[state->pc++];
+			state->pc = pt;
 			break;
         case instrJmpTrue:
         case instrJmpFalse:
@@ -220,27 +197,23 @@ void CuteEngine_execLoop(CtState* state)
         case instrAccessCon:
         case instrDelCon:
 		case instrOutI32:
-			i1 = CtExeStack_peek(&state->exestack)->i;
-			printf("%d\n", (int32_t) i1);
+			a1 = *CtExeStack_peek(&state->exestack);
+			printf("%d\n", a1.i32);
 			break;
 
 		case instrOutF32:
-			f1 = CtExeStack_peek(&state->exestack)->f;
-			printf("%f\n", (float) f1);
+			a1 = *CtExeStack_peek(&state->exestack);
+			printf("%f\n", a1.f32);
 			break;
 
 		case instrOutI64:
-			i2 = CtExeStack_peek(&state->exestack)->r;
-			i1 = CtExeStack_peek(&state->exestack)->r;
-			mCt32To64(i1, i2, i1);
-			printf("%ld\n", i1);
+			a1 = *CtExeStack_peek(&state->exestack);
+			printf("%ld\n", a1.i64);
 			break;
 
 		case instrOutF64:
-			i2 = CtExeStack_peek(&state->exestack)->r;
-			i1 = CtExeStack_peek(&state->exestack)->r;
-			mCt32To64(i1, i2, f1);
-			printf("%lf\n", f1);
+			a1 = *CtExeStack_peek(&state->exestack);
+			printf("%lf\n", a1.f64);
 			break;
     }
 	

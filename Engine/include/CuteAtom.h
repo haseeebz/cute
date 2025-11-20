@@ -13,14 +13,10 @@ extern "C" {
 // Primitives
 typedef int32_t CtInt32;
 typedef float   CtFloat32;
-
-// Special Primitives
-// These will be distributed over 2 atoms
 typedef int64_t CtInt64;
 typedef double  CtFloat64;
 
-typedef uint32_t ctRaw32;
-
+typedef uint64_t CtRefr;
 
 
 
@@ -47,9 +43,11 @@ struct _CtAtom
 
     union 
     {
-        CtInt32   i;
-        CtFloat32 f;
-        ctRaw32   r;
+        CtInt32   i32;
+		CtInt64	  i64;	
+        CtFloat32 f32;
+		CtFloat64 f64;
+        CtRefr    ref;
     };
     
 };
@@ -57,8 +55,7 @@ struct _CtAtom
 
 typedef struct _CtAtom CtAtom;
 
-void CtAtom_Int32to64(CtAtom* a1, CtAtom* a2, int64_t* i);
-
 #ifdef __cplusplus
 }
+
 #endif
