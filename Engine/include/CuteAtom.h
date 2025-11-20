@@ -39,7 +39,6 @@ typedef enum
 
 struct _CtAtom
 {
-    AtomType type;
 
     union 
     {

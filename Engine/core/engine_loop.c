@@ -185,7 +185,7 @@ void CuteEngine_execLoop(CtState* state)
         case instrCmp2BoolGt:
         case instrCmp2BoolGe:
         case instrJmp:
-			pt = instrs[state->pc++];
+			pt = instrs[state->pc];
 			state->pc = pt;
 			break;
         case instrJmpTrue:
