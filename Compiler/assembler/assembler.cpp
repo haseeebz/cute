@@ -85,6 +85,8 @@ std::map<std::string, ctInstr> CuteAssembler::getInstrMap()
 
 		{"OutI32", instrOutI32},
 		{"OutF32", instrOutF32},
+		{"OutI64", instrOutI32},
+		{"OutF64", instrOutF32},
 	};
 
 	return instr_map;

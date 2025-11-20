@@ -90,6 +90,8 @@ typedef enum
 
 	instrOutI32          = 0x37,
 	instrOutF32          = 0x38,
+	instrOutI64          = 0x39,
+	instrOutF64          = 0x40,
 
 } ctInstr;
 

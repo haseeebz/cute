@@ -121,11 +121,17 @@ ctNode* Parser::parseIdentifier()
 	ctNode* node = new ctIdentifierNode(this->currStream->viewToken(&tok));
 		
 	tok = this->currStream->next();
+
 	if (tok.type == TokenType::tokenWord)
 	{
 		ctNestedIdentifierNode* nested = new ctNestedIdentifierNode();
 		nested->val = this->currStream->viewToken(&tok);
 		nested->node = (ctIdentifierNode*) this->parseIdentifier();
+		return nested;
 	}
-	else if (tok.type == TokenType::tokenWord)
+	else
+	{
+		this->currStream->backtrack();
+		return node;
+	}
 }
