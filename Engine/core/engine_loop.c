@@ -38,6 +38,7 @@ void CuteEngine_execLoop(CtState* state)
 			break;
 
         case instrPopAtom:
+			CtExeStack_pop(&state->exestack);
 			break;
 
         case instrLoadCoI32:
@@ -168,47 +169,73 @@ void CuteEngine_execLoop(CtState* state)
 			mCtBinaryOp(f64, a1, a2, /, &state->exestack);
 			break;
 
-        case instrXor:
+        case instrCmpI32:
+			mCtCmpOp(i32, a1, a2, &state->exestack);
 			break;
 
-        case instrCmpI32:
         case instrCmpI64:
-			a2 = CtExeStack_pop(&state->exestack);
-			a1 = CtExeStack_pop(&state->exestack);
-
-			if (a1.i64 > a2.i64) {a1.i32 = 1;}
-			else if (a1.i64 < a2.i64) {a1.i32 = -1;}
-			else {a1.i32 = 0;}
-
-			CtExeStack_push(&state->exestack, a1);
+			mCtCmpOp(i64, a1, a2, &state->exestack);
 			break;
 
         case instrCmpF32:
+			mCtCmpOp(f32, a1, a2, &state->exestack);
+			break;
+
         case instrCmpF64:
+			mCtCmpOp(f64, a1, a2, &state->exestack);
+			break;
+
         case instrCmp2BoolEq:
-        case instrCmp2BoolNe:
-        case instrCmp2BoolLt:
-        case instrCmp2BoolLe:
-        case instrCmp2BoolGt:
-        case instrCmp2BoolGe:
 			a1 = CtExeStack_pop(&state->exestack);
-			if (a1.i32 >= 0) {a1.i32 = 1;} else {a1.i32 = 0;}
+			if (a1.by8 == 0) {a1.by8 = 1;} else {a1.by8 = 0;}
 			CtExeStack_push(&state->exestack, a1);
 			break;
+
+        case instrCmp2BoolNe:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by8 != 0) {a1.by8 = 1;} else {a1.by8 = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
+        case instrCmp2BoolLt:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by8 == -1) {a1.by8 = 1;} else {a1.by8 = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
+        case instrCmp2BoolLe:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by8 <= 0) {a1.by8 = 1;} else {a1.by8 = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
+        case instrCmp2BoolGt:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by8 == 1) {a1.by8 = 1;} else {a1.by8 = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
+        case instrCmp2BoolGe:
+			a1 = CtExeStack_pop(&state->exestack);
+			if (a1.by8 >= 0) {a1.by8 = 1;} else {a1.by8 = 0;}
+			CtExeStack_push(&state->exestack, a1);
+			break;
+
         case instrJmp:
 			pt = instrs[state->pc++];
 			state->pc = pt;
 			break;
+
         case instrJmpTrue:
 			a1 = CtExeStack_pop(&state->exestack);
-			if (!a1.i32) {state->pc++; continue;}
+			if (!a1.by8) {state->pc++; continue;}
 			pt = instrs[state->pc++];
 			state->pc = pt;
 			break;
 		 
         case instrJmpFalse:
 			a1 = CtExeStack_pop(&state->exestack);
-			if (a1.i32) {state->pc++; continue;}
+			if (a1.by8) {state->pc++; continue;}
 			pt = instrs[state->pc++];
 			state->pc = pt;
 			break;

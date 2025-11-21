@@ -61,4 +61,3 @@ ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath)
 
 	return ctImageError_Success;
 }
-

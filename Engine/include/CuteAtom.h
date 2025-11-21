@@ -11,6 +11,7 @@ extern "C" {
 
 
 // Primitives
+typedef int8_t CtByte;
 typedef int32_t CtInt32;
 typedef float   CtFloat32;
 typedef int64_t CtInt64;
@@ -47,6 +48,7 @@ struct _CtAtom
         CtFloat32 f32;
 		CtFloat64 f64;
         CtRefr    ref;
+		CtByte 	  by8;
     };
     
 };
