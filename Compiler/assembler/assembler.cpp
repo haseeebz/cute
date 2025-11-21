@@ -18,7 +18,6 @@ std::map<std::string, ctInstr> CuteAssembler::getInstrMap()
 		{"DupAtom", instrDupAtom},
 		{"PopAtom", instrPopAtom},
 
-		{"LoadCoI8", instrLoadCoI8},
 		{"LoadCoI32", instrLoadCoI32},
 		{"LoadCoI64", instrLoadCoI64},
 		{"LoadCoF32", instrLoadCoF32},
