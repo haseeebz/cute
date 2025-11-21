@@ -22,7 +22,6 @@ typedef enum
     instrDupAtom         = 0x01,
     instrPopAtom         = 0x02,
 
-    instrLoadCoI8        = 0x03,
     instrLoadCoI32       = 0x04,
     instrLoadCoI64       = 0x05,
     instrLoadCoF32       = 0x06,
