@@ -27,6 +27,7 @@ void CuteEngine_execLoop(CtState* state)
 	{
 
 	instr = instrs[state->pc++];
+	
 
 	switch (instr) 
 	{
@@ -39,7 +40,7 @@ void CuteEngine_execLoop(CtState* state)
 
         case instrPopAtom:
 			break;
-			
+
         case instrLoadCoI32:
 			a1.i32 = consts[instrs[state->pc++]].i32;
 			CtExeStack_push(&state->exestack, a1);
