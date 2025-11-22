@@ -34,7 +34,7 @@ void CuteEngine_execLoop(CtState* state)
 			return;
 
         case instrDupAtom:
-			CtExeStack_push(&state->exestack, *CtExeStack_peek(&state->exestack));
+			CtExeStack_push(&state->exestack, CtExeStack_peek(&state->exestack));
 			break;
 
         case instrPopAtom:
@@ -247,22 +247,22 @@ void CuteEngine_execLoop(CtState* state)
         case instrAccessCon:
         case instrDelCon:
 		case instrOutI32:
-			a1 = *CtExeStack_peek(&state->exestack);
+			a1 = CtExeStack_peek(&state->exestack);
 			printf("%d\n", a1.i32);
 			break;
 
 		case instrOutF32:
-			a1 = *CtExeStack_peek(&state->exestack);
+			a1 = CtExeStack_peek(&state->exestack);
 			printf("%f\n", a1.f32);
 			break;
 
 		case instrOutI64:
-			a1 = *CtExeStack_peek(&state->exestack);
+			a1 = CtExeStack_peek(&state->exestack);
 			printf("%ld\n", a1.i64);
 			break;
 
 		case instrOutF64:
-			a1 = *CtExeStack_peek(&state->exestack);
+			a1 = CtExeStack_peek(&state->exestack);
 			printf("%lf\n", a1.f64);
 			break;
     }
