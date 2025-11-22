@@ -34,8 +34,8 @@ ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath)
 	items_read = fread(&img->header, sizeof(ctProgramHeader), 1, fp);
 	if (items_read != 1) {return ctImageError_ByteReadFailure;}
 
-	img->consts = malloc(sizeof(CtProgramConstant) * img->header.const_count);
-	items_read = fread(img->consts, sizeof(CtProgramConstant), img->header.const_count, fp);
+	img->consts = malloc(sizeof(ctProgramConstant) * img->header.const_count);
+	items_read = fread(img->consts, sizeof(ctProgramConstant), img->header.const_count, fp);
 	if (items_read != img->header.const_count) {return ctImageError_ByteReadFailure;}
 
 	img->func_table = malloc(sizeof(ctFuncMetadata) * img->header.func_count);
@@ -61,7 +61,7 @@ ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath)
 	items_written = fwrite(&img->header, sizeof(ctProgramHeader), 1, fp);
 	if (items_written != 1) {return ctImageError_ByteWriteFailure;}
 
-	items_written = fwrite(img->consts, sizeof(CtProgramConstant), img->header.const_count, fp);
+	items_written = fwrite(img->consts, sizeof(ctProgramConstant), img->header.const_count, fp);
 	if (items_written != img->header.const_count) {return ctImageError_ByteWriteFailure;}
 
 	items_written = fwrite(img->func_table, sizeof(ctFuncMetadata), img->header.func_count, fp);

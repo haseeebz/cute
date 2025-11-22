@@ -135,25 +135,25 @@ void CuteAssembler::assemble(std::string filepath, std::string outfile)
 			if (type == "i32")
 			{
 				int i = std::stoi(nums);
-				this->currConstants.push_back((CtProgramConstant) {.i32 = i});
+				this->currConstants.push_back((ctProgramConstant) {.i32 = i});
 				continue;
 			} 
 			else if (type == "i64")
 			{
 				long i = std::stol(nums);
-				this->currConstants.push_back((CtProgramConstant) {.i64 = i});
+				this->currConstants.push_back((ctProgramConstant) {.i64 = i});
 				continue;
 			}
 			else if (type == "f32")
 			{
 				float f = std::stof(nums);
-				this->currConstants.push_back((CtProgramConstant) {.f32 = f});
+				this->currConstants.push_back( (ctProgramConstant) {.f32 = f});
 				continue;
 			}
 			else if (type == "f64")
 			{
 				double f = std::stod(nums);
-				this->currConstants.push_back((CtProgramConstant) {.f64 = f});
+				this->currConstants.push_back((ctProgramConstant) {.f64 = f});
 				continue;
 			}
 

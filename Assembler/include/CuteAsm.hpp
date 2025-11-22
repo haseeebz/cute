@@ -11,7 +11,7 @@ class CuteAssembler
 	std::string outfile;
 
 	std::vector<ctInstrSize> currInstrs;
-	std::vector<CtProgramConstant> currConstants;
+	std::vector<ctProgramConstant> currConstants;
 
 	std::map<std::string, ctInstr> getInstrMap();
 
