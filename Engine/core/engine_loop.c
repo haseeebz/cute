@@ -14,7 +14,7 @@ void CuteEngine_execLoop(CtState* state)
 	ctInstrSize instr;
 
 	ctInstrSize* instrs = state->img->instrs;
-	Constant* consts = state->img->consts;
+	CtProgramConstant* consts = state->img->consts;
 
 	CtAtom a1;
 	CtAtom a2;

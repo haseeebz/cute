@@ -15,6 +15,10 @@ void ctProgramImage_free(ctProgramImage* img)
 	{
 		free(img->consts);
 	}
+	if (img->func_table != NULL)
+	{
+		free(img->func_table);
+	}
 	img->header.instr_count = 0;
 	img->header.const_count = 0;
 }
@@ -30,9 +34,13 @@ ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath)
 	items_read = fread(&img->header, sizeof(ctProgramHeader), 1, fp);
 	if (items_read != 1) {return ctImageError_ByteReadFailure;}
 
-	img->consts = malloc(sizeof(Constant) * img->header.const_count);
-	items_read = fread(img->consts, sizeof(Constant), img->header.const_count, fp);
+	img->consts = malloc(sizeof(CtProgramConstant) * img->header.const_count);
+	items_read = fread(img->consts, sizeof(CtProgramConstant), img->header.const_count, fp);
 	if (items_read != img->header.const_count) {return ctImageError_ByteReadFailure;}
+
+	img->func_table = malloc(sizeof(ctFuncMetadata) * img->header.func_count);
+	items_read = fread(img->func_table, sizeof(ctFuncMetadata), img->header.func_count, fp);
+	if (items_read != img->header.func_count) {return ctImageError_ByteReadFailure;}
 
 	img->instrs = malloc(sizeof(ctInstrSize) * img->header.instr_count);
 	items_read = fread(img->instrs, sizeof(ctInstrSize), img->header.instr_count, fp);
@@ -53,8 +61,11 @@ ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath)
 	items_written = fwrite(&img->header, sizeof(ctProgramHeader), 1, fp);
 	if (items_written != 1) {return ctImageError_ByteWriteFailure;}
 
-	items_written = fwrite(img->consts, sizeof(Constant), img->header.const_count, fp);
+	items_written = fwrite(img->consts, sizeof(CtProgramConstant), img->header.const_count, fp);
 	if (items_written != img->header.const_count) {return ctImageError_ByteWriteFailure;}
+
+	items_written = fwrite(img->func_table, sizeof(ctFuncMetadata), img->header.func_count, fp);
+	if (items_written != img->header.func_count) {return ctImageError_ByteWriteFailure;}
 
 	items_written = fwrite(img->instrs, sizeof(ctInstrSize), img->header.instr_count, fp);
 	if (items_written != img->header.instr_count) {return ctImageError_ByteWriteFailure;}

@@ -108,20 +108,31 @@ typedef struct
 		double  f64;
 	};
 
-} Constant;
+} CtProgramConstant;
 
 
 typedef struct
 {
 	u_int32_t magic;
 	u_int32_t const_count;
+	u_int32_t func_count;
 	u_int32_t instr_count;
 } ctProgramHeader;
+
+
+typedef struct
+{
+	uint32_t func_id;
+	uint32_t arg_count;
+	uint32_t locals_size;
+} ctFuncMetadata;
+
 
 typedef struct
 {
 	ctProgramHeader header;
-	Constant* consts;
+	CtProgramConstant* consts;
+	ctFuncMetadata* func_table;
 	ctInstrSize* instrs;
 } ctProgramImage;
 
@@ -143,8 +154,8 @@ ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath);
 ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath);
 
 
-u_int32_t ctProgramImage_addConstant(Constant const);
-
+u_int32_t ctProgramImage_addConstant(CtProgramConstant const);
+u_int32_t ctProgramImage_addFunc(uint32_t arg_count, uint32_t locals_size);
 
 #ifdef __cplusplus
 }

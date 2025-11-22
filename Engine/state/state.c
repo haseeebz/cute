@@ -13,3 +13,7 @@ void CtState_end(CtState* state)
 {
 	state->pc = 0;
 }
+
+void CtState_funcCall(CtState* state, uint32_t func_id)
+{
+}
