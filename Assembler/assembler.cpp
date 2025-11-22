@@ -107,9 +107,21 @@ void CuteAssembler::assemble(std::string filepath, std::string outfile)
 
 		if (token.type == TokenType::tokenSymbol)
 		{
-			if (this->tokStream.viewSymToken(&token) != '#') 
+			char sym = this->tokStream.viewSymToken(&token);
+			if (!(sym == '#' || sym == '/')) 
 			{
 				goto Error;
+			}
+			
+			if (sym == '/')
+			{
+				while (true)
+				{
+				token = this->tokStream.next();
+				char sym = this->tokStream.viewSymToken(&token);
+				if (sym == '/') {break;}
+				}
+				continue;
 			}
 			
 			token = this->tokStream.next();
