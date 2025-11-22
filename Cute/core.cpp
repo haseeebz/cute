@@ -2,6 +2,8 @@
 
 #include "CuteCompiler.hpp"
 
+#include "CuteAsm.hpp"
+
 #include "include/CuteCore.hpp"
 #include <string>
 
@@ -23,7 +25,7 @@ void CuteCore::run(int argc, char* argv[])
 
 	if (this->assembleFlag)
 	{
-		compiler.assemble(this->filepath, this->outfile);
+		assembler.assemble(this->filepath, this->outfile);
 		return;
 	}
 
@@ -49,7 +51,7 @@ void CuteCore::parseArgs(int argc, char* argv[])
 	{
 		arg = std::string(argv[i]);
 
-		if (arg == "--compile")
+		if (arg == "-c")
 		{
 			this->filepath = argv[++i];
 			this->outfile = std::string(this->filepath).append(".out");
@@ -57,7 +59,7 @@ void CuteCore::parseArgs(int argc, char* argv[])
 			return;
 		}
 
-		if (arg == "--assemble")
+		if (arg == "-a")
 		{
 			this->filepath = argv[++i];
 			this->outfile = std::string(this->filepath).append(".out");
@@ -65,7 +67,7 @@ void CuteCore::parseArgs(int argc, char* argv[])
 			return;
 		}
 
-		if (arg == "--run")
+		if (arg == "-r")
 		{
 			this->filepath = argv[++i];
 			

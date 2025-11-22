@@ -1,5 +1,6 @@
 #include "CuteEngine.h"
 
+#include "CuteAsm.hpp"
 #include "CuteCompiler.hpp"
 
 
@@ -7,6 +8,7 @@ class CuteCore
 {
 	CuteCompiler compiler;
 	CuteEngine engine;
+	CuteAssembler assembler;
 
 	void parseArgs(int argc, char* argv[]);
 

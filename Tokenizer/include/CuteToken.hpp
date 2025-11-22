@@ -42,3 +42,19 @@ struct TokenStream
 	char viewSymToken(Token* token);
 	std::string toString();
 };
+
+
+class Tokenizer 
+{
+	TokenStream currStream;
+
+	std::string* currSrc;
+	uint currIndex;
+
+	public:
+
+	TokenStream tokenize(std::string input_file);
+	void tokenizeNumber();
+	void tokenizeSymbol();
+	void tokenizeWord();
+};

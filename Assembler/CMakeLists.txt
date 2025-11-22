@@ -1,28 +1,26 @@
 
-file(GLOB PARSER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/parser/*.cpp")
+file(GLOB ASSEMBLER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 #file(GLOB WRITER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/writer/*.cpp")
 
 add_library (
-	CuteCompiler
+	CuteAssembler
 	STATIC
 
-	${PARSER_SRC}
-    compiler.cpp 
-
+	${ASSEMBLER_SRC}
 )
 
-target_link_libraries(CuteCompiler PRIVATE CuteBytecode CuteTokenizer)
+target_link_libraries(CuteAssembler PRIVATE CuteBytecode CuteTokenizer)
 
 target_compile_options (
-    CuteCompiler
+    CuteAssembler
     PRIVATE 
     -Wall -Wextra -g
 )
 
 
 target_include_directories (
-    CuteCompiler
+    CuteAssembler
     PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

@@ -1,7 +1,7 @@
 #include "node.hpp"
 #include "parser.hpp"
 
-#include "../tokenizer/token.hpp"
+#include "CuteToken.hpp"
 #include <iostream>
 #include <vector>
 

@@ -1,11 +1,12 @@
 #include "CuteByte.h"
-#include "../tokenizer/tokenizer.hpp"
-#include "../tokenizer/token.hpp"
+#include "CuteToken.hpp"
+#include "CuteAsm.hpp"
+
 #include <iostream>
 #include <map>
 #include <ostream>
 #include <string>
-#include "assembler.hpp"
+
 
 
 
@@ -92,55 +93,55 @@ std::map<std::string, ctInstr> CuteAssembler::getInstrMap()
 }
 
 
-void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
+void CuteAssembler::assemble(std::string filepath, std::string outfile)
 {
-	this->tokStream = tokens;
+	this->tokStream = this->tokenizer.tokenize(filepath);
 
 	Token token;
 
 	while (true)
 	{
-		token = this->tokStream->next();
+		token = this->tokStream.next();
 
 		if (token.type == TokenType::tokenEOF) {break;}
 
 		if (token.type == TokenType::tokenSymbol)
 		{
-			if (this->tokStream->viewSymToken(&token) != '#') 
+			if (this->tokStream.viewSymToken(&token) != '#') 
 			{
 				goto Error;
 			}
 			
-			token = this->tokStream->next();
+			token = this->tokStream.next();
 
 			if (token.type != TokenType::tokenWord) {goto Error;}
-			std::string type = this->tokStream->viewToken(&token);
+			std::string type = this->tokStream.viewToken(&token);
 
-			Token num = this->tokStream->next();
-			std::string nums = this->tokStream->viewToken(&num);
+			Token num = this->tokStream.next();
+			std::string nums = this->tokStream.viewToken(&num);
 
 			if (type == "i32")
 			{
 				int i = std::stoi(nums);
-				this->currConstants.push_back((Constant) {.i32 = i});
+				this->currConstants.push_back((CtProgramConstant) {.i32 = i});
 				continue;
 			} 
 			else if (type == "i64")
 			{
 				long i = std::stol(nums);
-				this->currConstants.push_back((Constant) {.i64 = i});
+				this->currConstants.push_back((CtProgramConstant) {.i64 = i});
 				continue;
 			}
 			else if (type == "f32")
 			{
 				float f = std::stof(nums);
-				this->currConstants.push_back((Constant) {.f32 = f});
+				this->currConstants.push_back((CtProgramConstant) {.f32 = f});
 				continue;
 			}
 			else if (type == "f64")
 			{
 				double f = std::stod(nums);
-				this->currConstants.push_back((Constant) {.f64 = f});
+				this->currConstants.push_back((CtProgramConstant) {.f64 = f});
 				continue;
 			}
 
@@ -149,7 +150,7 @@ void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
 
 		if (token.type == TokenType::tokenWord)
 		{
-			std::string word = this->tokStream->viewToken(&token);
+			std::string word = this->tokStream.viewToken(&token);
 			if (!this->getInstrMap().contains(word)) {goto Error;}
 			ctInstrSize instr = this->getInstrMap()[word];
 			this->currInstrs.push_back(instr);
@@ -158,14 +159,14 @@ void CuteAssembler::assemble(TokenStream* tokens, std::string outfile)
 
 		if (token.type == TokenType::tokenInt)
 		{
-			ctInstrSize instr = std::stoi(this->tokStream->viewToken(&token));
+			ctInstrSize instr = std::stoi(this->tokStream.viewToken(&token));
 			this->currInstrs.push_back(instr);
 			continue;
 		}
 
 		Error:
-		std::cout << "Bad Bytecode: " << this->tokStream->viewToken(&token) << std::endl;
-		std::cout << "Token number: " << this->tokStream->curr_token << std::endl;
+		std::cout << "Bad Bytecode: " << this->tokStream.viewToken(&token) << std::endl;
+		std::cout << "Token number: " << this->tokStream.curr_token << std::endl;
 		return;
 	}
 

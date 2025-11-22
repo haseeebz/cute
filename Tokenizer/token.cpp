@@ -2,7 +2,7 @@
 #include <sys/types.h>
 #include <vector>
 
-#include "token.hpp"
+#include "CuteToken.hpp"
 
 
 TokenStream::TokenStream(std::string src)

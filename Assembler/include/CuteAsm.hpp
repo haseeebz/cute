@@ -1,22 +1,21 @@
+#include "CuteToken.hpp"
 #include "CuteByte.h"
-#include "../tokenizer/tokenizer.hpp"
-#include "../tokenizer/token.hpp"
 #include <map>
 
 #pragma once
 
 class CuteAssembler
 {
-	TokenStream* tokStream;
+	Tokenizer tokenizer;
+	TokenStream tokStream;
 	std::string outfile;
 
 	std::vector<ctInstrSize> currInstrs;
-	std::vector<Constant> currConstants;
+	std::vector<CtProgramConstant> currConstants;
 
 	std::map<std::string, ctInstr> getInstrMap();
 
 	public:
 
-	void assemble(TokenStream* tokens, std::string outfile);
-
+	void assemble(std::string filepath, std::string outfile);
 };

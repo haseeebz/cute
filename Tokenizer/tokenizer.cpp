@@ -5,8 +5,7 @@
 #include <string>
 
 
-#include "token.hpp"
-#include "tokenizer.hpp"
+#include "CuteToken.hpp"
 
 
 TokenStream Tokenizer::tokenize(std::string input_file)

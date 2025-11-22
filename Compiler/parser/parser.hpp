@@ -1,7 +1,7 @@
 #include <map>
 #include "node.hpp"
 
-#include "../tokenizer/token.hpp"
+#include "CuteToken.hpp"
 
 #pragma once 
 
