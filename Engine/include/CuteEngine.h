@@ -1,5 +1,4 @@
 #include "CuteByte.h"
-#include "CuteAtom.h"
 #include "../state/state.h"
 
 #pragma once 
@@ -10,19 +9,19 @@ extern "C" {
 #endif
 
 
-#define mCtBinaryOp(type, var1, var2, op, stack) \
-var2 = CtExeStack_pop(stack); \
-var1 = CtExeStack_pop(stack); \
+#define mCtBinaryOp(type, var1, var2, op, state) \
+var2 = ctState_popExeAtom(state); \
+var1 = ctState_popExeAtom(state); \
 var1.type = var1.type op var2.type; \
-CtExeStack_push(stack,var1);
+ctState_pushExeAtom(state,var1);
 
-#define mCtCmpOp(type, var1, var2, stack) \
-var2 = CtExeStack_pop(stack); \
-var1 = CtExeStack_pop(stack); \
+#define mCtCmpOp(type, var1, var2, state) \
+var2 = ctState_popExeAtom(state); \
+var1 = ctState_popExeAtom(state); \
 if (var1.type > var2.type) {var1.by8 = 1;} \
 else if (var1.type < var2.type) {var1.by8 = -1;} \
 else {var1.by8 = 0;} \
-CtExeStack_push(stack, var1);
+ctState_pushExeAtom(state, var1);
 
 
 typedef struct
@@ -38,7 +37,7 @@ void CuteEngine_end();
 
 void CuteEngine_loadImage(char* filepath);
 
-void CuteEngine_execLoop(CtState* state);
+void CuteEngine_execLoop(ctState* state);
 
 void CuteEngine_runMain(); // main entry point
 

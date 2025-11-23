@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -8,16 +9,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
-// Primitives
-typedef int8_t CtByte;
-typedef int32_t CtInt32;
-typedef float   CtFloat32;
-typedef int64_t CtInt64;
-typedef double  CtFloat64;
-
-typedef uint64_t CtRefr;
 
 
 
@@ -38,23 +29,23 @@ typedef enum
 
 // Main Atom def
 
-struct _CtAtom
+struct _ctAtom
 {
 
     union 
     {
-        CtInt32   i32;
-		CtInt64	  i64;	
-        CtFloat32 f32;
-		CtFloat64 f64;
-        CtRefr    ref;
-		CtByte 	  by8;
+        int32_t   i32;
+		int64_t	  i64;	
+        float     f32;
+		double    f64;
+        size_t    ref;
+		int8_t	  by8;
     };
     
 };
 
 
-typedef struct _CtAtom CtAtom;
+typedef struct _ctAtom ctAtom;
 
 #ifdef __cplusplus
 }

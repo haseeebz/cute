@@ -41,12 +41,12 @@ void CuteEngine_loadImage(char* filepath)
 
 void CuteEngine_runMain()
 {
-	CtState state;
-	CtState_init(&state, &ctEngine.img);
+	ctState state;
+	ctState_init(&state, &ctEngine.img);
 	
 	CuteEngine_execLoop(&state);
 
-	CtState_end(&state);
+	ctState_end(&state);
 
 	CuteEngine_end();
 }
