@@ -34,7 +34,7 @@ void CuteEngine_execLoop(ctState* state)
 	}
 
 	instr = instrs[state->pc++];
-	
+	printf("Instr: %x\n", instr);
 	switch (instr) 
 	{
         case instrHalt:

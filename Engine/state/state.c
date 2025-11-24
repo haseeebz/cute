@@ -6,6 +6,7 @@
 #include "exestack.h"
 #include "frame.h"
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "state.h"
@@ -103,10 +104,11 @@ ctAtom ctState_peekExeAtom(ctState* state)
 
 void ctState_setupFuncFrame(ctState* state, uint32_t func_id)
 {
-	if (func_id < state->img->header.func_count || func_id < 0)
+	if (func_id >= state->img->header.func_count)
 	{
 		state->isRunning = false;
 		state->error_encountered = true;
+		printf("%d %d\n", func_id, state->img->header.func_count);
 		ctError_new(
 			&state->error,
 			"Internal Cute Error",
@@ -135,7 +137,8 @@ void ctState_setupFuncFrame(ctState* state, uint32_t func_id)
 	frame.locals_count = meta->locals_size;
 	frame.locals = malloc(sizeof(ctAtom) * meta->locals_size);
 
-	for (uint32_t i = 0; i <= meta->arg_count; i++)
+	printf("Executing function: %u\n", func_id);
+	for (uint32_t i = 0; i < meta->arg_count; i++)
 	{
 		frame.locals[meta->arg_count-i-1] = ctState_popExeAtom(state);
 	}
@@ -163,7 +166,7 @@ void ctState_setLocal(ctState* state, uint32_t pos, ctAtom atom)
 {
 	ctFuncFrame top_frame = state->frame_stack.frames[state->frame_stack.count-1];
 
-	if (!(pos < top_frame.locals_count && pos > 0))
+	if (!(pos < top_frame.locals_count))
 	{
 		state->isRunning = false;
 		state->error_encountered = true;
@@ -183,7 +186,7 @@ ctAtom ctState_getLocal(ctState* state, uint32_t pos)
 {
 	ctFuncFrame top_frame = state->frame_stack.frames[state->frame_stack.count-1];
 
-	if (!(pos < top_frame.locals_count && pos > 0))
+	if (!(pos < top_frame.locals_count))
 	{
 		state->isRunning = false;
 		state->error_encountered = true;

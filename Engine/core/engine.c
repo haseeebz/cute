@@ -48,7 +48,7 @@ void CuteEngine_runMain()
 {
 	ctState state;
 	ctState_init(&state, &ctEngine.img);
-	
+	ctState_setupFuncFrame(&state, 0);
 	CuteEngine_execLoop(&state);
 
 	ctState_end(&state);

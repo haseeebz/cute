@@ -2,10 +2,12 @@
 #include "CuteToken.hpp"
 #include "CuteAsm.hpp"
 
+#include <cstdint>
 #include <iostream>
 #include <map>
 #include <ostream>
 #include <string>
+#include <vector>
 
 
 
@@ -97,6 +99,31 @@ void CuteAssembler::assemble(std::string filepath, std::string outfile)
 {
 	this->tokStream = this->tokenizer.tokenize(filepath);
 
+	this->startAssembling();
+
+	ctProgramImage* img = this->makeProgramImage();
+
+	for (uint32_t i = 0; i < img->header.func_count; i++)
+	{
+	printf("Function#%u, Args:%u, Locals:%u, Address:%u\n", i, img->func_table[i].arg_count, img->func_table[i].locals_size, img->func_table[0].address);
+	}
+
+	ctImageError code = ctProgramImage_write(img, outfile.data());
+
+	if (code == ctImageError_Success)
+	{
+		std::cout << "Bytecode written to: " << outfile << std::endl;
+	}
+	else 
+	{
+		std::cout << "Bytecode assembly failed. Error: " << code << std::endl;
+	}
+
+}
+
+
+void CuteAssembler::startAssembling()
+{
 	Token token;
 
 	while (true)
@@ -108,9 +135,11 @@ void CuteAssembler::assemble(std::string filepath, std::string outfile)
 		if (token.type == TokenType::tokenSymbol)
 		{
 			char sym = this->tokStream.viewSymToken(&token);
-			if (!(sym == '#' || sym == '/')) 
+
+			if (sym == '#') 
 			{
-				goto Error;
+				this->handleConst();
+				continue;
 			}
 			
 			if (sym == '/')
@@ -123,85 +152,164 @@ void CuteAssembler::assemble(std::string filepath, std::string outfile)
 				}
 				continue;
 			}
-			
-			token = this->tokStream.next();
 
-			if (token.type != TokenType::tokenWord) {goto Error;}
-			std::string type = this->tokStream.viewToken(&token);
-
-			Token num = this->tokStream.next();
-			std::string nums = this->tokStream.viewToken(&num);
-
-			if (type == "i32")
-			{
-				int i = std::stoi(nums);
-				this->currConstants.push_back((ctProgramConstant) {.i32 = i});
-				continue;
-			} 
-			else if (type == "i64")
-			{
-				long i = std::stol(nums);
-				this->currConstants.push_back((ctProgramConstant) {.i64 = i});
-				continue;
-			}
-			else if (type == "f32")
-			{
-				float f = std::stof(nums);
-				this->currConstants.push_back( (ctProgramConstant) {.f32 = f});
-				continue;
-			}
-			else if (type == "f64")
-			{
-				double f = std::stod(nums);
-				this->currConstants.push_back((ctProgramConstant) {.f64 = f});
-				continue;
-			}
-
-			continue;
+			this->raiseError("Invalid Symbol");
 		}
+
+
+		if (token.type == TokenType::tokenWord)
+		{
+			if (this->tokStream.viewToken(&token) == "func")
+			{
+				this->handleFunc();
+			}
+
+		}
+
+	}
+
+}
+
+void CuteAssembler::handleFunc()
+{
+	Token token;
+	std::string word;
+	int32_t id;
+	Function func;
+
+	token = this->tokStream.next();
+	id = std::stoi(this->tokStream.viewToken(&token));
+	
+	token = this->tokStream.next();
+	func.locals_size = std::stoi(this->tokStream.viewToken(&token));
+
+	token = this->tokStream.next();
+	func.arg_count = std::stoi(this->tokStream.viewToken(&token));
+
+	while (true)
+	{
+		token = this->tokStream.next();
 
 		if (token.type == TokenType::tokenWord)
 		{
 			std::string word = this->tokStream.viewToken(&token);
-			if (!this->getInstrMap().contains(word)) {goto Error;}
+
+			if (word == "end") {break;}
+
+			if (!this->getInstrMap().contains(word)) {this->raiseError("Invalid Instruction");}
 			ctInstrSize instr = this->getInstrMap()[word];
-			this->currInstrs.push_back(instr);
+			func.currInstrs.push_back(instr);
 			continue;
 		}
 
 		if (token.type == TokenType::tokenInt)
 		{
 			ctInstrSize instr = std::stoi(this->tokStream.viewToken(&token));
-			this->currInstrs.push_back(instr);
+			func.currInstrs.push_back(instr);
 			continue;
 		}
 
-		Error:
-		std::cout << "Bad Bytecode: " << this->tokStream.viewToken(&token) << std::endl;
-		std::cout << "Token number: " << this->tokStream.curr_token << std::endl;
-		return;
 	}
 
+	
+	this->defined_funcs[id] = func;
+}
 
 
-	ctProgramImage img;
+void CuteAssembler::handleConst()
+{
+	Token token;
+	token = this->tokStream.next();
 
-	img.header.instr_count = this->currInstrs.size();
-	img.instrs = this->currInstrs.data();
+	if (token.type != TokenType::tokenWord) {this->raiseError("Expected type specifier after #");}
 
-	img.header.const_count = this->currConstants.size();
-	img.consts = this->currConstants.data();
+	std::string type = this->tokStream.viewToken(&token);
 
-	ctImageError code = ctProgramImage_write(&img, outfile.data());
+	Token num = this->tokStream.next();
+	std::string nums = this->tokStream.viewToken(&num);
 
-
-	if (code == ctImageError_Success)
+	if (type == "i32")
 	{
-		std::cout << "Bytecode written to: " << outfile << std::endl;
+		int i = std::stoi(nums);
+		this->defined_consts.push_back((ctProgramConstant) {.i32 = i});
+	} 
+	else if (type == "i64")
+	{
+		long i = std::stol(nums);
+		this->defined_consts.push_back((ctProgramConstant) {.i64 = i});
+	}
+	else if (type == "f32")
+	{
+		float f = std::stof(nums);
+		this->defined_consts.push_back( (ctProgramConstant) {.f32 = f});
+	}
+	else if (type == "f64")
+	{
+		double f = std::stod(nums);
+		this->defined_consts.push_back((ctProgramConstant) {.f64 = f});
 	}
 	else 
 	{
-		std::cout << "Bytecode assembly failed. Error: " << code << std::endl;
+		this->raiseError("Invalid type specifier after #");
 	}
 
+}
+
+
+ctProgramImage* CuteAssembler::makeProgramImage()
+{
+	ctProgramImage* img = new ctProgramImage;
+
+	img->header.const_count = this->defined_consts.size();
+	img->consts = this->defined_consts.data();
+
+	
+	
+
+	img->header.func_count = this->defined_funcs.size();
+
+	funcs.resize(img->header.func_count);
+
+	for (auto func: this->defined_funcs)
+	{
+		ctFuncMetadata meta;
+
+		meta.func_id = func.first;
+		meta.address = instrs.size();
+		meta.locals_size = func.second.locals_size;
+		meta.arg_count = func.second.arg_count;
+
+		for (auto instr: func.second.currInstrs)
+		{
+			instrs.push_back(instr);
+		}
+
+		funcs[meta.func_id] = meta;
+
+		std::cout << "Registerd Func# " << meta.func_id << '\n';
+		std::cout << "Arguments# " << meta.arg_count << '\n';
+		std::cout << "Locals Size# " << meta.locals_size << '\n';
+		std::cout << "Address# " << meta.address << '\n';
+	}
+
+	img->header.instr_count = instrs.size();
+	img->instrs = instrs.data();
+	img->func_table = funcs.data();
+
+
+	for (uint32_t i = 0; i < img->header.func_count; i++)
+	{
+	printf("Function#%u, Args:%u, Locals:%u, Address:%u\n", img->func_table[i].func_id, img->func_table[i].arg_count, img->func_table[i].locals_size, img->func_table[i].address);
+	}
+
+	return img;
+}
+
+
+void CuteAssembler::raiseError(std::string msg)
+{
+	std::cout << "Assembler Error: " << msg << '\n';
+	std::cout << "Token: " << this->tokStream.viewToken(&this->tokStream.tokens[this->tokStream.curr_token-1]) << std::endl;
+	std::cout << "Token number: " << this->tokStream.curr_token-1 << std::endl;
+	std::exit(1);
 }

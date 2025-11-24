@@ -130,8 +130,9 @@ typedef struct
 
 	u_int32_t magic;
 	u_int32_t const_count;
-	u_int32_t func_count;
 	u_int32_t instr_count;
+	u_int32_t func_count;
+	
 
 } ctProgramHeader;
 

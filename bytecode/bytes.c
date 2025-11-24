@@ -52,6 +52,12 @@ ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath)
 	items_read = fread(img->instrs, sizeof(ctInstrSize), img->header.instr_count, fp);
 	if (items_read != img->header.instr_count) {return ctImageError_ByteReadWriteFailure;}
 
+
+	for (uint32_t i = 0; i < img->header.func_count; i++)
+	{
+	printf("Function#%u, Args:%u, Locals:%u, Address:%u\n", img->func_table[i].func_id, img->func_table[i].arg_count, img->func_table[i].locals_size, img->func_table[i].address);
+	}
+
 	return ctImageError_Success;
 }
 
@@ -64,14 +70,26 @@ ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath)
 
 	u_int32_t items_written;
 
+	img->header.magic = _ctMagic;
+
 	items_written = fwrite(&img->header, sizeof(ctProgramHeader), 1, fp);
 	if (items_written != 1) {return ctImageError_ByteReadWriteFailure;}
 
 	items_written = fwrite(img->consts, sizeof(ctProgramConstant), img->header.const_count, fp);
 	if (items_written != img->header.const_count) {return ctImageError_ByteReadWriteFailure;}
 
+	for (uint32_t i = 0; i < img->header.func_count; i++)
+	{
+	printf("Function#%u, Args:%u, Locals:%u, Address:%u\n", img->func_table[i].func_id, img->func_table[i].arg_count, img->func_table[i].locals_size, img->func_table[i].address);
+	}
+	
 	items_written = fwrite(img->func_table, sizeof(ctFuncMetadata), img->header.func_count, fp);
 	if (items_written != img->header.func_count) {return ctImageError_ByteReadWriteFailure;}
+
+	for (uint32_t i = 0; i < img->header.func_count; i++)
+	{
+	printf("Function#%u, Args:%u, Locals:%u, Address:%u\n", img->func_table[i].func_id, img->func_table[i].arg_count, img->func_table[i].locals_size, img->func_table[i].address);
+	}
 
 	items_written = fwrite(img->instrs, sizeof(ctInstrSize), img->header.instr_count, fp);
 	if (items_written != img->header.instr_count) {return ctImageError_ByteReadWriteFailure;}
