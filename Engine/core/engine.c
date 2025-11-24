@@ -25,16 +25,21 @@ void CuteEngine_loadImage(char* filepath)
 
 	if (code != ctImageError_Success)
 	{
-		if (code == ctImageError_ByteReadFailure)
+
+		if (code == ctImageError_ByteReadWriteFailure)
 		{
 			printf("Image file could be not be read: %s\n", filepath);
-			CuteEngine_end();
 		}
 		else if (code == ctImageError_FileNotFound)
 		{
 			printf("Image file not found: %s\n", filepath);
-			CuteEngine_end();
 		}
+		else if (code == ctImageError_InvalidImage)
+		{
+			printf("Invalid Image file: %s\n", filepath);
+		}
+
+		CuteEngine_end();
 	}
 }
 

@@ -24,8 +24,10 @@ void CuteEngine_execLoop(ctState* state)
 	while (1)
 	{
 
-	if (state->error_encountered)
-	{
+	if (!state->isRunning)
+	{	
+		if (!state->error_encountered) {return;}
+
 		printf("%s: ", state->error.name);
 		printf(" %s\n", state->error.msg);
 		return;
@@ -67,27 +69,43 @@ void CuteEngine_execLoop(ctState* state)
 			break;
 		
         case instrLoadI32:
+			pt = instrs[state->pc++];
+			ctState_pushExeAtom(state, ctState_getLocal(state, pt));
 			break;
 
         case instrLoadI64:
+			pt = instrs[state->pc++];
+			ctState_pushExeAtom(state, ctState_getLocal(state, pt));
 			break;
 
         case instrLoadF32:
+			pt = instrs[state->pc++];
+			ctState_pushExeAtom(state, ctState_getLocal(state, pt));
 			break;
 
         case instrLoadF64:
+			pt = instrs[state->pc++];
+			ctState_pushExeAtom(state, ctState_getLocal(state, pt));
 			break;
 
         case instrStoreI32:
+			pt = instrs[state->pc++];
+			ctState_setLocal(state, pt, ctState_popExeAtom(state));
 			break;
 
         case instrStoreI64:
+			pt = instrs[state->pc++];
+			ctState_setLocal(state, pt, ctState_popExeAtom(state));
 			break;
 
         case instrStoreF32:
+			pt = instrs[state->pc++];
+			ctState_setLocal(state, pt, ctState_popExeAtom(state));
 			break;
 
         case instrStoreF64:
+			pt = instrs[state->pc++];
+			ctState_setLocal(state, pt, ctState_popExeAtom(state));
 			break;
 
         case instrAddI32:
@@ -226,8 +244,13 @@ void CuteEngine_execLoop(ctState* state)
 			break;
 		 
         case instrCall:
+			pt = instrs[state->pc++];
+			ctState_setupFuncFrame(state, pt);
+			break;
         case instrCallVirtual:
         case instrReturn:
+			ctState_returnFuncFrame(state);
+			break;
         case instrNewCon:
         case instrAccessCon:
         case instrDelCon:

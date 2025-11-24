@@ -9,6 +9,9 @@
 extern "C" {
 #endif
 
+static const uint32_t _ctMagic = 0x20080807;
+
+
 // probably important
 typedef uint8_t ctInstrSize;
 
@@ -110,10 +113,12 @@ typedef struct
 
 } ctProgramConstant;
 
+
 typedef struct
 {
 
 	uint32_t func_id;
+	uint32_t address;
 	uint32_t arg_count;
 	uint32_t locals_size;
 
@@ -149,18 +154,14 @@ typedef enum
 
 	ctImageError_Success = 0x00,
 	ctImageError_FileNotFound = 0x01,
-	ctImageError_ByteReadFailure = 0x02,
-	ctImageError_ByteWriteFailure = 0x03,
+	ctImageError_ByteReadWriteFailure = 0x02,
+	ctImageError_InvalidImage = 0x03,
 
 } ctImageError;
 
 void ctProgramImage_free(ctProgramImage* img);
 ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath);
 ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath);
-
-
-u_int32_t ctProgramImage_addConstant(ctProgramConstant const);
-u_int32_t ctProgramImage_addFunc(uint32_t arg_count, uint32_t locals_size);
 
 
 #ifdef __cplusplus

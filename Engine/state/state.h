@@ -10,14 +10,20 @@
 typedef struct
 {
 	uint64_t pc;
+	bool isRunning;
 
-	ctProgramImage* img; // do not free
+	// do not free these fields, owned by the engine itself
+	ctProgramImage* img; 
+	ctFuncMetadata* func_table;
+
 
 	ctFrameStack frame_stack;
 	ctExeStack exestack;
 	
 	bool error_encountered;
 	ctError error;
+
+	
 } ctState;
 
 
@@ -31,7 +37,7 @@ ctAtom ctState_peekExeAtom(ctState* state);
 void ctState_setupFuncFrame(ctState* state, uint32_t func_id);
 void ctState_returnFuncFrame(ctState* state);
 
-void ctState_setLocal(ctState* state, uint32_t pos, ctAtom* atom);
+void ctState_setLocal(ctState* state, uint32_t pos, ctAtom atom);
 ctAtom ctState_getLocal(ctState* state, uint32_t pos);
 void ctState_moveLocal(ctState* state, uint32_t src, uint32_t dest);
 void ctState_copyLocal(ctState* state, uint32_t src, uint32_t dest);
