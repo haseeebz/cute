@@ -97,6 +97,11 @@ typedef enum
 	instrReturn          = 0x36,
 	instrReturnValue     = 0x37,
 
+	instrOutI32 = 0x41,
+	instrOutI64 = 0x42,
+	instrOutF32 = 0x43,
+	instrOutF64 = 0x44,
+
 
 } ctInstr;
 

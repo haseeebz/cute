@@ -13,7 +13,7 @@ void CuteEngine_execLoop(ctState* state)
 	ctInstrSize instr;
 
 	ctInstrSize* instrs = state->img->instrs;
-	ctProgramConstant* consts = state->img->consts;
+	ctProgramConst* consts = state->img->const_table;
 
 	ctAtom a1;
 	ctAtom a2;
@@ -34,7 +34,7 @@ void CuteEngine_execLoop(ctState* state)
 	}
 
 	instr = instrs[state->pc++];
-	printf("Instr: %x\n", instr);
+
 	switch (instr) 
 	{
         case instrHalt:
@@ -243,17 +243,15 @@ void CuteEngine_execLoop(ctState* state)
 			state->pc = pt;
 			break;
 		 
-        case instrCall:
+        case instrFuncCall:
 			pt = instrs[state->pc++];
 			ctState_setupFuncFrame(state, pt);
 			break;
-        case instrCallVirtual:
+
         case instrReturn:
 			ctState_returnFuncFrame(state);
 			break;
-        case instrNewCon:
-        case instrAccessCon:
-        case instrDelCon:
+
 		case instrOutI32:
 			a1 = ctState_peekExeAtom(state);
 			printf("%d\n", a1.i32);
