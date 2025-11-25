@@ -107,12 +107,12 @@ void ctProgramImage_freeImage(ctProgramImage* img)
 }
 
 
-void ctProgramImage_packInt(int64_t i, ctInstr* eightInstrs)
+inline void ctProgramImage_packInt(uint64_t i, ctInstrSize* eightInstrs)
 {
 	memcpy(eightInstrs, &i, sizeof(i));
 }
 
-void ctProgramImage_extractInt(ctInstr* eightInstrs, int64_t* i)
+inline void ctProgramImage_extractInt(ctInstrSize* eightInstrs, uint64_t* i)
 {
 	memcpy(&i, eightInstrs, sizeof(i));
 }

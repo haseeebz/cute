@@ -3,9 +3,14 @@
 #include "CuteEngine.h"
 #include "../state/state.h"
 #include <stdio.h>
+#include <string.h>
 
 
-
+static inline void extractInt(ctInstrSize* instrs, uint64_t* i)
+{
+	memcpy(&i, instrs, sizeof(i));
+	*i += 8;
+}
 
 
 void CuteEngine_execLoop(ctState* state)
@@ -13,7 +18,6 @@ void CuteEngine_execLoop(ctState* state)
 	ctInstrSize instr;
 
 	ctInstrSize* instrs = state->img->instrs;
-	ctProgramConst* consts = state->img->const_table;
 
 	ctAtom a1;
 	ctAtom a2;
@@ -28,7 +32,7 @@ void CuteEngine_execLoop(ctState* state)
 	{	
 		if (!state->error_encountered) {return;}
 
-		printf("%s: ", state->error.name);
+		printf("%s :: ", state->error.name);
 		printf(" %s\n", state->error.msg);
 		return;
 	}
@@ -49,62 +53,66 @@ void CuteEngine_execLoop(ctState* state)
 			break;
 
         case instrLoadCoI32:
-			a1.i32 = consts[instrs[state->pc++]].i32;
+		    extractInt(&instrs[state->pc], &pt);
+			a1.i32 = ctState_loadConst(state, pt).i32;
 			ctState_pushExeAtom(state, a1);
 			break;
 
         case instrLoadCoI64:
-			a1.i64 = consts[instrs[state->pc++]].i64;
+			extractInt(&instrs[state->pc], &pt);
+			a1.i64 = ctState_loadConst(state, pt).i64;
 			ctState_pushExeAtom(state, a1);
 			break;
 
         case instrLoadCoF32:
-			a1.f32 = consts[instrs[state->pc++]].f32;
+			extractInt(&instrs[state->pc], &pt);
+			a1.f32 = ctState_loadConst(state, pt).f32;
 			ctState_pushExeAtom(state, a1);
 			break;
 
         case instrLoadCoF64:
-			a1.f64 = consts[instrs[state->pc++]].f64;
+			extractInt(&instrs[state->pc], &pt);
+			a1.f64 = ctState_loadConst(state, pt).f64;
 			ctState_pushExeAtom(state, a1);
 			break;
 		
         case instrLoadI32:
-			pt = instrs[state->pc++];
+			extractInt(&instrs[state->pc], &pt);
 			ctState_pushExeAtom(state, ctState_getLocal(state, pt));
 			break;
 
         case instrLoadI64:
-			pt = instrs[state->pc++];
+			extractInt(&instrs[state->pc], &pt);
 			ctState_pushExeAtom(state, ctState_getLocal(state, pt));
 			break;
 
         case instrLoadF32:
-			pt = instrs[state->pc++];
+			extractInt(&instrs[state->pc], &pt);
 			ctState_pushExeAtom(state, ctState_getLocal(state, pt));
 			break;
 
         case instrLoadF64:
-			pt = instrs[state->pc++];
+			extractInt(&instrs[state->pc], &pt);
 			ctState_pushExeAtom(state, ctState_getLocal(state, pt));
 			break;
 
         case instrStoreI32:
-			pt = instrs[state->pc++];
+			extractInt(&instrs[state->pc], &pt);
 			ctState_setLocal(state, pt, ctState_popExeAtom(state));
 			break;
 
         case instrStoreI64:
-			pt = instrs[state->pc++];
+			extractInt(&instrs[state->pc], &pt);
 			ctState_setLocal(state, pt, ctState_popExeAtom(state));
 			break;
 
         case instrStoreF32:
-			pt = instrs[state->pc++];
+			extractInt(&instrs[state->pc], &pt);
 			ctState_setLocal(state, pt, ctState_popExeAtom(state));
 			break;
 
         case instrStoreF64:
-			pt = instrs[state->pc++];
+			extractInt(&instrs[state->pc], &pt);
 			ctState_setLocal(state, pt, ctState_popExeAtom(state));
 			break;
 
@@ -224,27 +232,32 @@ void CuteEngine_execLoop(ctState* state)
 			ctState_pushExeAtom(state, a1);
 			break;
 
-        case instrJmp:
-			pt = instrs[state->pc++];
+		case instrJmpA:
+			extractInt(&instrs[state->pc], &pt);
 			state->pc = pt;
+			break;
+
+        case instrJmp:
+			extractInt(&instrs[state->pc], &pt);
+			state->pc += pt;
 			break;
 
         case instrJmpTrue:
 			a1 = ctState_popExeAtom(state);
 			if (!a1.by8) {state->pc++; continue;}
-			pt = instrs[state->pc++];
-			state->pc = pt;
+			extractInt(&instrs[state->pc], &pt);
+			state->pc += pt;
 			break;
 		 
         case instrJmpFalse:
 			a1 = ctState_popExeAtom(state);
 			if (a1.by8) {state->pc++; continue;}
-			pt = instrs[state->pc++];
-			state->pc = pt;
+			extractInt(&instrs[state->pc], &pt);
+			state->pc += pt;
 			break;
 		 
         case instrFuncCall:
-			pt = instrs[state->pc++];
+			extractInt(&instrs[state->pc], &pt);
 			ctState_setupFuncFrame(state, pt);
 			break;
 
