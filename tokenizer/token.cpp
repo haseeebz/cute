@@ -40,14 +40,24 @@ Token TokenStream::peek()
 }
 
 
-void TokenStream::backtrack()
+void TokenStream::backtrack(uint i)
 {
 	if (this->curr_token <= 0)
 	{
 		this->curr_token = 0;
 		return;
 	}
-	this->curr_token--;
+	this->curr_token -= i;
+}
+
+void TokenStream::gotoIndex(uint i)
+{
+	if (i >= this->tokens.size())
+	{
+		this->curr_token = this->tokens.size() - 1;
+		return;
+	}
+	this->curr_token = i;
 }
 
 
