@@ -12,7 +12,6 @@ TokenStream Tokenizer::tokenize(std::string input_file)
 {
 	std::ifstream stream(input_file);
 
-	// TODO : File Check
 	std::ostringstream buffer;
 	buffer << stream.rdbuf();
 	this->currStream = TokenStream(buffer.str());

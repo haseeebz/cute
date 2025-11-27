@@ -1,6 +1,7 @@
 #include <string>
 #include <sys/types.h>
 #include <vector>
+
 #pragma once 
 
 
@@ -27,12 +28,13 @@ struct Token
 
 class TokenStream
 {
-	std::string srcStr;
-
+	
 	std::vector<Token> tokens;
 	uint curr_token;
 
 	public:
+
+	std::string srcStr;
 
 	TokenStream() {};
 	TokenStream(std::string src);
@@ -51,15 +53,12 @@ class TokenStream
 	// viewing token
 	std::string viewToken(Token* token);
 	char viewSymToken(Token* token);
-	int64_t viewIntToken(Token* token);
-	double viewFloatToken(Token* token);
-
 
 	// all of these functions try to get the specified type. 
 	// if type found, it is written to the pointer, true is returned and the counter is increased
 	// if not, it returns false, the pointer and the counter is'nt modified 
-	bool getInt(int64_t* i); 
-	bool getFloat(double* d);
+	bool getInt(std::string* str); 
+	bool getFloat(std::string* str);
 	bool getWord(std::string* str);
 	bool getSym(char* sym);
 

@@ -101,7 +101,7 @@ void TokenStream::gotoIndex(uint i)
 
 std::string TokenStream::viewToken(Token* token)
 {
-	uint len = token->end - token->start;
+	uint len = token->end - token->start + 1;
 
 	return this->srcStr.substr(token->start, len);
 }
@@ -113,23 +113,7 @@ char TokenStream::viewSymToken(Token* token)
 }
 
 
-int64_t TokenStream::viewIntToken(Token* token)
-{
-	uint len = token->end - token->start;
-
-	return std::stol(this->srcStr.substr(token->start, len));
-}
-
-
-double TokenStream::viewFloatToken(Token* token)
-{
-	uint len = token->end - token->start;
-
-	return std::stod(this->srcStr.substr(token->start, len));
-}
-
-
-bool TokenStream::getInt(int64_t* i)
+bool TokenStream::getInt(std::string* i)
 {
 	Token tok = this->next();
 
@@ -139,12 +123,12 @@ bool TokenStream::getInt(int64_t* i)
 		return false;
 	}
 
-	*i = this->viewIntToken(&tok);
+	*i = this->viewToken(&tok);
 	return true;
 }
 
 
-bool TokenStream::getFloat(double* d)
+bool TokenStream::getFloat(std::string* d)
 {
 	Token tok = this->next();
 
@@ -154,7 +138,7 @@ bool TokenStream::getFloat(double* d)
 		return false;
 	}
 
-	*d = this->viewFloatToken(&tok);
+	*d = this->viewToken(&tok);
 	return true;
 }
 
