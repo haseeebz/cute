@@ -22,7 +22,7 @@ void CuteEngine_end()
 void CuteEngine_loadImage(char* filepath)
 {
 	ctImageError code = ctProgramImage_read(&ctEngine.img, filepath);
-
+	
 	if (code != ctImageError_Success)
 	{
 
