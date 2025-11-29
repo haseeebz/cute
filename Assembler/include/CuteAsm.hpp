@@ -1,57 +1,65 @@
 #include "CuteByte.h"
 #include "CuteToken.hpp"
-#include <cstdint>
 #include <map>
 #include <string>
 #include <vector>
 
 #pragma once
 
-namespace AsmConstructs
+
+namespace AsmConstruct
 {
-	struct Function
+	enum UnitType
 	{
-		uint32_t func_id;
-		uint16_t args_count;
-		uint16_t locals_size;
-		std::vector<std::string> instrs;
-		std::map<uint32_t, uint32_t> stations;
+		Instr,
+		Int32,
+		Int64,
+		Float32,
+		Float64,
+		StationId
 	};
 
-	using FunctionMap = std::map<uint32_t, Function>;
-	using ConstMap = std::map<uint32_t, ctProgramConst>; 
-	using InstrVec = std::vector<ctInstrSize>;
-	
-	using InstrMapping = std::map<std::string, ctInstr>;
-}
+	struct Unit
+	{
+		UnitType type;
+		std::string content;
+
+		Unit(UnitType t, std::string s): type(t), content(s) {};
+	};
 
 
+	struct Program
+	{
+		std::vector<AsmConstruct::Unit> units;
+		std::map<std::string, uint> stations;
+	};
+
+
+	struct InstrDetails
+	{
+		ctInstr code;
+		uint op_count;
+		uint op_size;
+	};
+
+};
 
 class CuteAssembler
 {
-
-	std::string srcfile;
-	std::string outfile;
-	
 	Tokenizer tokenizer;
 	TokenStream tokStream;
 
-	AsmConstructs::FunctionMap funcMap;
-	AsmConstructs::ConstMap    constMap;
-	AsmConstructs::InstrVec    instrVec;
 
-	void parse();
-	
-	void parseFunction();
-	void parseConstant();
+	std::map<std::string, AsmConstruct::InstrDetails>& instrMap();
 
-
-	void writeByte();
-
-	AsmConstructs::InstrMapping getInstrMap();
+	AsmConstruct::Program program;
+	ctProgramImage img;
 
 	public:
 
-	void throwError(std::string msg);
-	void assemble(std::string filepath, std::string outfile);
+	AsmConstruct::Program* parse(std::string srcFile);
+	ctProgramImage* emit(AsmConstruct::Program* program);
+	void write(ctProgramImage* img, std::string outFile);
+
+	void assemble(std::string srcFile, std::string outFile);
 };

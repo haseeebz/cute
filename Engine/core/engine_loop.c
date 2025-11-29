@@ -54,7 +54,6 @@ void CuteEngine_execLoop(ctState* state)
 
 	instr = instrs[state->pc++];
 
-	printf("instr: %X\n", instr);
 	switch (instr) 
 	{
         case instrHalt:
@@ -77,7 +76,6 @@ void CuteEngine_execLoop(ctState* state)
         case instrLoadCoI64:
 			extractInt64(&instrs[state->pc], &a1.i64);
 			state->pc += 8;
-			printf("number: %ld\n", a1.i64);
 			ctState_pushExeAtom(state, a1);
 			break;
 

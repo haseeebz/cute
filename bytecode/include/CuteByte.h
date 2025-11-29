@@ -188,8 +188,11 @@ ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath);
 
 void ctProgramImage_freeImage(ctProgramImage* img);
 
-void ctProgramImage_packInt(uint64_t i, ctInstrSize* eightInstrs); 
-void ctProgramImage_extractInt(ctInstrSize* eightInstrs, uint64_t* i); 
+void ctProgramImage_packInt32(uint32_t i, ctInstrSize* instr4); 
+void ctProgramImage_packInt64(uint64_t i, ctInstrSize* instr8); 
+void ctProgramImage_packFloat32(float i, ctInstrSize* instr4); 
+void ctProgramImage_packFloat64(double i, ctInstrSize* instr8); 
+
 
 #ifdef __cplusplus
 }
