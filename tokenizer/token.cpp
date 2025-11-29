@@ -183,6 +183,7 @@ bool TokenStream::getKeyword(std::string keyword)
 		{
 			return true;
 		}
+		this->backtrack();
 	}
 
 	return false;
@@ -199,6 +200,7 @@ bool TokenStream::getKeySym(char sym)
 		{
 			return true;
 		}
+		this->backtrack();
 	}
 
 	return false;
