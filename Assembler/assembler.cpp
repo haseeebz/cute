@@ -96,87 +96,37 @@ std::map<std::string, AsmConstruct::InstrDetails>& CuteAssembler::instrMap()
 }
 
 
-void CuteAssembler::parseFile()
+void CuteAssembler::notify(std::string msg)
 {
-}
-	
-void CuteAssembler::emitInstrs()
-{
-	Token tok;
-	
-	while (true)
-	{
-		tok = this->tokStream.next();
-		
-		if (tok.type == tokenEOF)
-		{
-			break;
-		}
-
-		if (tok.type == TokenType::tokenWord)
-		{
-			std::string word = this->tokStream.viewToken(&tok);
-
-			if (!this->instrMap().contains(word))
-			{
-				std::cout << "Invalid Instruction\n";
-			}
-
-			ctInstr instr = this->instrMap()[word];
-			this->instrs.push_back(instr);
-		}	
-
-		if (tok.type == TokenType::tokenInt)
-		{
-			int64_t integar = std::stoll(this->tokStream.viewToken(&tok));
-
-			ctInstrSize instrs[8];
-			ctProgramImage_packInt64(integar, instrs);
-
-			for (uint i = 0; i < 8; i++)
-			{
-				this->instrs.push_back(instrs[i]);
-			}
-		}
-	}
+	std::cout << msg << std::endl;
 }
 
 
-void CuteAssembler::write(std::string outFile)
+void CuteAssembler::notifyDebug(std::string msg)
 {
-	ctProgramImage img;
-	img.header.func_count = 1;
-	img.header.instr_count = this->instrs.size();
-
-	img.header.const_count = 0;
-
-	img.func_table = new ctFuncMetadata;
-	img.func_table[0].func_id = 0;
-	img.func_table[0].locals_size = 10;
-	img.func_table[0].arg_count = 0;
-	img.func_table[0].instr_address = 0;
-
-	img.instrs = this->instrs.data();
-
-	ctImageError err = ctProgramImage_write(&img, outFile.data());
-
-	if (err == ctImageError_Success)
-	{
-		std::cout << "Program Image written to: " << outFile << std::endl;
-	}
-	else 
-	{
-		std::cout << "Image write failure. Code: " << err << std::endl;	
-	}
-
+	#ifdef ASM_DEBUG
+	std::cout << msg << std::endl;
+	#endif
 }
+
+
+void CuteAssembler::throwError(std::string name, std::string msg)
+{
+	std::cout << name << " :: " << msg << std::endl;
+	std::exit(0);
+}
+
+
+void CuteAssembler::parse();
+void CuteAssembler::emit();
+void CuteAssembler::write(std::string outFile);
 
 
 void CuteAssembler::assemble(std::string srcFile, std::string outFile)
 {
-	this->tokStream = this->tokenizer.tokenize(srcFile);
+	this->tokens = this->tokenizer.tokenize(srcFile);
 
-	this->parseFile();
-	this->emitInstrs();
+	this->parse();
+	this->emit();
 	this->write(outFile);
 }
