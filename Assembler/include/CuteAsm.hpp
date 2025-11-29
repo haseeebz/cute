@@ -11,50 +11,41 @@
 #define ASM_DEBUG
 #endif
 
+#define addMultipleInstrs(vector, instrs, count) \
+for (uint i = 0; i < count; i++) \
+{vector.push_back(instrs[i]);};
 
-namespace AsmConstruct
+
+namespace AsmDef
 {
 	enum UnitType
 	{
 		Instr,
-		Int32,
-		Int64,
-		Float32,
-		Float64,
-		StationId
+		Int,
+		Float,
+		Station
 	};
 
 
 	struct Unit
 	{
 		UnitType type;
-		union
-		{
-			ctInstr instr;
-			int32_t i32;
-			int64_t i64;
-			float f32;
-			double f64;
-			uint station;
-		};
+		std::string content;
 
-		Unit(ctInstr i)      : type(UnitType::Instr), instr(i) {}
-		Unit(int32_t i)      : type(UnitType::Int32), i32(i) {}
-		Unit(int64_t i)      : type(UnitType::Int64), i64(i) {}
-		Unit(float f)        : type(UnitType::Float32), f32(f) {}
-		Unit(double d)       : type(UnitType::Float64), f64(d) {}
-		Unit(uint s)         : type(UnitType::StationId), station(s) {}
-
-		Unit()               : type(UnitType::Instr), instr(ctInstr(0)) {}
-
+		Unit(UnitType t, std::string c): type(t), content(c) {}
 	};
 
 
 	struct Program
 	{
-		Unit lastUnit;
 		std::vector<Unit> units;
 		std::map<uint, uint> stations;
+
+		ctProgramImage img;
+		std::vector<ctInstrSize> instrs;
+
+		void addUnit(Unit u) {units.push_back(u);}
+		void addStation(uint id, uint pos) {stations[id] = pos;}
 	};
 
 	struct InstrDetails
@@ -71,9 +62,9 @@ class CuteAssembler
 	Tokenizer tokenizer;
 	TokenStream tokens;
 
-	std::map<std::string, AsmConstruct::InstrDetails>& instrMap();
+	std::map<std::string, AsmDef::InstrDetails>& instrMap();
 
-	AsmConstruct::Program program;
+	AsmDef::Program program;
 	ctProgramImage img;
 
 	void notify(std::string msg);
@@ -85,8 +76,6 @@ class CuteAssembler
 	void write(std::string outFile);
 
 	public:
-
-	
 
 	void assemble(std::string srcFile, std::string outFile);
 };

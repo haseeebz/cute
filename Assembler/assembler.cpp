@@ -1,6 +1,7 @@
 #include "CuteByte.h"
 #include "CuteToken.hpp"
 #include <cstdint>
+#include <format>
 #include <iostream>
 #include <map>
 #include <string>
@@ -9,9 +10,9 @@
 #include "CuteAsm.hpp"
 
 
-std::map<std::string, AsmConstruct::InstrDetails>& CuteAssembler::instrMap()
+std::map<std::string, AsmDef::InstrDetails>& CuteAssembler::instrMap()
 {
-	static std::map<std::string, AsmConstruct::InstrDetails> instrMap = 
+	static std::map<std::string, AsmDef::InstrDetails> instrMap = 
 	{
 		
     {"Halt",            {instrHalt, 0, 0}},
@@ -117,15 +118,202 @@ void CuteAssembler::throwError(std::string name, std::string msg)
 }
 
 
-void CuteAssembler::parse();
-void CuteAssembler::emit();
-void CuteAssembler::write(std::string outFile);
+void CuteAssembler::parse()
+{
+	std::string word;
+
+	while (true)
+	{
+		if (this->tokens.peek().type == TokenType::tokenEOF)
+		{
+			break;
+		}
+
+		if (this->tokens.getKeyword("Station"))
+		{
+			if (!this->tokens.getInt(&word))
+			{
+				this->throwError("Assembler Error", "Expected integar after station.");
+			}
+			uint i = std::stoi(word);
+			this->program.addUnit(AsmDef::Unit(AsmDef::UnitType::Station, word));
+			this->program.addStation(i, 0);
+			continue;
+		}
+
+		if (this->tokens.getWord(&word))
+		{	
+			if (!this->instrMap().contains(word))
+			{
+				this->throwError("Assembler Error", "Unknown Instruction");
+			}
+			this->program.addUnit(AsmDef::Unit(AsmDef::UnitType::Instr, word));
+			continue;
+		}
+
+		if (this->tokens.getInt(&word))
+		{
+			this->program.addUnit(AsmDef::Unit(AsmDef::UnitType::Int, word));
+			continue;
+		}
+		
+		if (this->tokens.getFloat(&word))
+		{
+			this->program.addUnit(AsmDef::Unit(AsmDef::UnitType::Float, word));
+			continue;
+		}
+
+	}
+}
+
+
+void CuteAssembler::emit()
+{
+	int64_t i64;
+	int32_t i32;
+	float f32;
+	double f64;
+	
+	std::map<uint, uint> patches;
+
+	for (uint i = 0; i < this->program.units.size(); i++)
+	{
+		AsmDef::Unit unit = this->program.units[i];
+
+		if (unit.type == AsmDef::UnitType::Station)
+		{
+			uint id = std::stoi(unit.content);
+			this->program.stations[id] = this->program.instrs.size();
+			std::cout << "station patch:" << id << " " << this->program.stations[id] << '\n';
+			continue;
+		}
+
+		AsmDef::InstrDetails instr = this->instrMap()[unit.content];
+
+		this->program.instrs.push_back(instr.code);
+
+		if (instr.code == instrJmp | instr.code == instrJmpTrue | instr.code == instrJmpFalse)
+		{
+			ctInstrSize packed[4];
+			uint station_id;
+
+			unit = this->program.units[++i];
+
+			if (unit.type != AsmDef::UnitType::Int)
+			{
+				this->throwError("Assembler Error", "Expected int after jump");
+			}
+
+			station_id = std::stoi(unit.content);
+
+			patches[this->program.instrs.size()] = station_id;
+			ctProgramImage_packInt32(0, packed);
+			addMultipleInstrs(this->program.instrs, packed, 4);
+			continue;
+		}
+
+		uint temp = i + 1;
+		i += instr.op_count;
+
+		for (uint j = temp; j < temp + instr.op_count; j++)
+		{
+			unit = this->program.units[j];
+			
+			if (instr.op_size == 4)
+			{
+				ctInstrSize packed[4];
+
+				if (unit.type == AsmDef::UnitType::Int)
+				{
+					i32 = std::stoi(unit.content);
+					ctProgramImage_packInt32(i32, packed);
+				}
+				else if (unit.type == AsmDef::UnitType::Float)
+				{
+					f32 = std::stof(unit.content);
+					ctProgramImage_packFloat32(f32, packed);
+				}
+
+				addMultipleInstrs(this->program.instrs, packed, 4);
+			}
+
+
+			if (instr.op_size == 8)
+			{
+				ctInstrSize packed[8];
+
+				if (unit.type == AsmDef::UnitType::Int)
+				{
+					i64 = std::stoll(unit.content);
+					ctProgramImage_packInt64((uint64_t) i64, packed);
+				}
+				else if (unit.type == AsmDef::UnitType::Float)
+				{
+					f64 = std::stod(unit.content);
+					ctProgramImage_packFloat64(f64, packed);
+				}
+
+				addMultipleInstrs(this->program.instrs, packed, 8);
+			}
+
+		}
+
+	}
+
+	for (auto patch: patches)
+	{
+		if (!this->program.stations.contains(patch.second))
+		{
+			this->throwError("Assembler Error", "Unregistered station id.");
+		}
+		
+		uint station_postion = this->program.stations[patch.second];
+		uint current_position = patch.first;
+		int relative = int(station_postion) - int(current_position);
+		std::cout << "Jmp relative: " << relative <<" "<< station_postion <<" "<< current_position << '\n';
+		ctInstrSize packed[4];
+		ctProgramImage_packInt32(relative, packed);
+
+		for (uint i = patch.first; i < patch.first + 4; i++)
+		{
+			this->program.instrs[i] = packed[i];
+		}
+	}
+}
+
+
+void CuteAssembler::write(std::string outFile)
+{
+	ctProgramImage img;
+
+	img.header.const_count = 0;
+
+	img.header.func_count = 1;
+	img.func_table = new ctFuncMetadata;
+	img.func_table->func_id = 0;
+	img.func_table->arg_count = 0;
+	img.func_table->locals_size = 0;
+	img.func_table->instr_address = 0;
+
+	img.header.instr_count = this->program.instrs.size();
+	img.instrs = this->program.instrs.data();
+
+	ctImageError err = ctProgramImage_write(&img, outFile.data());
+
+	if (err == ctImageError_Success)
+	{
+		this->notify(std::format("Program Image successfully written to: {}", outFile));
+	}
+	else
+	{
+		this->throwError("Assembler Error", std::format("Image could not be written. Code: {}", (int) err));
+	}
+}
 
 
 void CuteAssembler::assemble(std::string srcFile, std::string outFile)
 {
 	this->tokens = this->tokenizer.tokenize(srcFile);
-
 	this->parse();
 	this->emit();
 	this->write(outFile);
