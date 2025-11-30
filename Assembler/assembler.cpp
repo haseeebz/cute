@@ -169,10 +169,10 @@ void CuteAssembler::parse()
 
 void CuteAssembler::emit()
 {
-	int64_t i64;
-	int32_t i32;
-	float f32;
-	double f64;
+	int64_t i64 = 0;
+	int32_t i32 = 0;
+	float f32 = 0;
+	double f64 = 0;
 	
 	std::map<uint, uint> patches;
 
@@ -207,7 +207,7 @@ void CuteAssembler::emit()
 			station_id = std::stoi(unit.content);
 
 			patches[this->program.instrs.size()] = station_id;
-			ctProgramImage_packInt32(0, packed);
+			ctProgramImage_packInt32(&i32, packed); //placeholder
 			addMultipleInstrs(this->program.instrs, packed, 4);
 			continue;
 		}
@@ -226,12 +226,12 @@ void CuteAssembler::emit()
 				if (unit.type == AsmDef::UnitType::Int)
 				{
 					i32 = std::stoi(unit.content);
-					ctProgramImage_packInt32(i32, packed);
+					ctProgramImage_packInt32(&i32, packed);
 				}
 				else if (unit.type == AsmDef::UnitType::Float)
 				{
 					f32 = std::stof(unit.content);
-					ctProgramImage_packFloat32(f32, packed);
+					ctProgramImage_packFloat32(&f32, packed);
 				}
 
 				addMultipleInstrs(this->program.instrs, packed, 4);
@@ -245,12 +245,12 @@ void CuteAssembler::emit()
 				if (unit.type == AsmDef::UnitType::Int)
 				{
 					i64 = std::stoll(unit.content);
-					ctProgramImage_packInt64((uint64_t) i64, packed);
+					ctProgramImage_packInt64(&i64, packed);
 				}
 				else if (unit.type == AsmDef::UnitType::Float)
 				{
 					f64 = std::stod(unit.content);
-					ctProgramImage_packFloat64(f64, packed);
+					ctProgramImage_packFloat64(&f64, packed);
 				}
 
 				addMultipleInstrs(this->program.instrs, packed, 8);
@@ -269,14 +269,15 @@ void CuteAssembler::emit()
 		
 		uint station_postion = this->program.stations[patch.second];
 		uint current_position = patch.first;
-		int relative = int(station_postion) - int(current_position);
-		std::cout << "Jmp relative: " << relative <<" "<< station_postion <<" "<< current_position << '\n';
+		int relative = (station_postion) - (current_position);
+		std::cout << "Jmp relative: " << (int)relative <<" "<< station_postion <<" "<< current_position << '\n';
 		ctInstrSize packed[4];
-		ctProgramImage_packInt32(relative, packed);
+		ctProgramImage_packInt32(&relative, packed);
+
 
 		for (uint i = patch.first; i < patch.first + 4; i++)
 		{
-			this->program.instrs[i] = packed[i];
+			this->program.instrs[i] = packed[i - patch.first];
 		}
 	}
 }
@@ -292,8 +293,14 @@ void CuteAssembler::write(std::string outFile)
 	img.func_table = new ctFuncMetadata;
 	img.func_table->func_id = 0;
 	img.func_table->arg_count = 0;
-	img.func_table->locals_size = 0;
+	img.func_table->locals_size = 10;
 	img.func_table->instr_address = 0;
+
+	for (auto instr: this->program.instrs)
+	{
+		printf("%X ", instr);
+	}
+	std::cout << std::endl;
 
 	img.header.instr_count = this->program.instrs.size();
 	img.instrs = this->program.instrs.data();

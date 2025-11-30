@@ -107,22 +107,22 @@ void ctProgramImage_freeImage(ctProgramImage* img)
 }
 
 
-inline void ctProgramImage_packInt32(uint32_t i, ctInstrSize* instr4)
+inline void ctProgramImage_packInt32(int32_t* i, ctInstrSize* instr4)
 {
-	memcpy(instr4, &i, sizeof(i));
+	memcpy(instr4, i, sizeof(*i));
 }
 
-inline void ctProgramImage_packInt64(uint64_t i, ctInstrSize* instr8)
+inline void ctProgramImage_packInt64(int64_t* i, ctInstrSize* instr8)
 {
-	memcpy(instr8, &i, sizeof(i));
+	memcpy(instr8, i, sizeof(*i));
 }
 
-inline void ctProgramImage_packFloat32(float i, ctInstrSize* instr4)
+inline void ctProgramImage_packFloat32(float* i, ctInstrSize* instr4)
 {
-	memcpy(instr4, &i, sizeof(i));
+	memcpy(instr4, i, sizeof(*i));
 }
 
-inline void ctProgramImage_packFloat64(double i, ctInstrSize* instr8)
+inline void ctProgramImage_packFloat64(double* i, ctInstrSize* instr8)
 {
-	memcpy(instr8, &i, sizeof(i));
+	memcpy(instr8, i, sizeof(*i));
 }

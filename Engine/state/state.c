@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "CuteAtom.h"
@@ -175,13 +176,14 @@ void ctState_setLocal(ctState* state, uint32_t pos, ctAtom atom)
 {
 	ctFuncFrame top_frame = state->frame_stack.frames[state->frame_stack.count-1];
 
-	if (!(pos < top_frame.locals_count))
+	if (pos > top_frame.locals_count)
 	{
 		ctError_new(
 			&state->error,
 			"Internal Cute Error",
 			"Invalid local set operation."
 		);
+		printf("Attempted to write to %u, max was %u", pos, top_frame.locals_count);
 		ctState_raiseError(state);
 		return;
 	}
