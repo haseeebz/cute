@@ -17,10 +17,10 @@ void ctState_init(ctState* state, ctProgramImage* img)
 	state->img = img;
 	state->func_table = img->func_table;
 
-	state->exestack.cap = EXESTACK_LIMIT;
+	state->exestack.cap = CUTE_EXESTACK_LIMIT;
 	state->exestack.count = 0;
 
-	state->frame_stack.cap = FUNC_CALL_LIMIT;
+	state->frame_stack.cap = CUTE_FUNCSTACK_LIMIT;
 	state->frame_stack.count = 0;
 
 	state->error_encountered = false;
@@ -68,7 +68,7 @@ ctAtom ctState_popExeAtom(ctState* state)
 			"ExeStack Underflow."
 		);
 		ctState_raiseError(state);
-		return (ctAtom) {.ref = 0};
+		return (ctAtom) {.i64 = 0};
 	}
 
 	return state->exestack.atoms[--state->exestack.count];
@@ -85,7 +85,7 @@ ctAtom ctState_peekExeAtom(ctState* state)
 			"ExeStack Underflow."
 		);
 		ctState_raiseError(state);
-		return (ctAtom) {.ref = 0};
+		return (ctAtom) {.i64 = 0};
 	}
 
 	return state->exestack.atoms[state->exestack.count-1];
@@ -134,11 +134,22 @@ void ctState_setupFuncFrame(ctState* state, uint32_t func_id)
 		return;
 	}
 
+
 	// setting up the frame
 	ctFuncMetadata* meta = &state->func_table[func_id];
 
 	ctFuncFrame frame;
+
 	frame.locals_count = meta->locals_size;
+	if (frame.locals_count > CUTE_LOCALS_LIMIT)
+	{
+		ctError_new(
+			&state->error,
+			"Internal Cute Error",
+			"Allocating too many locals for function."
+		);
+		ctState_raiseError(state);
+	}
 	frame.locals = malloc(sizeof(ctAtom) * meta->locals_size);
 	
 	// pushing frame
@@ -192,7 +203,7 @@ ctAtom ctState_getLocal(ctState* state, uint32_t pos)
 			"Internal Cute Error",
 			"Invalid local set operation."
 		);
-		return (ctAtom) {.by8 = 0};
+		return (ctAtom) {.i64 = 0};
 	}
 
 	return top_frame.locals[pos];

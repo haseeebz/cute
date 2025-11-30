@@ -256,31 +256,32 @@ void CuteEngine_execLoop(ctState* state)
 			break;
 
 		case instrJmpA:
-			extractInt64(&instrs[state->pc], (int64_t*)&ptu);
+			extractInt64(&instrs[state->pc], (int64_t*) &ptu);
 			state->pc = ptu;
 			break;
 
         case instrJmp:
 			extractInt64(&instrs[state->pc], &pts);
-			state->pc += ptu;
+			state->pc += pts;
 			break;
 
         case instrJmpTrue:
 			a1 = ctState_popExeAtom(state);
 			if (!a1.by8) {state->pc++; continue;}
 			extractInt64(&instrs[state->pc], &pts);
-			state->pc += ptu;
+			state->pc += pts;
 			break;
 		 
         case instrJmpFalse:
 			a1 = ctState_popExeAtom(state);
 			if (a1.by8) {state->pc++; continue;}
 			extractInt64(&instrs[state->pc], &pts);
-			state->pc += ptu;
+			state->pc += pts;
 			break;
 		 
         case instrFuncCall:
-			extractInt64(&instrs[state->pc], (int64_t *) &ptu);
+			extractInt64(&instrs[state->pc], (int64_t*) &ptu);
+			state->pc += 8;
 			ctState_setupFuncFrame(state, ptu);
 			break;
 

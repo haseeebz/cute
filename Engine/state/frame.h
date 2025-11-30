@@ -11,7 +11,7 @@ typedef struct
 
 typedef struct
 {
-	ctFuncFrame frames[FUNC_CALL_LIMIT];
+	ctFuncFrame frames[CUTE_FUNCSTACK_LIMIT];
 	uint32_t count;
 	uint32_t cap;
 } ctFrameStack;
