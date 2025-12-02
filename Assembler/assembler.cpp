@@ -169,13 +169,6 @@ void CuteAssembler::parse()
 
 void CuteAssembler::emit()
 {
-	int64_t i64 = 0;
-	int32_t i32 = 0;
-	float f32 = 0;
-	double f64 = 0;
-	
-	std::map<uint, uint> patches;
-
 	for (uint i = 0; i < this->program.units.size(); i++)
 	{
 		AsmDef::Unit unit = this->program.units[i];
@@ -184,83 +177,107 @@ void CuteAssembler::emit()
 		{
 			uint id = std::stoi(unit.content);
 			this->program.stations[id] = this->program.instrs.size();
-			std::cout << "station patch:" << id << " " << this->program.stations[id] << '\n';
 			continue;
 		}
 
-		AsmDef::InstrDetails instr = this->instrMap()[unit.content];
-
-		this->program.instrs.push_back(instr.code);
-
-		if (instr.code == instrJmp | instr.code == instrJmpTrue | instr.code == instrJmpFalse)
+		if (unit.type == AsmDef::UnitType::Instr)
 		{
-			ctInstrSize packed[4];
-			uint station_id;
+			this->emitInstr(i);
+		}
+	
+	}
 
-			unit = this->program.units[++i];
+	this->patchJumps();
+}
 
-			if (unit.type != AsmDef::UnitType::Int)
-			{
-				this->throwError("Assembler Error", "Expected int after jump");
-			}
 
-			station_id = std::stoi(unit.content);
+void CuteAssembler::emitInstr(uint& unitIndex)
+{
+	AsmDef::Unit unit = this->program.units[unitIndex];
 
-			patches[this->program.instrs.size()] = station_id;
-			ctProgramImage_packInt32(&i32, packed); //placeholder
-			addMultipleInstrs(this->program.instrs, packed, 4);
-			continue;
+	AsmDef::InstrDetails instr = this->instrMap()[unit.content];
+	this->program.instrs.push_back(instr.code);
+
+	int64_t i64 = 0;
+	int32_t i32 = 0;
+	float f32 = 0;
+	double f64 = 0;
+
+	if (instr.code == instrJmp | instr.code == instrJmpTrue | instr.code == instrJmpFalse)
+	{
+		ctInstrSize packed[4];
+		uint station_id;
+
+		unit = this->program.units[++unitIndex];
+
+		if (unit.type != AsmDef::UnitType::Int)
+		{
+			this->throwError("Assembler Error", "Expected station id (int) after jump");
 		}
 
-		uint temp = i + 1;
-		i += instr.op_count;
+		station_id = std::stoi(unit.content);
 
-		for (uint j = temp; j < temp + instr.op_count; j++)
+		this->program.patches[this->program.instrs.size()] = station_id;
+		ctProgramImage_packInt32(&i32, packed); //placeholder
+		addMultipleInstrs(this->program.instrs, packed, 4);
+		return;
+	}
+
+	// below code writes the operands of instructions
+	// operand size and count defined in the instrMap function
+
+	uint temp = unitIndex + 1;
+	unitIndex += instr.op_count;
+
+	for (uint j = temp; j < temp + instr.op_count; j++)
+	{
+		unit = this->program.units[j];
+		ctInstrSize packed4[4];
+		ctInstrSize packed8[8];
+		
+		if (unit.type == AsmDef::UnitType::Int)
 		{
-			unit = this->program.units[j];
-			
 			if (instr.op_size == 4)
 			{
-				ctInstrSize packed[4];
-
-				if (unit.type == AsmDef::UnitType::Int)
-				{
-					i32 = std::stoi(unit.content);
-					ctProgramImage_packInt32(&i32, packed);
-				}
-				else if (unit.type == AsmDef::UnitType::Float)
-				{
-					f32 = std::stof(unit.content);
-					ctProgramImage_packFloat32(&f32, packed);
-				}
-
-				addMultipleInstrs(this->program.instrs, packed, 4);
+				i32 = std::stoi(unit.content);
+				ctProgramImage_packInt32(&i32, packed4);
+				addMultipleInstrs(this->program.instrs, packed4, 4);
 			}
-
-
-			if (instr.op_size == 8)
+			else if (instr.op_size == 8)
 			{
-				ctInstrSize packed[8];
-
-				if (unit.type == AsmDef::UnitType::Int)
-				{
-					i64 = std::stoll(unit.content);
-					ctProgramImage_packInt64(&i64, packed);
-				}
-				else if (unit.type == AsmDef::UnitType::Float)
-				{
-					f64 = std::stod(unit.content);
-					ctProgramImage_packFloat64(&f64, packed);
-				}
-
-				addMultipleInstrs(this->program.instrs, packed, 8);
+				i64 = std::stoll(unit.content);
+				ctProgramImage_packInt64(&i64, packed8);
+				addMultipleInstrs(this->program.instrs, packed8, 8);
 			}
-
+		}
+		else if (unit.type == AsmDef::UnitType::Float)
+		{
+			if (instr.op_size == 4)
+			{
+				f32 = std::stof(unit.content);
+				ctProgramImage_packFloat32(&f32, packed4);
+				addMultipleInstrs(this->program.instrs, packed4, 4);
+			}
+			else if (instr.op_size == 8)
+			{
+				f64 = std::stod(unit.content);
+				ctProgramImage_packFloat64(&f64, packed8);
+				addMultipleInstrs(this->program.instrs, packed8, 8);
+			}
+		}
+		else 
+		{
+			this->throwError("Assembler Error", "Expected int or float as instruction operands.");
 		}
 
 	}
 
-	for (auto patch: patches)
+}
+
+
+void CuteAssembler::patchJumps()
+{
+	for (auto patch: this->program.patches)
 	{
 		if (!this->program.stations.contains(patch.second))
 		{
@@ -270,10 +287,9 @@ void CuteAssembler::emit()
 		uint station_postion = this->program.stations[patch.second];
 		uint current_position = patch.first;
 		int relative = (station_postion) - (current_position);
-		std::cout << "Jmp relative: " << (int)relative <<" "<< station_postion <<" "<< current_position << '\n';
+
 		ctInstrSize packed[4];
 		ctProgramImage_packInt32(&relative, packed);
-
 
 		for (uint i = patch.first; i < patch.first + 4; i++)
 		{
@@ -281,6 +297,7 @@ void CuteAssembler::emit()
 		}
 	}
 }
+
 
 
 void CuteAssembler::write(std::string outFile)
@@ -295,12 +312,6 @@ void CuteAssembler::write(std::string outFile)
 	img.func_table->arg_count = 0;
 	img.func_table->locals_size = 10;
 	img.func_table->instr_address = 0;
-
-	for (auto instr: this->program.instrs)
-	{
-		printf("%X ", instr);
-	}
-	std::cout << std::endl;
 
 	img.header.instr_count = this->program.instrs.size();
 	img.instrs = this->program.instrs.data();

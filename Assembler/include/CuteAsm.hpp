@@ -32,15 +32,21 @@ namespace AsmDef
 		UnitType type;
 		std::string content;
 
-		Unit(UnitType t, std::string c): type(t), content(c) {}
+		Unit(UnitType t, std::string c): type(t), content(c) {};
+		Unit() = default;
 	};
 
 
 	struct Program
 	{
+		// parser level
 		std::vector<Unit> units;
 		std::map<uint, uint> stations;
 
+		// emitter level
+		std::map<uint, uint> patches;
+
+		// writer level
 		ctProgramImage img;
 		std::vector<ctInstrSize> instrs;
 
@@ -72,7 +78,11 @@ class CuteAssembler
 	void throwError(std::string name, std::string msg);
 
 	void parse();
+
 	void emit();
+	void emitInstr(uint& unitIndex);
+	void patchJumps();
+
 	void write(std::string outFile);
 
 	public:
