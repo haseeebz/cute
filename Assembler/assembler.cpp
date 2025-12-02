@@ -129,6 +129,54 @@ void CuteAssembler::parse()
 			break;
 		}
 
+		if (this->tokens.getKeyword("func"))
+		{
+			this->parseFunction();
+		}
+	}
+
+}
+
+
+void CuteAssembler::parseFunction()
+{
+	AsmDef::Function func;
+
+	std::string int_str;
+
+	this->tokens.getInt(&int_str);
+	func.id = std::stoi(int_str);
+
+	this->tokens.getInt(&int_str);
+	func.args = std::stoi(int_str);
+
+	this->tokens.getInt(&int_str);
+	func.locals = std::stoi(int_str);
+
+	if (func.args < func.locals)
+	{
+		this->throwError("Assembler Error", "Local memory space is less than required arguments.");
+	}
+
+	this->tokens.getKeySym('[');
+	this->parseInstrBlock(func);
+
+	this->program.functions[func.id] = func;
+}
+
+
+void CuteAssembler::parseInstrBlock(AsmDef::Function& func)
+{
+	std::string word;
+
+	while (true)
+	{	
+
+		if (this->tokens.getKeySym(']'))
+		{
+			break;
+		}
+
 		if (this->tokens.getKeyword("Station"))
 		{
 			if (!this->tokens.getInt(&word))
@@ -136,8 +184,8 @@ void CuteAssembler::parse()
 				this->throwError("Assembler Error", "Expected integar after station.");
 			}
 			uint i = std::stoi(word);
-			this->program.addUnit(AsmDef::Unit(AsmDef::UnitType::Station, word));
-			this->program.addStation(i, 0);
+			func.addUnit(AsmDef::Unit(AsmDef::UnitType::Station, word));
+			func.addStation(i, 0);
 			continue;
 		}
 
@@ -145,146 +193,166 @@ void CuteAssembler::parse()
 		{	
 			if (!this->instrMap().contains(word))
 			{
-				this->throwError("Assembler Error", "Unknown Instruction");
+				this->throwError("Assembler Error", std::format("Unknown Instruction: {}", word));
 			}
-			this->program.addUnit(AsmDef::Unit(AsmDef::UnitType::Instr, word));
+			func.addUnit(AsmDef::Unit(AsmDef::UnitType::Instr, word));
 			continue;
 		}
 
 		if (this->tokens.getInt(&word))
 		{
-			this->program.addUnit(AsmDef::Unit(AsmDef::UnitType::Int, word));
+			func.addUnit(AsmDef::Unit(AsmDef::UnitType::Int, word));
 			continue;
 		}
 		
 		if (this->tokens.getFloat(&word))
 		{
-			this->program.addUnit(AsmDef::Unit(AsmDef::UnitType::Float, word));
+			func.addUnit(AsmDef::Unit(AsmDef::UnitType::Float, word));
 			continue;
 		}
-
 	}
 }
 
-
 void CuteAssembler::emit()
 {
-	for (uint i = 0; i < this->program.units.size(); i++)
+	for (auto pair: this->program.functions)
 	{
-		AsmDef::Unit unit = this->program.units[i];
+		AsmDef::Function func = pair.second;
+		this->emitFunction(func);
+		this->program.instrs.insert(this->program.instrs.end(), func.instrs.begin(), func.instrs.end());
+	}
+
+	this->program.img.header.const_count = 0;
+	this->program.img.header.instr_count = this->program.instrs.size();
+	this->program.img.header.func_count = this->program.func_table.size();
+	this->program.img.func_table = this->program.func_table.data();
+	this->program.img.instrs = this->program.instrs.data();
+
+	std::cout << this->program.func_table.size() << '\n';
+}
+
+
+void CuteAssembler::emitFunction(AsmDef::Function& func)
+{
+	ctFuncMetadata meta;
+	meta.func_id = func.id;
+	meta.arg_count = func.args;
+	meta.locals_size = func.locals;
+	meta.instr_address = this->program.instrs.size();
+
+	this->program.func_table.push_back(meta);
+	this->emitInstrBlock(func);
+	this->patchJumps(func);
+}
+
+
+void CuteAssembler::emitInstrBlock(AsmDef::Function& func)
+{
+	AsmDef::Unit unit;
+	for (uint i = 0; i < func.units.size(); i++)
+	{
+		unit = func.units[i];
 
 		if (unit.type == AsmDef::UnitType::Station)
 		{
 			uint id = std::stoi(unit.content);
-			this->program.stations[id] = this->program.instrs.size();
+			func.stations[id] = this->program.instrs.size();
 			continue;
 		}
 
-		if (unit.type == AsmDef::UnitType::Instr)
+		AsmDef::InstrDetails instr = this->instrMap()[unit.content];
+		func.instrs.push_back(instr.code);
+
+		int64_t i64 = 0;
+		int32_t i32 = 0;
+		float f32 = 0;
+		double f64 = 0;
+
+		if ((instr.code == instrJmp) | (instr.code == instrJmpTrue) | (instr.code == instrJmpFalse))
 		{
-			this->emitInstr(i);
-		}
-	
-	}
+			ctInstrSize packed[4];
+			uint station_id;
 
-	this->patchJumps();
-}
+			unit = func.units[++i];
 
+			if (unit.type != AsmDef::UnitType::Int)
+			{
+				this->throwError("Assembler Error", "Expected station id (int) after jump");
+			}
 
-void CuteAssembler::emitInstr(uint& unitIndex)
-{
-	AsmDef::Unit unit = this->program.units[unitIndex];
+			station_id = std::stoi(unit.content);
 
-	AsmDef::InstrDetails instr = this->instrMap()[unit.content];
-	this->program.instrs.push_back(instr.code);
-
-	int64_t i64 = 0;
-	int32_t i32 = 0;
-	float f32 = 0;
-	double f64 = 0;
-
-	if (instr.code == instrJmp | instr.code == instrJmpTrue | instr.code == instrJmpFalse)
-	{
-		ctInstrSize packed[4];
-		uint station_id;
-
-		unit = this->program.units[++unitIndex];
-
-		if (unit.type != AsmDef::UnitType::Int)
-		{
-			this->throwError("Assembler Error", "Expected station id (int) after jump");
+			func.patches[this->program.instrs.size()] = station_id;
+			ctProgramImage_packInt32(&i32, packed); //placeholder
+			addMultipleInstrs(func.instrs, packed, 4);
+			continue;
 		}
 
-		station_id = std::stoi(unit.content);
+		// below code writes the operands of instructions
+		// operand size and count defined in the instrMap function
 
-		this->program.patches[this->program.instrs.size()] = station_id;
-		ctProgramImage_packInt32(&i32, packed); //placeholder
-		addMultipleInstrs(this->program.instrs, packed, 4);
-		return;
-	}
+		uint temp = i + 1;
+		i += instr.op_count;
 
-	// below code writes the operands of instructions
-	// operand size and count defined in the instrMap function
-
-	uint temp = unitIndex + 1;
-	unitIndex += instr.op_count;
-
-	for (uint j = temp; j < temp + instr.op_count; j++)
-	{
-		unit = this->program.units[j];
-		ctInstrSize packed4[4];
-		ctInstrSize packed8[8];
-		
-		if (unit.type == AsmDef::UnitType::Int)
+		for (uint j = temp; j < temp + instr.op_count; j++)
 		{
-			if (instr.op_size == 4)
+			unit = func.units[j];
+			ctInstrSize packed4[4];
+			ctInstrSize packed8[8];
+			
+			if (unit.type == AsmDef::UnitType::Int)
 			{
-				i32 = std::stoi(unit.content);
-				ctProgramImage_packInt32(&i32, packed4);
-				addMultipleInstrs(this->program.instrs, packed4, 4);
+				if (instr.op_size == 4)
+				{
+					i32 = std::stoi(unit.content);
+					ctProgramImage_packInt32(&i32, packed4);
+					addMultipleInstrs(func.instrs, packed4, 4);
+				}
+				else if (instr.op_size == 8)
+				{
+					i64 = std::stoll(unit.content);
+					ctProgramImage_packInt64(&i64, packed8);
+					addMultipleInstrs(func.instrs, packed8, 8);
+				}
 			}
-			else if (instr.op_size == 8)
+			else if (unit.type == AsmDef::UnitType::Float)
 			{
-				i64 = std::stoll(unit.content);
-				ctProgramImage_packInt64(&i64, packed8);
-				addMultipleInstrs(this->program.instrs, packed8, 8);
+				if (instr.op_size == 4)
+				{
+					f32 = std::stof(unit.content);
+					ctProgramImage_packFloat32(&f32, packed4);
+					addMultipleInstrs(func.instrs, packed4, 4);
+				}
+				else if (instr.op_size == 8)
+				{
+					f64 = std::stod(unit.content);
+					ctProgramImage_packFloat64(&f64, packed8);
+					addMultipleInstrs(func.instrs, packed8, 8);
+				}
 			}
-		}
-		else if (unit.type == AsmDef::UnitType::Float)
-		{
-			if (instr.op_size == 4)
+			else 
 			{
-				f32 = std::stof(unit.content);
-				ctProgramImage_packFloat32(&f32, packed4);
-				addMultipleInstrs(this->program.instrs, packed4, 4);
+				this->throwError("Assembler Error", "Expected int or float as instruction operands.");
 			}
-			else if (instr.op_size == 8)
-			{
-				f64 = std::stod(unit.content);
-				ctProgramImage_packFloat64(&f64, packed8);
-				addMultipleInstrs(this->program.instrs, packed8, 8);
-			}
-		}
-		else 
-		{
-			this->throwError("Assembler Error", "Expected int or float as instruction operands.");
+
 		}
 
 	}
+
 
 }
 
 
-void CuteAssembler::patchJumps()
+void CuteAssembler::patchJumps(AsmDef::Function& func)
 {
-	for (auto patch: this->program.patches)
+	for (auto patch: func.patches)
 	{
-		if (!this->program.stations.contains(patch.second))
+		if (!func.stations.contains(patch.second))
 		{
 			this->throwError("Assembler Error", "Unregistered station id.");
 		}
 		
-		uint station_postion = this->program.stations[patch.second];
+		uint station_postion = func.stations[patch.second];
 		uint current_position = patch.first;
 		int relative = (station_postion) - (current_position);
 
@@ -295,28 +363,13 @@ void CuteAssembler::patchJumps()
 		{
 			this->program.instrs[i] = packed[i - patch.first];
 		}
-	}
+	}	
 }
-
 
 
 void CuteAssembler::write(std::string outFile)
 {
-	ctProgramImage img;
-
-	img.header.const_count = 0;
-
-	img.header.func_count = 1;
-	img.func_table = new ctFuncMetadata;
-	img.func_table->func_id = 0;
-	img.func_table->arg_count = 0;
-	img.func_table->locals_size = 10;
-	img.func_table->instr_address = 0;
-
-	img.header.instr_count = this->program.instrs.size();
-	img.instrs = this->program.instrs.data();
-
-	ctImageError err = ctProgramImage_write(&img, outFile.data());
+	ctImageError err = ctProgramImage_write(&this->program.img, outFile.data());
 
 	if (err == ctImageError_Success)
 	{

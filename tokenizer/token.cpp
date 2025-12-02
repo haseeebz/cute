@@ -206,3 +206,16 @@ bool TokenStream::getKeySym(char sym)
 	return false;
 }
 
+
+bool TokenStream::expectType(TokenType type)
+{
+	Token tok = this->next();
+	this->backtrack();
+
+	if (tok.type != type)
+	{
+		return false;
+	}
+
+	return true;
+}

@@ -152,6 +152,13 @@ void ctState_setupFuncFrame(ctState* state, uint32_t func_id)
 		ctState_raiseError(state);
 	}
 	frame.locals = malloc(sizeof(ctAtom) * meta->locals_size);
+
+
+	for (int i = 0; i < meta->arg_count; i++)
+	{
+		ctAtom atom = ctState_popExeAtom(state);
+		frame.locals[meta->arg_count - i - 1] = atom;
+	}
 	
 	// pushing frame
 	state->pc = meta->instr_address;

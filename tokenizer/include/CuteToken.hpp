@@ -65,6 +65,8 @@ class TokenStream
 	// returns true if the current token is word AND matches the given string
 	bool getKeyword(std::string keyword);
 	bool getKeySym(char sym);
+
+	bool expectType(TokenType type);
 	
 };
 

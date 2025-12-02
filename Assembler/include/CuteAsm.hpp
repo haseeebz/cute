@@ -37,22 +37,33 @@ namespace AsmDef
 	};
 
 
-	struct Program
+	struct Function
 	{
+		uint id;
+		uint args;
+		uint locals;
 		// parser level
 		std::vector<Unit> units;
 		std::map<uint, uint> stations;
 
 		// emitter level
 		std::map<uint, uint> patches;
-
-		// writer level
-		ctProgramImage img;
 		std::vector<ctInstrSize> instrs;
 
 		void addUnit(Unit u) {units.push_back(u);}
 		void addStation(uint id, uint pos) {stations[id] = pos;}
 	};
+
+
+	struct Program
+	{
+		std::map<uint, Function> functions;
+		// writer level
+		ctProgramImage img;
+		std::vector<ctInstrSize> instrs;
+		std::vector<ctFuncMetadata> func_table;
+	};
+
 
 	struct InstrDetails
 	{
@@ -79,9 +90,14 @@ class CuteAssembler
 
 	void parse();
 
+	void parseFunction();
+	void parseInstrBlock(AsmDef::Function& func);
+
 	void emit();
-	void emitInstr(uint& unitIndex);
-	void patchJumps();
+
+	void emitFunction(AsmDef::Function& func);
+	void emitInstrBlock(AsmDef::Function& func);
+	void patchJumps(AsmDef::Function& func);
 
 	void write(std::string outFile);
 
