@@ -1,5 +1,5 @@
 #include "CuteAtom.h"
-#include "config.h"
+#include "CuteConfig.h"
 
 #pragma once
 

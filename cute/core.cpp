@@ -19,7 +19,7 @@ CuteCore::~CuteCore()
 }
 
 
-void CuteCore::run(int argc, char* argv[])
+void CuteCore::run(int argc, char *argv[])
 {
 	this->parseArgs(argc, argv);
 
@@ -44,7 +44,7 @@ void CuteCore::run(int argc, char* argv[])
 }
 
 
-void CuteCore::parseArgs(int argc, char* argv[])
+void CuteCore::parseArgs(int argc, char *argv[])
 {
 	std::string arg;
 	for (int i = 1; i < argc; i++)

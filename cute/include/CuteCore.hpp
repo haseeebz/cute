@@ -10,7 +10,7 @@ class CuteCore
 	CuteEngine engine;
 	CuteAssembler assembler;
 
-	void parseArgs(int argc, char* argv[]);
+	void parseArgs(int argc, char *argv[]);
 
 	bool compileFlag;
 	bool assembleFlag;
@@ -24,5 +24,5 @@ class CuteCore
 	CuteCore();
 	~CuteCore();
 
-	void run(int argc, char* argv[]);
+	void run(int argc, char *argv[]);
 };

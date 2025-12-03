@@ -17,22 +17,22 @@ std::map<char, int> BinaryOpPrecedence =
 };
 
 
-ctSourceNode* Parser::parse(TokenStream* tokens)
+ctSourceNode *Parser::parse(TokenStream *tokens)
 {
 	this->currStream = tokens;
-	ctSourceNode* node = this->parseSource();
+	ctSourceNode *node = this->parseSource();
 	return node;
 };
 
 
-ctSourceNode* Parser::parseSource()
+ctSourceNode *Parser::parseSource()
 {
-	ctSourceNode* src = new ctSourceNode();
+	ctSourceNode *src = new ctSourceNode();
 
 	while (this->currStream->peek().type != TokenType::tokenEOF)
 	{
-		ctNode* node = this->parseStmt(0);
-		ctStmtNode* stmt = new ctStmtNode(node);
+		ctNode *node = this->parseStmt(0);
+		ctStmtNode *stmt = new ctStmtNode(node);
 		src->stmts.push_back(stmt);
 	}
 
@@ -40,10 +40,10 @@ ctSourceNode* Parser::parseSource()
 }
 
 
-ctNode* Parser::parseStmt(int previous_precedence)
+ctNode *Parser::parseStmt(int previous_precedence)
 {
-	ctNode* lhs;
-	ctNode* rhs;
+	ctNode *lhs;
+	ctNode *rhs;
 
 	Token tok;
 	char sym;
@@ -115,16 +115,16 @@ ctNode* Parser::parseStmt(int previous_precedence)
 
 
 
-ctNode* Parser::parseIdentifier()
+ctNode *Parser::parseIdentifier()
 {
 	Token tok = this->currStream->next();
-	ctNode* node = new ctIdentifierNode(this->currStream->viewToken(&tok));
+	ctNode *node = new ctIdentifierNode(this->currStream->viewToken(&tok));
 		
 	tok = this->currStream->next();
 
 	if (tok.type == TokenType::tokenWord)
 	{
-		ctNestedIdentifierNode* nested = new ctNestedIdentifierNode();
+		ctNestedIdentifierNode *nested = new ctNestedIdentifierNode();
 		nested->val = this->currStream->viewToken(&tok);
 		nested->node = (ctIdentifierNode*) this->parseIdentifier();
 		return nested;

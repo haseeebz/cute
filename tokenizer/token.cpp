@@ -20,7 +20,7 @@ void TokenStream::add(Token token)
 
 std::string TokenStream::toString()
 {
-	Token* tok;
+	Token *tok;
 	std::string str;
 
 	for (uint i = 0; i < this->tokens.size(); i++)
@@ -99,7 +99,7 @@ void TokenStream::gotoIndex(uint i)
 }
 
 
-std::string TokenStream::viewToken(Token* token)
+std::string TokenStream::viewToken(Token *token)
 {
 	uint len = token->end - token->start + 1;
 
@@ -107,13 +107,13 @@ std::string TokenStream::viewToken(Token* token)
 }
 
 
-char TokenStream::viewSymToken(Token* token)
+char TokenStream::viewSymToken(Token *token)
 {
 	return this->srcStr[token->start];
 }
 
 
-bool TokenStream::getInt(std::string* i)
+bool TokenStream::getInt(std::string *i)
 {
 	Token tok = this->next();
 
@@ -128,7 +128,7 @@ bool TokenStream::getInt(std::string* i)
 }
 
 
-bool TokenStream::getFloat(std::string* d)
+bool TokenStream::getFloat(std::string *d)
 {
 	Token tok = this->next();
 
@@ -143,7 +143,7 @@ bool TokenStream::getFloat(std::string* d)
 }
 
 
-bool TokenStream::getWord(std::string* str)
+bool TokenStream::getWord(std::string *str)
 {
 	Token tok = this->next();
 
@@ -158,7 +158,7 @@ bool TokenStream::getWord(std::string* str)
 }
 
 
-bool TokenStream::getSym(char* sym)
+bool TokenStream::getSym(char *sym)
 {
 	Token tok = this->next();
 

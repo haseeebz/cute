@@ -3,7 +3,7 @@
 #include <string.h>
 
 
-void ctError_new(ctError* error, char* name, char* msg)
+void ctError_new(ctError *error, char *name, char *msg)
 {
 	error->name_len = strlen(name);
 	error->name = malloc(sizeof(char) * error->name_len);
@@ -14,7 +14,7 @@ void ctError_new(ctError* error, char* name, char* msg)
 	strncpy(error->msg, msg, error->msg_len);
 }
 
-void ctError_free(ctError* error)
+void ctError_free(ctError *error)
 {
 	if (error->msg)
 	{

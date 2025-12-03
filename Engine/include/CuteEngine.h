@@ -35,9 +35,9 @@ extern CuteEngine ctEngine;
 void CuteEngine_init();
 void CuteEngine_end();
 
-void CuteEngine_loadImage(char* filepath);
+void CuteEngine_loadImage(char *filepath);
 
-void CuteEngine_execLoop(ctState* state);
+void CuteEngine_execLoop(ctState *state);
 
 void CuteEngine_runMain(); // main entry point
 

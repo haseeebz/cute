@@ -51,16 +51,16 @@ class TokenStream
 
 
 	// viewing token
-	std::string viewToken(Token* token);
-	char viewSymToken(Token* token);
+	std::string viewToken(Token *token);
+	char viewSymToken(Token *token);
 
 	// all of these functions try to get the specified type. 
 	// if type found, it is written to the pointer, true is returned and the counter is increased
 	// if not, it returns false, the pointer and the counter is'nt modified 
-	bool getInt(std::string* str); 
-	bool getFloat(std::string* str);
-	bool getWord(std::string* str);
-	bool getSym(char* sym);
+	bool getInt(std::string *str); 
+	bool getFloat(std::string *str);
+	bool getWord(std::string *str);
+	bool getSym(char *sym);
 
 	// returns true if the current token is word AND matches the given string
 	bool getKeyword(std::string keyword);
@@ -75,7 +75,7 @@ class Tokenizer
 {
 	TokenStream currStream;
 
-	std::string* currSrc;
+	std::string *currSrc;
 	uint currIndex;
 
 	public:

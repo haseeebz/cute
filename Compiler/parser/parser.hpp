@@ -9,15 +9,15 @@ extern std::map<char, int> BinaryOpPrecedence;
 
 class Parser
 {
-	TokenStream* currStream;
+	TokenStream *currStream;
 	
-	ctSourceNode* parseSource();
+	ctSourceNode *parseSource();
 
-	ctNode* parseStmt(int previous_precedence);
+	ctNode *parseStmt(int previous_precedence);
 
-	ctNode* parseIdentifier();
+	ctNode *parseIdentifier();
 
 	public:
 
-	ctSourceNode* parse(TokenStream* tokens);
+	ctSourceNode *parse(TokenStream *tokens);
 };

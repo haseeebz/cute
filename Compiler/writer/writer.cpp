@@ -23,7 +23,7 @@ void ByteCodeWriter::logToFile(std::string msg)
 }
 
 
-void ByteCodeWriter::recurseNode(Node* node)
+void ByteCodeWriter::recurseNode(Node *node)
 {
 	if (node->type == NodeType::nodeBinaryOp)
 	{
@@ -95,7 +95,7 @@ void ByteCodeWriter::setOutFile(std::string filepath)
 }
 
 
-void ByteCodeWriter::write(Node* root)
+void ByteCodeWriter::write(Node *root)
 {
 	std::ofstream stream("bytecode.log");
 	stream.close();

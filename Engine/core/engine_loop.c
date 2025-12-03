@@ -6,33 +6,33 @@
 #include <string.h>
 
 
-static inline void extractInt32(ctInstrSize* instrs, int32_t* i)
+static inline void extractInt32(ctInstrSize *instrs, int32_t *i)
 {
 	memcpy(i, instrs, sizeof(*i));
 }
 
-static inline void extractInt64(ctInstrSize* instrs, int64_t* i)
+static inline void extractInt64(ctInstrSize *instrs, int64_t *i)
 {
 	memcpy(i, instrs, sizeof(*i));
 }
 
-static inline void extractFloat32(ctInstrSize* instrs, float* i)
+static inline void extractFloat32(ctInstrSize *instrs, float *i)
 {
 	memcpy(i, instrs, sizeof(*i));
 }
 
-static inline void extractFloat64(ctInstrSize* instrs, double* i)
+static inline void extractFloat64(ctInstrSize *instrs, double *i)
 {
 	memcpy(i, instrs, sizeof(*i));
 }
 
 
 
-void CuteEngine_execLoop(ctState* state)
+void CuteEngine_execLoop(ctState *state)
 {
 	ctInstrSize instr;
 
-	ctInstrSize* instrs = state->img->instrs;
+	ctInstrSize *instrs = state->img->instrs;
 
 	ctAtom a1;
 	ctAtom a2;

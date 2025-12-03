@@ -4,16 +4,16 @@
 
 #include "CuteAtom.h"
 #include "CuteByte.h"
+#include "CuteConfig.h"
 
 #include "error.h"
-#include "config.h"
 #include "exestack.h"
 #include "frame.h"
 
 #include "state.h"
 
 
-void ctState_init(ctState* state, ctProgramImage* img)
+void ctState_init(ctState *state, ctProgramImage *img)
 {
 	state->img = img;
 	state->func_table = img->func_table;
@@ -29,7 +29,7 @@ void ctState_init(ctState* state, ctProgramImage* img)
 }
 
 
-void ctState_end(ctState* state)
+void ctState_end(ctState *state)
 {
 	if (state->error_encountered)
 	{
@@ -41,7 +41,7 @@ void ctState_end(ctState* state)
 }
 
 
-void ctState_pushExeAtom(ctState* state, ctAtom atom)
+void ctState_pushExeAtom(ctState *state, ctAtom atom)
 {
 	if (state->exestack.count >= state->exestack.cap)
 	{
@@ -59,7 +59,7 @@ void ctState_pushExeAtom(ctState* state, ctAtom atom)
 }
 
 
-ctAtom ctState_popExeAtom(ctState* state)
+ctAtom ctState_popExeAtom(ctState *state)
 {
 	if (state->exestack.count <= 0)
 	{
@@ -76,7 +76,7 @@ ctAtom ctState_popExeAtom(ctState* state)
 }
 
 
-ctAtom ctState_peekExeAtom(ctState* state)
+ctAtom ctState_peekExeAtom(ctState *state)
 {
 	if (state->exestack.count <= 0)
 	{
@@ -93,7 +93,7 @@ ctAtom ctState_peekExeAtom(ctState* state)
 }
 
 
-ctProgramConst ctState_loadConst(ctState* state, uint32_t const_id)
+ctProgramConst ctState_loadConst(ctState *state, uint32_t const_id)
 {
 	if (const_id >= state->img->header.const_count)
 	{
@@ -110,7 +110,7 @@ ctProgramConst ctState_loadConst(ctState* state, uint32_t const_id)
 }
 
 
-void ctState_setupFuncFrame(ctState* state, uint32_t func_id)
+void ctState_setupFuncFrame(ctState *state, uint32_t func_id)
 {
 	if (func_id >= state->img->header.func_count)
 	{
@@ -137,12 +137,13 @@ void ctState_setupFuncFrame(ctState* state, uint32_t func_id)
 
 
 	// setting up the frame
-	ctFuncMetadata* meta = &state->func_table[func_id];
+	ctFuncMetadata *meta = &state->func_table[func_id];
 
 	ctFuncFrame frame;
 
 	frame.locals_count = meta->locals_size;
-	if (frame.locals_count > CUTE_LOCALS_LIMIT)
+	
+	if (frame.locals_count > CUTE_FUNCLOCALS_LIMIT)
 	{
 		ctError_new(
 			&state->error,
@@ -167,7 +168,7 @@ void ctState_setupFuncFrame(ctState* state, uint32_t func_id)
 }
 
 
-void ctState_returnFuncFrame(ctState* state)
+void ctState_returnFuncFrame(ctState *state)
 {
 	ctFuncFrame top_frame = state->frame_stack.frames[--state->frame_stack.count];
 	free(top_frame.locals);
@@ -182,7 +183,7 @@ void ctState_returnFuncFrame(ctState* state)
 }
 
 
-void ctState_setLocal(ctState* state, uint32_t pos, ctAtom atom)
+void ctState_setLocal(ctState *state, uint32_t pos, ctAtom atom)
 {
 	ctFuncFrame top_frame = state->frame_stack.frames[state->frame_stack.count-1];
 
@@ -202,7 +203,7 @@ void ctState_setLocal(ctState* state, uint32_t pos, ctAtom atom)
 }
 
 
-ctAtom ctState_getLocal(ctState* state, uint32_t pos)
+ctAtom ctState_getLocal(ctState *state, uint32_t pos)
 {
 	ctFuncFrame top_frame = state->frame_stack.frames[state->frame_stack.count-1];
 
@@ -222,10 +223,10 @@ ctAtom ctState_getLocal(ctState* state, uint32_t pos)
 }
 
 
-void ctState_copyLocal(ctState* state, uint32_t src, uint32_t dest);
+void ctState_copyLocal(ctState *state, uint32_t src, uint32_t dest);
 
 
-void ctState_raiseError(ctState* state)
+void ctState_raiseError(ctState *state)
 {
 	state->error_encountered = true;
 	state->isRunning = false;

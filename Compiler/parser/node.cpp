@@ -11,7 +11,7 @@ void PrintVisitor::printDepth()
 }
 
 
-void PrintVisitor::visit(ctIntNode* node) 
+void PrintVisitor::visit(ctIntNode *node) 
 {
 	printDepth();
 
@@ -19,7 +19,7 @@ void PrintVisitor::visit(ctIntNode* node)
 }
 
 
-void PrintVisitor::visit(ctFloatNode* node)
+void PrintVisitor::visit(ctFloatNode *node)
 {
 	printDepth();
 
@@ -27,7 +27,7 @@ void PrintVisitor::visit(ctFloatNode* node)
 }
 
 
-void PrintVisitor::visit(ctBinaryOpNode* node)
+void PrintVisitor::visit(ctBinaryOpNode *node)
 {
 	printDepth();
 	std::cout << "BinaryOp(\n";
@@ -44,7 +44,7 @@ void PrintVisitor::visit(ctBinaryOpNode* node)
 }
 
 
-void PrintVisitor::visit(ctIdentifierNode* node) 
+void PrintVisitor::visit(ctIdentifierNode *node) 
 {
 	printDepth();
 
@@ -52,7 +52,7 @@ void PrintVisitor::visit(ctIdentifierNode* node)
 }
 
 
-void PrintVisitor::visit(ctNestedIdentifierNode* node)
+void PrintVisitor::visit(ctNestedIdentifierNode *node)
 {
 	printDepth();
 
@@ -62,7 +62,7 @@ void PrintVisitor::visit(ctNestedIdentifierNode* node)
 }
 
 
-void PrintVisitor::visit(ctStmtNode* node)
+void PrintVisitor::visit(ctStmtNode *node)
 {
 	printDepth();
 
@@ -75,13 +75,13 @@ void PrintVisitor::visit(ctStmtNode* node)
 }
 
 
-void PrintVisitor::visit(ctSourceNode* node)
+void PrintVisitor::visit(ctSourceNode *node)
 {
 	printDepth();
 
 	std::cout << "--Program Node--\n";
 	
-	for (ctStmtNode* child: node->stmts)
+	for (ctStmtNode *child: node->stmts)
 	{
 		child->accept(this);
 	}

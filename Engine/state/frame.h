@@ -1,11 +1,11 @@
 #include "CuteAtom.h"
-#include "config.h"
+#include "CuteConfig.h"
 
 #pragma once
 
 typedef struct
 {
-	ctAtom* locals;
+	ctAtom *locals;
 	uint32_t locals_count;
 	uint32_t return_address;
 } ctFuncFrame;

@@ -17,9 +17,9 @@ Func Table
 Instr Array
 */
 
-ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath)
+ctImageError ctProgramImage_read(ctProgramImage *img, char *filepath)
 {
-	FILE* fp = fopen(filepath, "rb");
+	FILE *fp = fopen(filepath, "rb");
 	if (!fp) {return ctImageError_FileNotFound;}
 
 	u_int32_t items_read;
@@ -52,9 +52,9 @@ ctImageError ctProgramImage_read(ctProgramImage* img, char* filepath)
 }
 
 
-ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath)
+ctImageError ctProgramImage_write(ctProgramImage *img, char *filepath)
 {
-	FILE* fp = fopen(filepath, "wb");
+	FILE *fp = fopen(filepath, "wb");
 
 	if (!fp) {return ctImageError_FileNotFound;}
 
@@ -83,7 +83,7 @@ ctImageError ctProgramImage_write(ctProgramImage* img, char* filepath)
 
 
 
-void ctProgramImage_freeImage(ctProgramImage* img)
+void ctProgramImage_freeImage(ctProgramImage *img)
 {
 	if (img->instrs != NULL)
 	{
@@ -107,22 +107,22 @@ void ctProgramImage_freeImage(ctProgramImage* img)
 }
 
 
-inline void ctProgramImage_packInt32(int32_t* i, ctInstrSize* instr4)
+inline void ctProgramImage_packInt32(int32_t *i, ctInstrSize *instr4)
 {
 	memcpy(instr4, i, sizeof(*i));
 }
 
-inline void ctProgramImage_packInt64(int64_t* i, ctInstrSize* instr8)
+inline void ctProgramImage_packInt64(int64_t *i, ctInstrSize *instr8)
 {
 	memcpy(instr8, i, sizeof(*i));
 }
 
-inline void ctProgramImage_packFloat32(float* i, ctInstrSize* instr4)
+inline void ctProgramImage_packFloat32(float *i, ctInstrSize *instr4)
 {
 	memcpy(instr4, i, sizeof(*i));
 }
 
-inline void ctProgramImage_packFloat64(double* i, ctInstrSize* instr8)
+inline void ctProgramImage_packFloat64(double *i, ctInstrSize *instr8)
 {
 	memcpy(instr8, i, sizeof(*i));
 }
