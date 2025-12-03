@@ -7,6 +7,7 @@ typedef struct
 {
 	ctAtom* locals;
 	uint32_t locals_count;
+	uint32_t return_address;
 } ctFuncFrame;
 
 typedef struct

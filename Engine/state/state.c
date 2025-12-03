@@ -161,6 +161,7 @@ void ctState_setupFuncFrame(ctState* state, uint32_t func_id)
 	}
 	
 	// pushing frame
+	frame.return_address = state->pc;
 	state->pc = meta->instr_address;
 	state->frame_stack.frames[state->frame_stack.count++] = frame;
 }
@@ -170,6 +171,8 @@ void ctState_returnFuncFrame(ctState* state)
 {
 	ctFuncFrame top_frame = state->frame_stack.frames[--state->frame_stack.count];
 	free(top_frame.locals);
+
+	state->pc = top_frame.return_address;
 
 	if (state->frame_stack.count <= 0)
 	{
@@ -226,4 +229,5 @@ void ctState_raiseError(ctState* state)
 {
 	state->error_encountered = true;
 	state->isRunning = false;
+	printf("eroro raised!\n");
 }

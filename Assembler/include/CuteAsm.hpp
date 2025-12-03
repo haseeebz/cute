@@ -11,9 +11,20 @@
 #define ASM_DEBUG
 #endif
 
+#ifdef ASM_DEBUG
+#define ctAsmDebug(msg, ...) \
+printf("Debug: "); \
+printf(msg, __VA_ARGS__);
+#else
+#define ctAsmDebug(msg, ...) \
+void(0);
+#endif
+
+
 #define addMultipleInstrs(vector, instrs, count) \
 for (uint i = 0; i < count; i++) \
 {vector.push_back(instrs[i]);};
+
 
 
 namespace AsmDef

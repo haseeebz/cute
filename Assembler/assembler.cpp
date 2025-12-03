@@ -103,14 +103,6 @@ void CuteAssembler::notify(std::string msg)
 }
 
 
-void CuteAssembler::notifyDebug(std::string msg)
-{
-	#ifdef ASM_DEBUG
-	std::cout << msg << std::endl;
-	#endif
-}
-
-
 void CuteAssembler::throwError(std::string name, std::string msg)
 {
 	std::cout << name << " :: " << msg << std::endl;
@@ -227,8 +219,6 @@ void CuteAssembler::emit()
 	this->program.img.header.func_count = this->program.func_table.size();
 	this->program.img.func_table = this->program.func_table.data();
 	this->program.img.instrs = this->program.instrs.data();
-
-	std::cout << this->program.func_table.size() << '\n';
 }
 
 
@@ -239,6 +229,14 @@ void CuteAssembler::emitFunction(AsmDef::Function& func)
 	meta.arg_count = func.args;
 	meta.locals_size = func.locals;
 	meta.instr_address = this->program.instrs.size();
+
+	ctAsmDebug(
+		"Registered Function %d. Args:%d Locals:%d Instr Address:%lu\n", 
+		meta.func_id, 
+		meta.arg_count, 
+		meta.locals_size, 
+		meta.instr_address
+	);
 
 	this->program.func_table.push_back(meta);
 	this->emitInstrBlock(func);
