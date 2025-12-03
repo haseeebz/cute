@@ -48,7 +48,7 @@ void ctState_pushExeAtom(ctState *state, ctAtom atom)
 		ctError_new(
 			&state->error,
 			"Internal Cute Error",
-			"ExeStack Overflow."
+			"ExeStack Overflow. No space for more atoms."
 		);
 		ctState_raiseError(state);
 		return;
@@ -66,7 +66,7 @@ ctAtom ctState_popExeAtom(ctState *state)
 		ctError_new(
 			&state->error,
 			"Internal Cute Error",
-			"ExeStack Underflow."
+			"ExeStack Underflow. No more atoms to pop."
 		);
 		ctState_raiseError(state);
 		return (ctAtom) {.i64 = 0};
@@ -83,7 +83,7 @@ ctAtom ctState_peekExeAtom(ctState *state)
 		ctError_new(
 			&state->error,
 			"Internal Cute Error",
-			"ExeStack Underflow."
+			"ExeStack Underflow. No atoms to peek."
 		);
 		ctState_raiseError(state);
 		return (ctAtom) {.i64 = 0};
@@ -112,38 +112,33 @@ ctProgramConst ctState_loadConst(ctState *state, uint32_t const_id)
 
 void ctState_setupFuncFrame(ctState *state, uint32_t func_id)
 {
+
 	if (func_id >= state->img->header.func_count)
 	{
 		ctError_new(
 			&state->error,
 			"Internal Cute Error",
-			"Function ID out of range."
+			"Function ID out of range. Can not call."
 		);
 		ctState_raiseError(state);
 		return;
 	}
 
-	
 	if (state->frame_stack.count >= state->frame_stack.cap)
 	{
 		ctError_new(
 			&state->error,
 			"Internal Cute Error",
-			"Max Recursion depth reached."
+			"Max recursion depth reached."
 		);
 		ctState_raiseError(state);
 		return;
 	}
 
 
-	// setting up the frame
 	ctFuncMetadata *meta = &state->func_table[func_id];
-
-	ctFuncFrame frame;
-
-	frame.locals_count = meta->locals_size;
 	
-	if (frame.locals_count > CUTE_FUNCLOCALS_LIMIT)
+	if (meta->locals_size > CUTE_FUNCLOCALS_LIMIT)
 	{
 		ctError_new(
 			&state->error,
@@ -151,19 +146,33 @@ void ctState_setupFuncFrame(ctState *state, uint32_t func_id)
 			"Allocating too many locals for function."
 		);
 		ctState_raiseError(state);
+		return;
 	}
+	else if (meta->arg_count > CUTE_ARG_LIMIT || meta->arg_count > meta->locals_size)
+	{
+		ctError_new(
+			&state->error,
+			"Internal Cute Error",
+			"Passing too many arguments to function. Argument count is greater than arg limit or local memory size."
+		);
+		ctState_raiseError(state);
+		return;
+	}
+	
+
+	ctFuncFrame frame;
+	frame.locals_count = meta->locals_size;
 	frame.locals = malloc(sizeof(ctAtom) * meta->locals_size);
-
-
+	
 	for (int i = 0; i < meta->arg_count; i++)
 	{
 		ctAtom atom = ctState_popExeAtom(state);
 		frame.locals[meta->arg_count - i - 1] = atom;
 	}
-	
-	// pushing frame
+
 	frame.return_address = state->pc;
 	state->pc = meta->instr_address;
+
 	state->frame_stack.frames[state->frame_stack.count++] = frame;
 }
 
@@ -187,14 +196,13 @@ void ctState_setLocal(ctState *state, uint32_t pos, ctAtom atom)
 {
 	ctFuncFrame top_frame = state->frame_stack.frames[state->frame_stack.count-1];
 
-	if (pos > top_frame.locals_count)
+	if (pos >= top_frame.locals_count)
 	{
 		ctError_new(
 			&state->error,
 			"Internal Cute Error",
-			"Invalid local set operation."
+			"Invalid local store operation."
 		);
-		printf("Attempted to write to %u, max was %u", pos, top_frame.locals_count);
 		ctState_raiseError(state);
 		return;
 	}
@@ -207,14 +215,14 @@ ctAtom ctState_getLocal(ctState *state, uint32_t pos)
 {
 	ctFuncFrame top_frame = state->frame_stack.frames[state->frame_stack.count-1];
 
-	if (!(pos < top_frame.locals_count))
+	if (pos >= top_frame.locals_count)
 	{
 		state->isRunning = false;
 		state->error_encountered = true;
 		ctError_new(
 			&state->error,
 			"Internal Cute Error",
-			"Invalid local set operation."
+			"Invalid local load operation."
 		);
 		return (ctAtom) {.i64 = 0};
 	}
@@ -230,5 +238,4 @@ void ctState_raiseError(ctState *state)
 {
 	state->error_encountered = true;
 	state->isRunning = false;
-	printf("eroro raised!\n");
 }
