@@ -145,7 +145,7 @@ void CuteAssembler::parseFunction()
 	this->tokens.getInt(&int_str);
 	func.locals = std::stoi(int_str);
 
-	if (func.args < func.locals)
+	if (func.args > func.locals)
 	{
 		this->throwError("Assembler Error", "Local memory space is less than required arguments.");
 	}
@@ -254,7 +254,7 @@ void CuteAssembler::emitInstrBlock(AsmDef::Function& func)
 		if (unit.type == AsmDef::UnitType::Station)
 		{
 			uint id = std::stoi(unit.content);
-			func.stations[id] = this->program.instrs.size();
+			func.stations[id] = func.instrs.size();
 			continue;
 		}
 
@@ -280,7 +280,7 @@ void CuteAssembler::emitInstrBlock(AsmDef::Function& func)
 
 			station_id = std::stoi(unit.content);
 
-			func.patches[this->program.instrs.size()] = station_id;
+			func.patches[func.instrs.size()] = station_id;
 			ctProgramImage_packInt32(&i32, packed); //placeholder
 			addMultipleInstrs(func.instrs, packed, 4);
 			continue;
@@ -352,14 +352,13 @@ void CuteAssembler::patchJumps(AsmDef::Function& func)
 		
 		uint station_postion = func.stations[patch.second];
 		uint current_position = patch.first;
-		int relative = (station_postion) - (current_position);
-
+		int relative = int(station_postion) - int(current_position);
 		ctInstrSize packed[4];
 		ctProgramImage_packInt32(&relative, packed);
 
 		for (uint i = patch.first; i < patch.first + 4; i++)
 		{
-			this->program.instrs[i] = packed[i - patch.first];
+			func.instrs[i] = packed[i - patch.first];
 		}
 	}	
 }
