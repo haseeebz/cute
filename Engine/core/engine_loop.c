@@ -282,7 +282,7 @@ void CuteEngine_execLoop(ctState* state)
 		 
         case instrFuncCall:
 			extractInt64(&instrs[state->pc], (int64_t*) &ptu);
-			state->pc += 8;
+			state->pc += 4;
 			ctState_setupFuncFrame(state, ptu);
 			break;
 
