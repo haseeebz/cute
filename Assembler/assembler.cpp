@@ -56,7 +56,9 @@ std::map<std::string, AsmDef::InstrDetails>& CuteAssembler::instrMap()
     {"MulF64",          {instrMulF64, 0, 0}},
 
     {"DivI32",          {instrDivI32, 0, 0}},
+	{"DivU32",          {instrDivU32, 0, 0}},
     {"DivI64",          {instrDivI64, 0, 0}},
+	{"DivU64",          {instrDivU64, 0, 0}},
     {"DivF32",          {instrDivF32, 0, 0}},
     {"DivF64",          {instrDivF64, 0, 0}},
 
@@ -181,7 +183,7 @@ void CuteAssembler::parseInstrBlock(AsmDef::Function& func)
 			continue;
 		}
 
-		if (this->tokens.getWord(&word))
+		else if (this->tokens.getWord(&word))
 		{	
 			if (!this->instrMap().contains(word))
 			{
@@ -191,13 +193,21 @@ void CuteAssembler::parseInstrBlock(AsmDef::Function& func)
 			continue;
 		}
 
-		if (this->tokens.getInt(&word))
+		else if (this->tokens.getInt(&word))
 		{
 			func.addUnit(AsmDef::Unit(AsmDef::UnitType::Int, word));
 			continue;
 		}
+
+		else if (this->tokens.getKeySym('-'))
+		{
+			if (this->tokens.getInt(&word))
+			{
+				func.addUnit(AsmDef::Unit(AsmDef::UnitType::Int, std::format("-{}", word)));
+			}
+		}
 		
-		if (this->tokens.getFloat(&word))
+		else if (this->tokens.getFloat(&word))
 		{
 			func.addUnit(AsmDef::Unit(AsmDef::UnitType::Float, word));
 			continue;

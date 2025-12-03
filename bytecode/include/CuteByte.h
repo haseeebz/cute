@@ -65,7 +65,9 @@ typedef enum
 	instrMulF64          = 0x1E,
 
 	instrDivI32          = 0x1F,
+	instrDivU32				= 0x99,
 	instrDivI64          = 0x20,
+	instrDivU64   		= 0x98,
 	instrDivF32          = 0x21,
 	instrDivF64          = 0x22,
 
@@ -73,6 +75,12 @@ typedef enum
 	instrLogicAnd        = 0x23,
 	instrLogicOr         = 0x24,
 	instrLogicNot        = 0x25,
+	instrLogicXor,
+
+	instrBitAnd,
+	instrBitOr,
+	instrBitNot,
+	instrBitXor,
 
 	// Comparison operations
 	instrCmpI32          = 0x27,
@@ -95,12 +103,14 @@ typedef enum
 
 	instrFuncCall        = 0x35,
 	instrReturn          = 0x36,
+
 	instrReturnValue     = 0x37,
 
 	instrOutI32 = 0x41,
 	instrOutI64 = 0x42,
 	instrOutF32 = 0x43,
 	instrOutF64 = 0x44,
+
 
 
 } ctInstr;

@@ -196,6 +196,14 @@ void CuteEngine_execLoop(ctState *state)
 			mCtBinaryOp(i64, a1, a2, /, state);
 			break;
 
+		case instrDivU32:
+			mCtBinaryOp(u32, a1, a2, /, state);
+			break;
+
+        case instrDivU64:
+			mCtBinaryOp(u64, a1, a2, /, state);
+			break;
+
         case instrDivF32:
 			mCtBinaryOp(f32, a1, a2, /, state);
 			break;
