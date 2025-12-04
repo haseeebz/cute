@@ -2,7 +2,7 @@
 
 **Cute** is a cute little programming language that I am working on.
 
-### Archiecture
+### Architecture 
 
 + Static-Typing
 + Compiled to special bytecode
