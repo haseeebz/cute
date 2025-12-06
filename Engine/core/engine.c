@@ -6,6 +6,9 @@
 
 #include "../core/context.h"
 
+// The main engine struct
+ctEngine engine;
+
 
 void ctEngine_init()
 {

@@ -17,131 +17,129 @@ static const uint32_t ctMagicId = 0x20080807;
 
 typedef enum
 {
+    instrExitEngine    = 0x00, 
+    instrExit          = 0x01, 
+    instrOut           = 0x02, 
+    instrDump          = 0x03, 
+    instrPopAtom       = 0x04, 
+    instrDupAtom       = 0x05, 
+    instrNull          = 0x06, 
+    instrModCall       = 0x07, 
 
-	instrExitEngine = 0, 
-	instrExit = 1, 
-	instrOut = 2, 
-	instrDump = 3, 
-	instrPopAtom = 4, 
-	instrDupAtom = 5, 
-	instrNull = 6, 
-	instrModCall = 7, 
+    instrLoadCoI32     = 0x08, 
+    instrLoadCoI64     = 0x09, 
+    instrLoadCoF32     = 0x0A, 
+    instrLoadCoF64     = 0x0B, 
+    instrLoadConst     = 0x0C, 
 
-	instrLoadCoI32 = 8, 
-	instrLoadCoI64 = 9, 
-	instrLoadCoF32 = 10, 
-	instrLoadCoF64 = 11, 
-	instrLoadConst = 12, 
+    instrLoadI32       = 0x0D, 
+    instrLoadI64       = 0x0E, 
+    instrLoadF32       = 0x0F, 
+    instrLoadF64       = 0x10, 
 
-	instrLoadI32 = 13, 
-	instrLoadI64 = 14, 
-	instrLoadF32 = 15, 
-	instrLoadF64 = 16, 
+    instrGLoadI32      = 0x11, 
+    instrGLoadI64      = 0x12, 
+    instrGLoadF32      = 0x13, 
+    instrGLoadF64      = 0x14, 
 
-	instrGLoadI32 = 17, 
-	instrGLoadI64 = 18, 
-	instrGLoadF32 = 19, 
-	instrGLoadF64 = 20, 
+    instrStoreI32      = 0x15, 
+    instrStoreI64      = 0x16, 
+    instrStoreF32      = 0x17, 
+    instrStoreF64      = 0x18, 
 
-	instrStoreI32 = 21, 
-	instrStoreI64 = 22, 
-	instrStoreF32 = 23, 
-	instrStoreF64 = 24, 
+    instrGStoreI32     = 0x19, 
+    instrGStoreI64     = 0x1A, 
+    instrGStoreF32     = 0x1B, 
+    instrGStoreF64     = 0x1C,
 
-	instrGStoreI32 = 25, 
-	instrGStoreI64 = 26, 
-	instrGStoreF32 = 27, 
-	instrGStoreF64 = 28,
+    instrCopyI32       = 0x1D, 
+    instrCopyI64       = 0x1E, 
+    instrCopyF32       = 0x1F, 
+    instrCopyF64       = 0x20, 
 
-	instrCopyI32 = 29, 
-	instrCopyI64 = 30, 
-	instrCopyF32 = 31, 
-	instrCopyF64 = 32, 
+    instrAddI32        = 0x21, 
+    instrAddI64        = 0x22, 
+    instrAddF32        = 0x23, 
+    instrAddF64        = 0x24, 
 
-	instrAddI32 = 33, 
-	instrAddI64 = 34, 
-	instrAddF32 = 35, 
-	instrAddF64 = 36, 
+    instrSubI32        = 0x25, 
+    instrSubI64        = 0x26, 
+    instrSubF32        = 0x27, 
+    instrSubF64        = 0x28, 
 
-	instrSubI32 = 37, 
-	instrSubI64 = 38, 
-	instrSubF32 = 39, 
-	instrSubF64 = 40, 
+    instrMulI32        = 0x29, 
+    instrMulI64        = 0x2A, 
+    instrMulF32        = 0x2B, 
+    instrMulF64        = 0x2C, 
 
-	instrMulI32 = 41, 
-	instrMulI64 = 42, 
-	instrMulF32 = 43, 
-	instrMulF64 = 44, 
+    instrDivI32        = 0x2D, 
+    instrDivI64        = 0x2E, 
+    instrDivF32        = 0x2F, 
+    instrDivF64        = 0x30, 
+    instrDivU32        = 0x31, 
+    instrDivU64        = 0x32, 
 
-	instrDivI32 = 45, 
-	instrDivI64 = 46, 
-	instrDivF32 = 47, 
-	instrDivF64 = 48, 
-	instrDivU32 = 49, 
-	instrDivU64 = 50, 
+    instrModI32        = 0x33, 
+    instrModU32        = 0x34, 
+    instrModI64        = 0x35, 
+    instrModU64        = 0x36, 
 
-	instrModI32 = 51, 
-	instrModU32 = 52, 
-	instrModI64 = 53, 
-	instrModU64 = 54, 
+    instrLogicAnd      = 0x37, 
+    instrLogicOr       = 0x38, 
+    instrLogicNot      = 0x39, 
+    instrLogicXor      = 0x3A, 
 
-	instrLogicAnd = 55, 
-	instrLogicOr = 56, 
-	instrLogicNot = 57, 
-	instrLogicXor = 58, 
+    instrBitAnd        = 0x3B, 
+    instrBitOr         = 0x3C, 
+    instrBitNot        = 0x3D, 
+    instrBitXor        = 0x3E, 
 
-	instrBitAnd = 59, 
-	instrBitOr = 60, 
-	instrBitNot = 61, 
-	instrBitXor = 62, 
+    instrBitLShift     = 0x3F, 
+    instrBitRShift     = 0x40, 
+    instrBitRaShift    = 0x41, 
+    instrBitRShift32   = 0x42, 
+    instrBitRaShift32  = 0x43, 
 
-	instrBitLShift = 63, 
-	instrBitRShift = 64, 
-	instrBitRaShift = 65, 
-	instrBitRShift32 = 66, 
-	instrBitRaShift32 = 67, 
+    instrCmpI32        = 0x44, 
+    instrCmpI64        = 0x45, 
+    instrCmpF32        = 0x46, 
+    instrCmpF64        = 0x47, 
 
-	instrCmpI32 = 68, 
-	instrCmpI64 = 69, 
-	instrCmpF32 = 70, 
-	instrCmpF64 = 71, 
+    instrCmp2BoolEq    = 0x48, 
+    instrCmp2BoolNe    = 0x49, 
+    instrCmp2BoolLt    = 0x4A, 
+    instrCmp2BoolLe    = 0x4B, 
+    instrCmp2BoolGt    = 0x4C, 
+    instrCmp2BoolGe    = 0x4D, 
 
-	instrCmp2BoolEq = 72, 
-	instrCmp2BoolNe = 73, 
-	instrCmp2BoolLt = 74, 
-	instrCmp2BoolLe = 75, 
-	instrCmp2BoolGt = 76, 
-	instrCmp2BoolGe = 77, 
+    instrF32I32        = 0x4E, 
+    instrI32F32        = 0x4F, 
+    instrI64F64        = 0x50, 
+    instrF64I64        = 0x51, 
+    instrF32F64        = 0x52, 
+    instrF64F32        = 0x53, 
+    instrI32I64        = 0x54, 
+    instrI64I32        = 0x55, 
 
-	instrF32I32 = 78, 
-	instrI32F32 = 79, 
-	instrI64F64 = 80, 
-	instrF64I64 = 81, 
-	instrF32F64 = 82, 
-	instrF64F32 = 83, 
-	instrI32I64 = 84, 
-	instrI64I32 = 85, 
+    instrJmp           = 0x56, 
+    instrJmpTrue       = 0x57, 
+    instrJmpFalse      = 0x58, 
 
-	instrJmp = 86, 
-	instrJmpTrue = 87, 
-	instrJmpFalse = 88, 
+    instrFuncCall      = 0x59, 
+    instrReturn        = 0x5A, 
 
-	instrFuncCall = 89, 
-	instrReturn = 90, 
-	
-	instrConNew = 91, 
-	instrConDel = 92, 
-	instrConStore = 93, 
-	instrConGStore = 94, 
-	instrConLoad = 95, 
-	instrConGLoad = 96, 
-	instrConCopy = 97, 
-	isntrConClone = 98, 
-	instrConAccLoad = 99, 
-	instrConAccStore = 100, 
-	instrConInc = 101, 
-	instrConDec = 102, 
-
+    instrConNew        = 0x5B, 
+    instrConDel        = 0x5C, 
+    instrConStore      = 0x5D, 
+    instrConGStore     = 0x5E, 
+    instrConLoad       = 0x5F, 
+    instrConGLoad      = 0x60, 
+    instrConCopy       = 0x61, 
+    instrConClone      = 0x62, 
+    instrConAccLoad    = 0x63, 
+    instrConAccStore   = 0x64, 
+    instrConInc        = 0x65, 
+    instrConDec        = 0x66
 
 } ctInstr;
 
@@ -199,13 +197,10 @@ typedef struct
 {
 	uint32_t magic;
 	
-	uint32_t const_pool_offset;
 	uint32_t const_count;
 
-	uint32_t func_table_offset;
 	uint32_t func_count;
 
-	uint32_t instr_blob_offset;
 	uint32_t instr_count;
 } ctProgramHeader;
 
@@ -235,10 +230,10 @@ ctImageError ctProgramImage_write(ctProgramImage *img, char *filepath);
 
 void ctProgramImage_freeImage(ctProgramImage *img);
 
-inline void ctProgramImage_packInt32(int32_t *i, ctInstrSize *instr4); 
-inline void ctProgramImage_packInt64(int64_t *i, ctInstrSize *instr8); 
-inline void ctProgramImage_packFloat32(float *i, ctInstrSize *instr4); 
-inline void ctProgramImage_packFloat64(double *i, ctInstrSize *instr8); 
+void ctProgramImage_packInt32(int32_t *i, ctInstrSize *instr4); 
+void ctProgramImage_packInt64(int64_t *i, ctInstrSize *instr8); 
+void ctProgramImage_packFloat32(float *i, ctInstrSize *instr4); 
+void ctProgramImage_packFloat64(double *i, ctInstrSize *instr8); 
 
 
 #ifdef __cplusplus

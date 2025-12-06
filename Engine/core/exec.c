@@ -41,7 +41,7 @@ static void outHandler(int fmt, ctAtom* atom)
 		case 4:  printf("%lu\n", atom->u64); break;
 		case 5:  printf("%f\n", atom->f32); break;
 		case 6:  printf("%lf\n", atom->f64); break;
-		default: printf("Invalid Format.\n"); break;
+		default: printf("Invalid Format for Out instruction.\n"); break;
 	}
 }
 
@@ -54,10 +54,10 @@ void ctEngine_exec(ctContext *ctx)
 
 	ctInstrSize *instrs = ctx->img->instrs;
 
-	uint32_t ptu;
-	uint32_t ptv;
+	ctU32 ptu;
+	ctU32 ptv;
 
-	int32_t pts;
+	ctI32 pts;
 
 	ctInstr instr;
 
@@ -72,26 +72,27 @@ void ctEngine_exec(ctContext *ctx)
 				ctEngine_end(1);
 			}
 		}
-		instr = instrs[ctx->pc++];
 
-		
+		instr = instrs[ctx->pc++];
+	
 
 		switch (instr)
 		{
 
         case instrExitEngine:
-			extractInt32(instrs, &pts);
+			extractInt32(&instrs[ctx->pc], &pts);
 			ctx_end(ctx);
 			ctEngine_end(pts);
 			return;
 
         case instrExit:
-			extractInt32(instrs, &pts);
+			extractInt32(&instrs[ctx->pc], &pts);
 			ctx_end(ctx);
 			return;
 
         case instrOut:
-			extractInt32(instrs, &pts);
+			extractInt32(&instrs[ctx->pc], &pts);
+			ctx->pc += 4;
 			a1 = ctx_peekExeAtom(ctx);
 			outHandler(pts, &a1);
 			break;
@@ -530,7 +531,7 @@ void ctEngine_exec(ctContext *ctx)
         case instrConLoad:
         case instrConGLoad:
         case instrConCopy:
-        case isntrConClone:
+        case instrConClone:
         case instrConAccLoad:
         case instrConAccStore:
         case instrConInc:
