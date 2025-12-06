@@ -1,5 +1,6 @@
 #include "CuteByte.h"
-#include "../state/state.h"
+
+#include "../core/context.h"
 
 #pragma once 
 
@@ -9,40 +10,28 @@ extern "C" {
 #endif
 
 
-#define mCtBinaryOp(type, var1, var2, op, state) \
-var2 = ctState_popExeAtom(state); \
-var1 = ctState_popExeAtom(state); \
-var1.type = var1.type op var2.type; \
-ctState_pushExeAtom(state,var1);
-
-#define mCtCmpOp(type, var1, var2, state) \
-var2 = ctState_popExeAtom(state); \
-var1 = ctState_popExeAtom(state); \
-if (var1.type > var2.type) {var1.by8 = 1;} \
-else if (var1.type < var2.type) {var1.by8 = -1;} \
-else {var1.by8 = 0;} \
-ctState_pushExeAtom(state, var1);
-
-
 typedef struct
 {
 	ctProgramImage img;
-} CuteEngine;
+} ctEngine;
 
-extern CuteEngine ctEngine;
-
-
-void CuteEngine_init();
-void CuteEngine_end();
-
-void CuteEngine_loadImage(char *filepath);
-
-void CuteEngine_execLoop(ctState *state);
-
-void CuteEngine_runMain(); // main entry point
+extern ctEngine engine;
 
 
+// Initializes the Engine
+void ctEngine_init();
 
+// Ends the Engine and all its states
+void ctEngine_end(int exit_code);
+
+// Executes a state struct, the state struct must be properly initialized
+void ctEngine_exec(ctContext *ctx);
+
+// Sets up state struct with function 0 and executes it.
+void ctEngine_run(); 
+
+// Loading an image file
+void ctEngine_loadImage(char *filepath);
 
 
 #ifdef __cplusplus

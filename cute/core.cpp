@@ -10,7 +10,7 @@
 
 CuteCore::CuteCore()
 {
-	CuteEngine_init();
+	ctEngine_init();
 }
 
 
@@ -37,8 +37,8 @@ void CuteCore::run(int argc, char *argv[])
 
 	if (this->engineFlag)
 	{
-		CuteEngine_loadImage(this->filepath.data());
-		CuteEngine_runMain();
+		ctEngine_loadImage(this->filepath.data());
+		ctEngine_run();
 		return;
 	}
 }

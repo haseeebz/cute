@@ -1,6 +1,5 @@
 #include "CuteByte.h"
 #include "CuteToken.hpp"
-#include <cstdint>
 #include <map>
 #include <string>
 #include <vector>

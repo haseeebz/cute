@@ -1,32 +1,45 @@
-#include "CuteByte.h"
 #include "CuteEngine.h"
-#include "../state/state.h"
+#include "CuteByte.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../core/context.h"
 
-CuteEngine ctEngine;
 
-void CuteEngine_init()
+void ctEngine_init()
 {
-	return;
+	
+};
+
+// Ends the Engine and all its states
+void ctEngine_end(int exit_code)
+{
+	exit(exit_code);
 }
 
 
-void CuteEngine_end()
+
+// Sets up state struct with function 0 and executes it.
+void ctEngine_run()
 {
-	exit(EXIT_SUCCESS);
+	ctContext ctx;
+	ctx_init(&ctx, &engine.img);
+	ctx_funcCall(&ctx, 0);
+	ctEngine_exec(&ctx);
+	ctEngine_end(0);
 }
 
 
-void CuteEngine_loadImage(char *filepath)
+// Loading an image file
+void ctEngine_loadImage(char *filepath)
 {
-	ctImageError code = ctProgramImage_read(&ctEngine.img, filepath);
+	ctImageError code = ctProgramImage_read(&engine.img, filepath);
 	
 	if (code != ctImageError_Success)
 	{
 
-		if (code == ctImageError_ByteReadWriteFailure)
+		if (code == ctImageError_ReadWriteFailure)
 		{
 			printf("Image file could be not be read: %s\n", filepath);
 		}
@@ -39,19 +52,8 @@ void CuteEngine_loadImage(char *filepath)
 			printf("Invalid Image file: %s\n", filepath);
 		}
 
-		CuteEngine_end();
+		ctEngine_end(1);
 	}
+
 }
 
-
-void CuteEngine_runMain()
-{
-	ctState state;
-	ctState_init(&state, &ctEngine.img);
-	ctState_setupFuncFrame(&state, 0);
-	CuteEngine_execLoop(&state);
-
-	ctState_end(&state);
-
-	CuteEngine_end();
-}

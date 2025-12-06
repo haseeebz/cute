@@ -7,7 +7,7 @@
 class CuteCore
 {
 	CuteCompiler compiler;
-	CuteEngine engine;
+	ctEngine engine;
 	CuteAssembler assembler;
 
 	void parseArgs(int argc, char *argv[]);
