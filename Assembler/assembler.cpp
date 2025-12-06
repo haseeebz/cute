@@ -14,83 +14,130 @@ std::map<std::string, AsmDef::InstrDetails>& CuteAssembler::instrMap()
 {
 	static std::map<std::string, AsmDef::InstrDetails> instrMap = 
 	{
-		
-    {"Halt",            {instrHalt, 0, 0}},
 
-    {"PopAtom",         {instrPopAtom, 0, 0}},
-    {"DupAtom",         {instrDupAtom, 0, 0}},
+	{"ExitEngine",       {instrExitEngine, 1, 4}},
+	{"Exit",             {instrExit, 1, 4}},
+	{"Out",              {instrOut, 1, 4}},
+	{"Dump",             {instrDump, 1, 4}},
+	{"PopAtom",          {instrPopAtom, 0, 0}},
+	{"DupAtom",          {instrDupAtom, 0, 0}},
+	{"Null",             {instrNull, 0, 0}},
+	{"ModCall",          {instrModCall, 0, 0}},
 
-    {"LoadCoI32",       {instrLoadCoI32, 1, 4}},
-    {"LoadCoI64",       {instrLoadCoI64, 1, 8}},
-    {"LoadCoF32",       {instrLoadCoF32, 1, 4}},
-    {"LoadCoF64",       {instrLoadCoF64, 1, 8}},
+	{"LoadCoI32",        {instrLoadCoI32, 1, 4}},
+	{"LoadCoI64",        {instrLoadCoI64, 1, 8}},
+	{"LoadCoF32",        {instrLoadCoF32, 1, 4}},
+	{"LoadCoF64",        {instrLoadCoF64, 1, 8}},
+	{"LoadConst",        {instrLoadConst, 0, 0}},
 
-    {"LoadI32",         {instrLoadI32, 1, 4}},
-    {"LoadI64",         {instrLoadI64, 1, 4}},
-    {"LoadF32",         {instrLoadF32, 1, 4}},
-    {"LoadF64",         {instrLoadF64, 1, 4}},
+	{"LoadI32",          {instrLoadI32, 1, 4}},
+	{"LoadI64",          {instrLoadI64, 1, 4}},
+	{"LoadF32",          {instrLoadF32, 1, 4}},
+	{"LoadF64",          {instrLoadF64, 1, 4}},
 
-    {"StoreI32",        {instrStoreI32, 1, 4}},
-    {"StoreI64",        {instrStoreI64, 1, 4}},
-    {"StoreF32",        {instrStoreF32, 1, 4}},
-    {"StoreF64",        {instrStoreF64, 1, 4}},
+	{"GLoadI32",         {instrGLoadI32, 1, 4}},
+	{"GLoadI64",         {instrGLoadI64, 1, 4}},
+	{"GLoadF32",         {instrGLoadF32, 1, 4}},
+	{"GLoadF64",         {instrGLoadF64, 1, 4}},
 
-    {"CopyI32",         {instrCopyI32, 2, 4}},
-    {"CopyI64",         {instrCopyI64, 2, 4}},
-    {"CopyF32",         {instrCopyF32, 2, 4}},
-    {"CopyF64",         {instrCopyF64, 2, 4}},
+	{"StoreI32",         {instrStoreI32, 1, 4}},
+	{"StoreI64",         {instrStoreI64, 1, 4}},
+	{"StoreF32",         {instrStoreF32, 1, 4}},
+	{"StoreF64",         {instrStoreF64, 1, 4}},
 
-    {"AddI32",          {instrAddI32, 0, 0}},
-    {"AddI64",          {instrAddI64, 0, 0}},
-    {"AddF32",          {instrAddF32, 0, 0}},
-    {"AddF64",          {instrAddF64, 0, 0}},
+	{"GStoreI32",        {instrGStoreI32, 1, 4}},
+	{"GStoreI64",        {instrGStoreI64, 1, 4}},
+	{"GStoreF32",        {instrGStoreF32, 1, 4}},
+	{"GStoreF64",        {instrGStoreF64, 1, 4}},
 
-    {"SubI32",          {instrSubI32, 0, 0}},
-    {"SubI64",          {instrSubI64, 0, 0}},
-    {"SubF32",          {instrSubF32, 0, 0}},
-    {"SubF64",          {instrSubF64, 0, 0}},
+	{"CopyI32",          {instrCopyI32, 2, 4}},
+	{"CopyI64",          {instrCopyI64, 2, 4}},
+	{"CopyF32",          {instrCopyF32, 2, 4}},
+	{"CopyF64",          {instrCopyF64, 2, 4}},
 
-    {"MulI32",          {instrMulI32, 0, 0}},
-    {"MulI64",          {instrMulI64, 0, 0}},
-    {"MulF32",          {instrMulF32, 0, 0}},
-    {"MulF64",          {instrMulF64, 0, 0}},
+	{"AddI32",           {instrAddI32, 0, 0}},
+	{"AddI64",           {instrAddI64, 0, 0}},
+	{"AddF32",           {instrAddF32, 0, 0}},
+	{"AddF64",           {instrAddF64, 0, 0}},
 
-    {"DivI32",          {instrDivI32, 0, 0}},
-	{"DivU32",          {instrDivU32, 0, 0}},
-    {"DivI64",          {instrDivI64, 0, 0}},
-	{"DivU64",          {instrDivU64, 0, 0}},
-    {"DivF32",          {instrDivF32, 0, 0}},
-    {"DivF64",          {instrDivF64, 0, 0}},
+	{"SubI32",           {instrSubI32, 0, 0}},
+	{"SubI64",           {instrSubI64, 0, 0}},
+	{"SubF32",           {instrSubF32, 0, 0}},
+	{"SubF64",           {instrSubF64, 0, 0}},
 
-    {"LogicAnd",        {instrLogicAnd, 0, 0}},
-    {"LogicOr",         {instrLogicOr, 0, 0}},
-    {"LogicNot",        {instrLogicNot, 0, 0}},
+	{"MulI32",           {instrMulI32, 0, 0}},
+	{"MulI64",           {instrMulI64, 0, 0}},
+	{"MulF32",           {instrMulF32, 0, 0}},
+	{"MulF64",           {instrMulF64, 0, 0}},
 
-    {"CmpI32",          {instrCmpI32, 0, 0}},
-    {"CmpI64",          {instrCmpI64, 0, 0}},
-    {"CmpF32",          {instrCmpF32, 0, 0}},
-    {"CmpF64",          {instrCmpF64, 0, 0}},
+	{"DivI32",           {instrDivI32, 0, 0}},
+	{"DivI64",           {instrDivI64, 0, 0}},
+	{"DivF32",           {instrDivF32, 0, 0}},
+	{"DivF64",           {instrDivF64, 0, 0}},
+	{"DivU32",           {instrDivU32, 0, 0}},
+	{"DivU64",           {instrDivU64, 0, 0}},
 
-    {"Cmp2BoolEq",      {instrCmp2BoolEq, 0, 0}},
-    {"Cmp2BoolNe",      {instrCmp2BoolNe, 0, 0}},
-    {"Cmp2BoolLt",      {instrCmp2BoolLt, 0, 0}},
-    {"Cmp2BoolLe",      {instrCmp2BoolLe, 0, 0}},
-    {"Cmp2BoolGt",      {instrCmp2BoolGt, 0, 0}},
-    {"Cmp2BoolGe",      {instrCmp2BoolGe, 0, 0}},
+	{"ModI32",           {instrModI32, 0, 0}},
+	{"ModU32",           {instrModU32, 0, 0}},
+	{"ModI64",           {instrModI64, 0, 0}},
+	{"ModU64",           {instrModU64, 0, 0}},
 
-    {"JmpA",            {instrJmpA, 1, 4}},
-    {"Jmp",             {instrJmp, 1, 4}},
-    {"JmpTrue",         {instrJmpTrue, 1, 4}},
-    {"JmpFalse",        {instrJmpFalse, 1, 4}},
+	{"LogicAnd",         {instrLogicAnd, 0, 0}},
+	{"LogicOr",          {instrLogicOr, 0, 0}},
+	{"LogicNot",         {instrLogicNot, 0, 0}},
+	{"LogicXor",         {instrLogicXor, 0, 0}},
 
-    {"FuncCall",        {instrFuncCall, 1, 4}},
-    {"Return",          {instrReturn, 0, 0}},
-    {"ReturnValue",     {instrReturnValue, 0, 0}},
+	{"BitAnd",           {instrBitAnd, 0, 0}},
+	{"BitOr",            {instrBitOr, 0, 0}},
+	{"BitNot",           {instrBitNot, 0, 0}},
+	{"BitXor",           {instrBitXor, 0, 0}},
 
-    {"OutI32",          {instrOutI32, 0, 0}},
-    {"OutI64",          {instrOutI64, 0, 0}},
-    {"OutF32",          {instrOutF32, 0, 0}},
-    {"OutF64",          {instrOutF64, 0, 0}},
+	{"BitLShift",        {instrBitLShift, 0, 0}},
+	{"BitRShift",        {instrBitRShift, 0, 0}},
+	{"BitRaShift",       {instrBitRaShift, 0, 0}},
+	{"BitRShift32",      {instrBitRShift32, 0, 0}},
+	{"BitRaShift32",     {instrBitRaShift32, 0, 0}},
+
+	{"CmpI32",           {instrCmpI32, 0, 0}},
+	{"CmpI64",           {instrCmpI64, 0, 0}},
+	{"CmpF32",           {instrCmpF32, 0, 0}},
+	{"CmpF64",           {instrCmpF64, 0, 0}},
+
+	{"Cmp2BoolEq",       {instrCmp2BoolEq, 0, 0}},
+	{"Cmp2BoolNe",       {instrCmp2BoolNe, 0, 0}},
+	{"Cmp2BoolLt",       {instrCmp2BoolLt, 0, 0}},
+	{"Cmp2BoolLe",       {instrCmp2BoolLe, 0, 0}},
+	{"Cmp2BoolGt",       {instrCmp2BoolGt, 0, 0}},
+	{"Cmp2BoolGe",       {instrCmp2BoolGe, 0, 0}},
+
+	{"F32I32",           {instrF32I32, 0, 0}},
+	{"I32F32",           {instrI32F32, 0, 0}},
+	{"I64F64",           {instrI64F64, 0, 0}},
+	{"F64I64",           {instrF64I64, 0, 0}},
+	{"F32F64",           {instrF32F64, 0, 0}},
+	{"F64F32",           {instrF64F32, 0, 0}},
+	{"I32I64",           {instrI32I64, 0, 0}},
+	{"I64I32",           {instrI64I32, 0, 0}},
+
+	{"Jmp",              {instrJmp, 1, 4}},
+	{"JmpTrue",          {instrJmpTrue, 1, 4}},
+	{"JmpFalse",         {instrJmpFalse, 1, 4}},
+
+	{"FuncCall",         {instrFuncCall, 1, 4}},
+	{"Return",           {instrReturn, 0, 0}},
+
+	{"ConNew",           {instrConNew, 0, 0}},
+	{"ConDel",           {instrConDel, 0, 0}},
+	{"ConStore",         {instrConStore, 0, 0}},
+	{"ConGStore",        {instrConGStore, 0, 0}},
+	{"ConLoad",          {instrConLoad, 0, 0}},
+	{"ConGLoad",         {instrConGLoad, 0, 0}},
+	{"ConCopy",          {instrConCopy, 0, 0}},
+	{"ConClone",         {instrConClone, 0, 0}},  
+	{"ConAccLoad",       {instrConAccLoad, 0, 0}},
+	{"ConAccStore",      {instrConAccStore, 0, 0}},
+	{"ConInc",           {instrConInc, 0, 0}},
+	{"ConDec",           {instrConDec, 0, 0}},
 
 	};
 
@@ -236,15 +283,15 @@ void CuteAssembler::emitFunction(AsmDef::Function& func)
 {
 	ctFuncMetadata meta;
 	meta.func_id = func.id;
-	meta.arg_count = func.args;
-	meta.locals_size = func.locals;
+	meta.args_count = func.args;
+	meta.locals_count = func.locals;
 	meta.instr_address = this->program.instrs.size();
 
 	ctAsmDebug(
 		"Registered Function %d. Args:%d Locals:%d Instr Address:%lu\n", 
 		meta.func_id, 
-		meta.arg_count, 
-		meta.locals_size, 
+		meta.args_count, 
+		meta.locals_count, 
 		meta.instr_address
 	);
 
@@ -301,15 +348,18 @@ void CuteAssembler::emitInstrBlock(AsmDef::Function& func)
 
 		uint temp = i + 1;
 		i += instr.op_count;
+		
 
 		for (uint j = temp; j < temp + instr.op_count; j++)
 		{
+
 			unit = func.units[j];
 			ctInstrSize packed4[4];
 			ctInstrSize packed8[8];
-			
+
 			if (unit.type == AsmDef::UnitType::Int)
 			{
+				
 				if (instr.op_size == 4)
 				{
 					i32 = std::stoi(unit.content);
@@ -340,7 +390,7 @@ void CuteAssembler::emitInstrBlock(AsmDef::Function& func)
 			}
 			else 
 			{
-				this->throwError("Assembler Error", "Expected int or float as instruction operands.");
+				this->throwError("Assembler Error", std::format("Expected int or float as instruction operands: {}", unit.content));
 			}
 
 		}
