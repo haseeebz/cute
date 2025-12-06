@@ -7,18 +7,20 @@ Instructions that the Cute Engine can execute and what they do.
 ## Engine Control
 
 
-### instrExit
+### instrExitEngine
 
-Operands: [None] | Pops: 0 | Loads: 0
+Operands: [4 Bytes] | Pops: 0 | Loads: 0
 
+The operand is the return code, 0 for success.
 Ends the Engine process, killing all states. 
 
 
-### instrQuit
+### instrExit
 
-Operands: [None] | Pops: 0 | Loads: 0
+Operands: [4 Bytes] | Pops: 0 | Loads: 0
 
-Lighter version of Exit, just ends the current state. For the Engine to end properly, the program should end with this instruction. 
+The operand is the return code, 0 for success.
+Lighter version of ExitEngine, just ends the current state. For the Engine to end properly, the program should end with this instruction. 
 
 
 ### instrOut
