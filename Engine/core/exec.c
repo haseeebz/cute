@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "context.h"
 #include "op.h"
@@ -34,15 +35,29 @@ static void outHandler(int fmt, ctAtom* atom)
 {
 	switch (fmt)
 	{
-		case 0:  printf("0x%lX\n", atom->u64); break;
-		case 1:  printf("%d\n", atom->i32); break;
-		case 2:  printf("%ld\n", atom->i64); break;
-		case 3:  printf("%u\n", atom->u32); break;
-		case 4:  printf("%lu\n", atom->u64); break;
-		case 5:  printf("%f\n", atom->f32); break;
-		case 6:  printf("%lf\n", atom->f64); break;
+		case 0:  goto binary; break;
+		case 1:  printf("0x%lX\n", atom->u64); break;
+		case 2:  printf("%d\n", atom->i32); break;
+		case 3:  printf("%ld\n", atom->i64); break;
+		case 4:  printf("%u\n", atom->u32); break;
+		case 5:  printf("%lu\n", atom->u64); break;
+		case 6:  printf("%f\n", atom->f32); break;
+		case 7:  printf("%lf\n", atom->f64); break;
 		default: printf("Invalid Format for Out instruction.\n"); break;
 	}
+
+	uint64_t number;
+
+	binary:
+	
+	number = atom->u64;
+	for (int i = 63; i >= 0; i--)
+	{
+		if ( ((i+1) % 8 == 0) && (i != 63) ) {printf(" ");}
+		int digit = ((number >> i) & 1);
+		printf("%d", digit);
+	}
+	printf("\n");
 }
 
 

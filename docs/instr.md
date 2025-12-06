@@ -29,13 +29,14 @@ Operands: [4 bytes] | Pops: 0 | Loads: 0
 
 Prints the contents of the last atom. The operand is the type specifier. This is for testing purposes.
 
-+ 0 : raw bytes in hex format (use this for memory addresses too)
-+ 1 : i32
-+ 2 : i64
-+ 3 : u32
-+ 4 : u64
-+ 5 : f32
-+ 6 : f64
++ 0 : raw binary digits
++ 1 : raw bytes in hex format (use this for memory addresses too)
++ 2 : i32
++ 3 : i64
++ 4 : u32
++ 5 : u64
++ 6 : f32
++ 7 : f64
 
 ### instrDump
 
