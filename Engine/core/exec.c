@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 #include "context.h"
+#include "dump.h"
 #include "op.h"
 
 
@@ -31,20 +32,21 @@ static inline void extractFloat64(ctInstrSize *instrs, double *i)
 }
 
 
-static void outHandler(int fmt, ctAtom* atom)
+static void outHandler(int fmt, ctAtom *atom)
 {
 	switch (fmt)
 	{
 		case 0:  goto binary; break;
-		case 1:  printf("0x%lX\n", atom->u64); break;
+		case 1:  printf("0x%016lX\n", atom->u64); break;
 		case 2:  printf("%d\n", atom->i32); break;
 		case 3:  printf("%ld\n", atom->i64); break;
 		case 4:  printf("%u\n", atom->u32); break;
 		case 5:  printf("%lu\n", atom->u64); break;
 		case 6:  printf("%f\n", atom->f32); break;
 		case 7:  printf("%lf\n", atom->f64); break;
-		default: printf("Invalid Format for Out instruction.\n"); break;
+		default: printf("Invalid Format for Out instruction: %d\n", fmt); break;
 	}
+	return;
 
 	uint64_t number;
 
@@ -59,6 +61,7 @@ static void outHandler(int fmt, ctAtom* atom)
 	}
 	printf("\n");
 }
+
 
 
 
@@ -89,7 +92,6 @@ void ctEngine_exec(ctContext *ctx)
 		}
 
 		instr = instrs[ctx->pc++];
-	
 
 		switch (instr)
 		{
@@ -113,7 +115,9 @@ void ctEngine_exec(ctContext *ctx)
 			break;
 
         case instrDump:
-			printf("Dump instruction not implemented yet.\n");
+			extractInt32(&instrs[ctx->pc], &pts);
+			ctx->pc += 4;
+			dump_handler(ctx, pts);
 			break;
 
         case instrPopAtom:
@@ -167,19 +171,19 @@ void ctEngine_exec(ctContext *ctx)
 
         case instrLoadI64:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			ctx->pc += 8;
+			ctx->pc += 4;
 			ctx_pushExeAtom(ctx, ctx_loadLocal(ctx, ptu));
 			break;
 
         case instrLoadF32:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			ctx->pc += 8;
+			ctx->pc += 4;
 			ctx_pushExeAtom(ctx, ctx_loadLocal(ctx, ptu));
 			break;
 
         case instrLoadF64:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			ctx->pc += 8;
+			ctx->pc += 4;
 			ctx_pushExeAtom(ctx, ctx_loadLocal(ctx, ptu));
 			break;
 
@@ -207,7 +211,7 @@ void ctEngine_exec(ctContext *ctx)
 
         case instrStoreI64:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			ctx->pc += 8;
+			ctx->pc += 4;
 			ctx_storeLocal(ctx, ptu, ctx_popExeAtom(ctx));
 			break;
 
@@ -219,7 +223,7 @@ void ctEngine_exec(ctContext *ctx)
 
         case instrStoreF64:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			ctx->pc += 8;
+			ctx->pc += 4;
 			ctx_storeLocal(ctx, ptu, ctx_popExeAtom(ctx));
 			break;
 

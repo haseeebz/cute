@@ -16,6 +16,7 @@ typedef struct
 
 typedef struct 
 {
+	uint32_t id;
 	uint32_t return_address;
 	uint32_t locals_count;
 	ctAtom *locals;

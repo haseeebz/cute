@@ -148,6 +148,7 @@ void ctx_funcCall(ctContext *ctx, uint32_t func_id)
 		frame.locals[meta->args_count - i - 1] = atom;
 	}
 
+	frame.id = meta->func_id;
 	frame.return_address = ctx->pc;
 	ctx->pc = meta->instr_address;
 
