@@ -1,88 +1,59 @@
-#include <iostream>
 #include "node.hpp"
 
 
-void PrintVisitor::printDepth()
+Node::RootProgram::~RootProgram()
 {
-	for (uint i = 0; i < depth; i++)
+	delete this->src;
+}
+
+
+Node::Source::~Source()
+{
+	for (auto func: this->functions)
 	{
-		std::cout << "	";
+		delete func;
 	}
 }
 
 
-void PrintVisitor::visit(ctIntNode *node) 
+Node::Function::~Function()
 {
-	printDepth();
-
-	std::cout << "Int(" << node->raw << ")\n";
-}
-
-
-void PrintVisitor::visit(ctFloatNode *node)
-{
-	printDepth();
-
-	std::cout << "Float(" << node->raw << ")\n";
-}
-
-
-void PrintVisitor::visit(ctBinaryOpNode *node)
-{
-	printDepth();
-	std::cout << "BinaryOp(\n";
-
-	depth++;
-	printDepth();
-	std::cout << '[' << node->op << ']' << "\n";
-	node->lhs->accept(this);
-	node->rhs->accept(this);
-	depth--;
-
-	printDepth();
-	std::cout << ")\n";
-}
-
-
-void PrintVisitor::visit(ctIdentifierNode *node) 
-{
-	printDepth();
-
-	std::cout << "Identifier(" << node->val << ")\n";
-}
-
-
-void PrintVisitor::visit(ctNestedIdentifierNode *node)
-{
-	printDepth();
-
-	std::cout << "NestedIdentifier( " << node->val << " : ";
-	node->node->accept(this);
-	std::cout << " )\n";
-}
-
-
-void PrintVisitor::visit(ctStmtNode *node)
-{
-	printDepth();
-
-	std::cout << "Statement[\n";
-	depth++;
-	node->root->accept(this);
-	depth--;
-	std::cout << "]\n";
-
-}
-
-
-void PrintVisitor::visit(ctSourceNode *node)
-{
-	printDepth();
-
-	std::cout << "--Program Node--\n";
+	delete this->name;
 	
-	for (ctStmtNode *child: node->stmts)
-	{
-		child->accept(this);
-	}
+	for (auto para: this->parameters) {delete para;}
+	for (auto stmt: this->statements) {delete stmt;}
+}
+
+
+Node::Declaration::~Declaration()
+{
+	delete this->type;
+	delete this->name;
+}
+
+
+Node::Assignment::~Assignment()
+{
+	delete this->value;
+	delete this->name;
+}
+
+
+Node::ExprStatment::~ExprStatment()
+{
+	delete this->expr;
+}
+
+
+Node::BinaryOp::~BinaryOp()
+{
+	delete this->left;
+	delete this->right;
+}
+
+
+Node::FunctionCall::~FunctionCall()
+{
+	delete this->name;
+	for (auto arg: this->args) {delete arg;}
 }

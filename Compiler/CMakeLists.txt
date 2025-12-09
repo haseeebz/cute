@@ -1,13 +1,12 @@
 
-file(GLOB PARSER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/parser/*.cpp")
+file(GLOB NODE_SRC "${CMAKE_CURRENT_SOURCE_DIR}/node/*.cpp")
 
-#file(GLOB WRITER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/writer/*.cpp")
 
 add_library (
 	CuteCompiler
 	STATIC
 
-	${PARSER_SRC}
+	${NODE_SRC}
     compiler.cpp 
 
 )

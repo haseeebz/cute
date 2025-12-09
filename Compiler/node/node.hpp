@@ -1,136 +1,194 @@
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #include <vector>
 
-#pragma once 
+#pragma once
 
 
-// Node definition
-
-struct ctNode;
-
-struct ctIntNode;
-struct ctFloatNode;
-struct ctBinaryOpNode;
-struct ctIdentifierNode;
-struct ctNestedIdentifierNode;
-struct ctSourceNode;
-struct ctStmtNode;
-
-
-struct NodeVisitor
+enum class NodeType
 {
-	virtual void visit(ctIntNode *node) = 0; 
-	virtual void visit(ctFloatNode *node) = 0;
-	virtual void visit(ctBinaryOpNode *node) = 0;
-	virtual void visit(ctIdentifierNode *node) = 0;
-	virtual void visit(ctNestedIdentifierNode *node) = 0;
-	virtual void visit(ctStmtNode *node) = 0;
-	virtual void visit(ctSourceNode *node) = 0;
+	RootProgram,
+	Source,
+	Function,
 
-	virtual ~NodeVisitor() = default;
+	Declaration,
+	Assignment,
+	ExprStatement,
+
+	Int,
+	Float,
+	Identifier,
+	BinaryOp,
+	FunctionCall
 };
 
 
-struct ctNode
+namespace Node
 {
-	virtual void accept(NodeVisitor *visitor) = 0;
-	virtual ~ctNode() = default;
+	struct Base;
+
+	struct Object;
+	struct Statement;
+	struct Expression;
+
+	// Object Nodes
+	struct RootProgram;
+	struct Source;
+	struct Function;
+
+	
+	// Statement Nodes
+	struct Declaration;
+	struct Assignment;
+	struct ExprStatment;
+	
+	// Expression Nodes
+	struct Int;
+	struct Float;
+	struct Identifier;
+	struct BinaryOp;
+	struct FunctionCall;
+
+
+	// Defintions
+
+
+	struct Base
+	{
+		NodeType nt;
+	};
+
+	struct Object     : Base{};
+	struct Statement  : Base{};
+	struct Expression : Base{};
+
+
+	struct RootProgram : Object
+	{
+		Source* src;
+		RootProgram() {{nt = NodeType::RootProgram;}};
+		~RootProgram();
+	};
+
+	struct Source : Object
+	{
+		std::vector<Function*> functions;
+
+		Source() {{nt = NodeType::Source;}};
+		~Source();
+	};
+
+
+	struct Function : Object
+	{
+		Identifier* name;
+		std::vector<Declaration*> parameters;
+		std::vector<Statement*>   statements;
+
+		Function() {{nt = NodeType::Function;}};
+		~Function();
+	};
+
+	
+	// Statement Nodes
+	struct Declaration : Statement
+	{	
+
+		Identifier* type;
+		Identifier* name;
+
+		Declaration() {nt = NodeType::Declaration;};
+		~Declaration();
+	};
+
+	struct Assignment : Statement
+	{
+
+		Identifier* name;
+		Expression* value;
+
+		Assignment() {nt = NodeType::Assignment;};
+		~Assignment();
+	};
+
+	struct ExprStatment : Statement
+	{
+
+		Expression* expr;
+
+		ExprStatment(Expression* expr): expr(expr) {{nt = NodeType::ExprStatement;}};
+		~ExprStatment();
+	};
+	
+	
+	// Expression Nodes
+	struct Int : Expression
+	{
+		std::string raw;
+		union
+		{
+			int32_t  i32;
+			int64_t  i64;
+			uint32_t u32;
+			uint64_t u64;
+		} val;
+
+		Int(std::string i): raw(i) {nt = NodeType::Int;};
+	};
+
+
+	struct Float : Expression
+	{
+		std::string raw;
+		union
+		{
+			float  f32;
+			double f64;
+		} val;
+
+		Float(std::string f): raw(f) {nt = NodeType::Float;};
+	};
+
+
+	struct Identifier : Expression
+	{
+		std::string val;
+
+		Identifier(std::string val): val(val) {{nt = NodeType::Identifier;}};
+	};
+
+
+	struct BinaryOp : Expression
+	{
+		enum class Type
+		{
+			Add,
+			Sub,
+			Mul,
+			Div
+		};
+
+		Type op;
+		Expression* left;
+		Expression* right;
+
+		BinaryOp() {nt = NodeType::BinaryOp;};
+		BinaryOp(Type op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = NodeType::BinaryOp;};
+		~BinaryOp();
+	};
+
+
+	struct FunctionCall : Expression
+	{
+		Identifier* name;
+		std::vector<Expression*> args;
+
+		FunctionCall() {nt = NodeType::FunctionCall;};
+		FunctionCall(Identifier* name): name(name) {{nt = NodeType::FunctionCall;}};
+		~FunctionCall();
+	};
+
 };
 
 
 
-// Abstract Nodes
-
-struct ctIntNode : public ctNode
-{
-	std::string raw;
-
-	ctIntNode(std::string raw) : raw(raw) {};
-	inline void accept(NodeVisitor *visitor) {visitor->visit(this);}
-};
-
-
-struct ctFloatNode : public ctNode
-{
-	std::string raw;
-
-	ctFloatNode(std::string raw) : raw(raw) {};
-	inline void accept(NodeVisitor *visitor) {visitor->visit(this);}
-};
-
-
-struct ctBinaryOpNode : public ctNode
-{
-	char op;
-	ctNode *lhs;
-	ctNode *rhs;
-
-	ctBinaryOpNode(char op, ctNode *lhs, ctNode *rhs) : op(op), lhs(lhs), rhs(rhs) {};
-	~ctBinaryOpNode() {delete lhs; delete rhs;}
-
-	inline void accept(NodeVisitor *visitor) {visitor->visit(this);}
-};
-
-
-struct ctIdentifierNode : public ctNode
-{
-	std::string val;
-
-	ctIdentifierNode(std::string val): val(val) {};
-
-	inline void accept(NodeVisitor *visitor) {visitor->visit(this);}
-};
-
-
-struct ctNestedIdentifierNode : public ctNode
-{
-	std::string val;
-	ctIdentifierNode *node;
-
-	~ctNestedIdentifierNode() {delete node;}
-
-	inline void accept(NodeVisitor *visitor) {visitor->visit(this);}
-};
-
-
-
-
-// High level program nodes
-
-struct ctStmtNode
-{
-	ctNode *root;
-
-	ctStmtNode(ctNode *node): root(node) {};
-
-	inline void accept(NodeVisitor *visitor) {visitor->visit(this);}
-};
-
-struct ctSourceNode :public ctNode
-{
-	std::vector<ctStmtNode*> stmts;
-
-	ctSourceNode() = default;
-	~ctSourceNode() {for (ctStmtNode *node: this->stmts) {delete node;}}
-
-	inline void accept(NodeVisitor *visitor) {visitor->visit(this);}
-};
-
-
-// Visitors
-
-struct PrintVisitor: public NodeVisitor
-{
-	uint depth = 0;
-	void printDepth();
-
-	void visit(ctIntNode *node);
-	void visit(ctFloatNode *node);
-	void visit(ctBinaryOpNode *node);
-	void visit(ctIdentifierNode *node);
-	void visit(ctNestedIdentifierNode *node);
-	void visit(ctStmtNode *node);
-	void visit(ctSourceNode *node);
-	~PrintVisitor() {};
-};
