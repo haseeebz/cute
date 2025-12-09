@@ -29,15 +29,15 @@ std::string CtTokenStream::toString()
 
 		switch (tok->type) 
 		{
-		case Int: 	   str.append("[ Int ");
+		case CtTokenType::Int: 	     str.append("[ Int ");
 		break;
-		case Float:      str.append("[ Float ");
+		case CtTokenType::Float:     str.append("[ Float ");
 		break; 
-		case Symbol:    str.append("[ Sym ");
+		case CtTokenType::Symbol:    str.append("[ Sym ");
 		break; 
-		case Word:      str.append("[ Word ");
+		case CtTokenType::Word:      str.append("[ Word ");
 		break;
-		case EndOfFile: str.append("[ EOF ]"); continue;
+		case CtTokenType::EndOfFile: str.append("[ EOF ]"); continue;
 		break;
 		}
 

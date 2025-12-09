@@ -15,7 +15,7 @@ class CtParser
 	CtNode::Function* parseFunction();
 
 	CtNode::Statement* parseStatement();
-	CtNode::Expression* parseExpression();
+	CtNode::Expression* parseExpression(uint prev_precedence = 0);
 
 	public:
 

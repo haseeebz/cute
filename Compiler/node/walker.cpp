@@ -7,7 +7,7 @@
 void CtNodeWalker::walk(CtNode::Base *node) {
 
   if (!node) {
-    std::cout << "Invalid Node! Node pointer is Null!" << std::endl;
+    std::cout << "(Null Node)" << std::endl;
     return;
   }
 
@@ -58,7 +58,7 @@ void CtNodeWalker::walk(CtNode::Base *node) {
     break;
 
   default:
-    std::cout << "Undefined node passed to NodeWalker::walk" << std::endl;
+    std::cout << "(Undefined Node)" << std::endl;
     break;
   }
 }
@@ -93,7 +93,7 @@ void CtNodePrinter::handleSource(CtNode::Source *node)
 
 	for (auto func: node->functions)
 	{
-		this->walk(func);
+		this->walk(func.second);
 	}
 }
 

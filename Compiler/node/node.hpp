@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -72,7 +73,7 @@ namespace CtNode
 
 	struct Source : Object
 	{
-		std::vector<Function*> functions;
+		std::map<std::string, Function*> functions;
 
 		Source() {{nt = CtNodeType::Source;}};
 		~Source();
@@ -113,7 +114,6 @@ namespace CtNode
 
 	struct ExprStatment : Statement
 	{
-
 		Expression* expr;
 
 		ExprStatment(Expression* expr): expr(expr) {{nt = CtNodeType::ExprStatement;}};

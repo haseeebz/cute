@@ -11,7 +11,7 @@ CtNode::Source::~Source()
 {
 	for (auto func: this->functions)
 	{
-		delete func;
+		delete func.second;
 	}
 }
 
