@@ -5,16 +5,16 @@
 #include <string>
 
 
-#include "CuteToken.hpp"
+#include "token.hpp"
 
 
-TokenStream Tokenizer::tokenize(std::string input_file)
+CtTokenStream CtTokenizer::tokenize(std::string input_file)
 {
 	std::ifstream stream(input_file);
 
 	std::ostringstream buffer;
 	buffer << stream.rdbuf();
-	this->currStream = TokenStream(buffer.str());
+	this->currStream = CtTokenStream(buffer.str());
 
 	this->currSrc = &this->currStream.srcStr;
 	
@@ -41,13 +41,13 @@ TokenStream Tokenizer::tokenize(std::string input_file)
 		this->tokenizeSymbol();
 	}
 
-	this->currStream.add(Token(TokenType::tokenEOF, 0,0));
+	this->currStream.add(CtToken(CtTokenType::EndOfFile, 0,0));
 
 	return this->currStream;
 }
 
 
-void Tokenizer::tokenizeNumber()
+void CtTokenizer::tokenizeNumber()
 {
 	bool is_float = false;
 	char c;
@@ -77,19 +77,19 @@ void Tokenizer::tokenizeNumber()
 	this->currIndex--;
 	end = this->currIndex;
 
-	TokenType type = is_float ? TokenType::tokenFloat : TokenType::tokenInt;
+	CtTokenType type = is_float ? CtTokenType::Float : CtTokenType::Int;
 	
-	this->currStream.add(Token(type, start, end));
+	this->currStream.add(CtToken(type, start, end));
 }
 
 
-void Tokenizer::tokenizeSymbol()
+void CtTokenizer::tokenizeSymbol()
 {
-	this->currStream.add(Token(TokenType::tokenSymbol, this->currIndex, this->currIndex));
+	this->currStream.add(CtToken(CtTokenType::Symbol, this->currIndex, this->currIndex));
 }
 
 
-void Tokenizer::tokenizeWord()
+void CtTokenizer::tokenizeWord()
 {
 	char c;
 	uint start, end;
@@ -112,6 +112,6 @@ void Tokenizer::tokenizeWord()
 	this->currIndex--;
 	end = this->currIndex;
 
-	this->currStream.add(Token(TokenType::tokenWord, start, end));
+	this->currStream.add(CtToken(CtTokenType::Word, start, end));
 }
 

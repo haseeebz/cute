@@ -2,7 +2,6 @@
 #include <ostream>
 
 #include "node.hpp"
-#include "walker.hpp"
 
 
 void CtNodeWalker::walk(CtNode::Base *node) {

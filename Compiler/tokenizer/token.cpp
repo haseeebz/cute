@@ -2,25 +2,25 @@
 #include <sys/types.h>
 #include <vector>
 
-#include "CuteToken.hpp"
+#include "token.hpp"
 
 
-TokenStream::TokenStream(std::string src)
+CtTokenStream::CtTokenStream(std::string src)
 {
 	this->srcStr = src;
 	this->curr_token = 0;
 }
 
 
-void TokenStream::add(Token token)
+void CtTokenStream::add(CtToken token)
 {
 	this->tokens.push_back(token);
 }
 
 
-std::string TokenStream::toString()
+std::string CtTokenStream::toString()
 {
-	Token *tok;
+	CtToken *tok;
 	std::string str;
 
 	for (uint i = 0; i < this->tokens.size(); i++)
@@ -29,15 +29,15 @@ std::string TokenStream::toString()
 
 		switch (tok->type) 
 		{
-		case tokenInt: 	   str.append("[ Int ");
+		case Int: 	   str.append("[ Int ");
 		break;
-		case tokenFloat:   str.append("[ Float ");
-		break;
-		case tokenSymbol:  str.append("[ Sym ");
+		case Float:      str.append("[ Float ");
 		break; 
-		case tokenWord:    str.append("[ Word ");
+		case Symbol:    str.append("[ Sym ");
+		break; 
+		case Word:      str.append("[ Word ");
 		break;
-		case tokenEOF:     str.append("[ EOF ]"); continue;
+		case EndOfFile: str.append("[ EOF ]"); continue;
 		break;
 		}
 
@@ -50,34 +50,34 @@ std::string TokenStream::toString()
 }
 
 
-Token TokenStream::next()
+CtToken CtTokenStream::next()
 {
 	if (this->curr_token >= this->tokens.size())
 	{
-		return Token(TokenType::tokenEOF, 0,0);
+		return CtToken(CtTokenType::EndOfFile, 0,0);
 	}
 
 	return this->tokens[this->curr_token++];
 }
 
-Token TokenStream::peek()
+CtToken CtTokenStream::peek()
 {
 	if (this->curr_token >= this->tokens.size())
 	{
-		return Token(TokenType::tokenEOF, 0,0);
+		return CtToken(CtTokenType::EndOfFile, 0,0);
 	}
 
 	return this->tokens[this->curr_token];
 }
 
 
-uint TokenStream::currentIndex()
+uint CtTokenStream::currentIndex()
 {
 	return this->curr_token;
 }
 
 
-void TokenStream::backtrack(uint i)
+void CtTokenStream::backtrack(uint i)
 {
 	if (this->curr_token <= 0)
 	{
@@ -88,7 +88,7 @@ void TokenStream::backtrack(uint i)
 }
 
 
-void TokenStream::gotoIndex(uint i)
+void CtTokenStream::gotoIndex(uint i)
 {
 	if (i >= this->tokens.size())
 	{
@@ -99,7 +99,7 @@ void TokenStream::gotoIndex(uint i)
 }
 
 
-std::string TokenStream::viewToken(Token *token)
+std::string CtTokenStream::viewToken(CtToken *token)
 {
 	uint len = token->end - token->start + 1;
 
@@ -107,17 +107,17 @@ std::string TokenStream::viewToken(Token *token)
 }
 
 
-char TokenStream::viewSymToken(Token *token)
+char CtTokenStream::viewSymToken(CtToken *token)
 {
 	return this->srcStr[token->start];
 }
 
 
-bool TokenStream::getInt(std::string *i)
+bool CtTokenStream::getInt(std::string *i)
 {
-	Token tok = this->next();
+	CtToken tok = this->next();
 
-	if (tok.type != TokenType::tokenInt)
+	if (tok.type != CtTokenType::Int)
 	{
 		this->backtrack();
 		return false;
@@ -128,11 +128,11 @@ bool TokenStream::getInt(std::string *i)
 }
 
 
-bool TokenStream::getFloat(std::string *d)
+bool CtTokenStream::getFloat(std::string *d)
 {
-	Token tok = this->next();
+	CtToken tok = this->next();
 
-	if (tok.type != TokenType::tokenFloat)
+	if (tok.type != CtTokenType::Float)
 	{
 		this->backtrack();
 		return false;
@@ -143,11 +143,11 @@ bool TokenStream::getFloat(std::string *d)
 }
 
 
-bool TokenStream::getWord(std::string *str)
+bool CtTokenStream::getWord(std::string *str)
 {
-	Token tok = this->next();
+	CtToken tok = this->next();
 
-	if (tok.type != TokenType::tokenWord)
+	if (tok.type != CtTokenType::Word)
 	{
 		this->backtrack();
 		return false;
@@ -158,11 +158,11 @@ bool TokenStream::getWord(std::string *str)
 }
 
 
-bool TokenStream::getSym(char *sym)
+bool CtTokenStream::getSym(char *sym)
 {
-	Token tok = this->next();
+	CtToken tok = this->next();
 
-	if (tok.type != TokenType::tokenSymbol)
+	if (tok.type != CtTokenType::Symbol)
 	{
 		this->backtrack();
 		return false;
@@ -173,7 +173,7 @@ bool TokenStream::getSym(char *sym)
 }
 
 
-bool TokenStream::getKeyword(std::string keyword)
+bool CtTokenStream::getKeyword(std::string keyword)
 {
 	std::string str;
 
@@ -190,7 +190,7 @@ bool TokenStream::getKeyword(std::string keyword)
 }
 
 
-bool TokenStream::getKeySym(char sym)
+bool CtTokenStream::getKeySym(char sym)
 {
 	char c;
 
@@ -207,9 +207,9 @@ bool TokenStream::getKeySym(char sym)
 }
 
 
-bool TokenStream::expectType(TokenType type)
+bool CtTokenStream::expectType(CtTokenType type)
 {
-	Token tok = this->next();
+	CtToken tok = this->next();
 	this->backtrack();
 
 	if (tok.type != type)

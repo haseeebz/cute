@@ -1,6 +1,6 @@
 #include <string>
 
-#include "CuteToken.hpp"
+#include "../tokenizer/token.hpp"
 
 
 #pragma once
@@ -8,7 +8,7 @@
 
 class CuteCompiler
 {
-	Tokenizer tokenizer;
+	CtTokenizer tokenizer;
 
 	
 	public:

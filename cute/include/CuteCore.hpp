@@ -1,6 +1,5 @@
 #include "CuteEngine.h"
 
-#include "CuteAsm.hpp"
 #include "CuteCompiler.hpp"
 
 
@@ -8,12 +7,10 @@ class CuteCore
 {
 	CuteCompiler compiler;
 	ctEngine engine;
-	CuteAssembler assembler;
 
 	void parseArgs(int argc, char *argv[]);
 
 	bool compileFlag;
-	bool assembleFlag;
 	bool engineFlag;
 
 	std::string filepath;

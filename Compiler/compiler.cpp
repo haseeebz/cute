@@ -3,12 +3,10 @@
 #include <string>
 
 #include "internals.hpp"
-#include "CuteToken.hpp"
 #include "node/node.hpp"
-#include "node/walker.hpp"
 
 
-using namespace Node;
+using namespace CtNode;
 
 void CuteCompiler::compile(std::string filepath, std::string outfile)
 {	
@@ -31,8 +29,8 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
     auto* assignA = new Assignment();
     assignA->name = new Identifier("a");
 
-    auto* expr5 = new Int("5");
-    auto* expr3 = new Int("3");
+    auto* expr5 = new CtNode::Int("5");
+    auto* expr3 = new CtNode::Int("3");
 
     auto* addExpr = new BinaryOp(BinaryOp::Type::Add, expr5, expr3);
     assignA->value = addExpr;
@@ -55,7 +53,7 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
     // Stuff the function in the source
     root->src->functions.push_back(fn);
 
-	NodePrinter printer;
+	CtNodePrinter printer;
 	printer.walk(root);
 	delete root;
 }

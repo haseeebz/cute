@@ -5,54 +5,54 @@
 #pragma once 
 
 
-enum TokenType 
+enum CtTokenType 
 {
-	tokenInt,
-	tokenFloat,
-	tokenSymbol,
-	tokenWord,
-	tokenEOF
+	Int,
+	Float,
+	Symbol,
+	Word,
+	EndOfFile
 };
 
 
-struct Token
+struct CtToken
 {
-	TokenType type;
+	CtTokenType type;
 	uint start;
 	uint end;
 
-	Token() = default;
-	Token(TokenType t, uint s, uint e) : type(t), start(s), end(e) {};
+	CtToken() = default;
+	CtToken(CtTokenType t, uint s, uint e) : type(t), start(s), end(e) {};
 };
 
 
-class TokenStream
+class CtTokenStream
 {
 	
-	std::vector<Token> tokens;
+	std::vector<CtToken> tokens;
 	uint curr_token;
 
 	public:
 
 	std::string srcStr;
 
-	TokenStream() {};
-	TokenStream(std::string src);
+	CtTokenStream() {};
+	CtTokenStream(std::string src);
 
-	void add(Token token);
+	void add(CtToken token);
 	std::string toString();
 	
 
-	Token next(); // gives you the current token and increments the counter
-	Token peek(); // gives you the current token but does'nt increment
+	CtToken next(); // gives you the current CtToken and increments the counter
+	CtToken peek(); // gives you the current CtToken but does'nt increment
 	uint currentIndex(); // gives you the current index duh
 	void backtrack(uint i = 1); // backtracks the index by the given amount. 
 	void gotoIndex(uint i);	// goes to the given index... duh...
 
 
 	// viewing token
-	std::string viewToken(Token *token);
-	char viewSymToken(Token *token);
+	std::string viewToken(CtToken *token);
+	char viewSymToken(CtToken *token);
 
 	// all of these functions try to get the specified type. 
 	// if type found, it is written to the pointer, true is returned and the counter is increased
@@ -62,25 +62,25 @@ class TokenStream
 	bool getWord(std::string *str);
 	bool getSym(char *sym);
 
-	// returns true if the current token is word AND matches the given string
+	// returns true if the current CtToken is word AND matches the given string
 	bool getKeyword(std::string keyword);
 	bool getKeySym(char sym);
 
-	bool expectType(TokenType type);
+	bool expectType(CtTokenType type);
 	
 };
 
 
-class Tokenizer 
+class CtTokenizer 
 {
-	TokenStream currStream;
+	CtTokenStream currStream;
 
 	std::string *currSrc;
 	uint currIndex;
 
 	public:
 
-	TokenStream tokenize(std::string input_file);
+	CtTokenStream tokenize(std::string input_file);
 	void tokenizeNumber();
 	void tokenizeSymbol();
 	void tokenizeWord();

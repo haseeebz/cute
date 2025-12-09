@@ -1,14 +1,23 @@
 #include "../node/node.hpp"
 
-#include "CuteToken.hpp"
+#include "../tokenizer/token.hpp"
 
 #pragma once
 
 class CtParser
 {
-	TokenStream tokens;
+	CtTokenStream *tokens;
+
+	CtNode::Source *source;
+
+	void start();
+
+	CtNode::Function* parseFunction();
+
+	CtNode::Statement* parseStatement();
+	CtNode::Expression* parseExpression();
 
 	public:
 
-	
+	CtNode::Source* parse(CtTokenStream *tokens);
 };

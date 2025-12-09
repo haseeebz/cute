@@ -2,7 +2,6 @@
 
 #include "CuteCompiler.hpp"
 
-#include "CuteAsm.hpp"
 
 #include "include/CuteCore.hpp"
 #include <string>
@@ -22,12 +21,6 @@ CuteCore::~CuteCore()
 void CuteCore::run(int argc, char *argv[])
 {
 	this->parseArgs(argc, argv);
-
-	if (this->assembleFlag)
-	{
-		assembler.assemble(this->filepath, this->outfile);
-		return;
-	}
 
 	if (this->compileFlag)
 	{
@@ -56,14 +49,6 @@ void CuteCore::parseArgs(int argc, char *argv[])
 			this->filepath = argv[++i];
 			this->outfile = std::string(this->filepath).append(".out");
 			compileFlag = true;
-			return;
-		}
-
-		if (arg == "-a")
-		{
-			this->filepath = argv[++i];
-			this->outfile = std::string(this->filepath).append(".out");
-			assembleFlag = true;
 			return;
 		}
 

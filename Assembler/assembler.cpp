@@ -12,6 +12,7 @@
 
 std::map<std::string, AsmDef::InstrDetails>& CuteAssembler::instrMap()
 {
+	
 	static std::map<std::string, AsmDef::InstrDetails> instrMap = 
 	{
 

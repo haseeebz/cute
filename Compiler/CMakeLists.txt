@@ -1,7 +1,7 @@
 
 file(GLOB NODE_SRC "${CMAKE_CURRENT_SOURCE_DIR}/node/*.cpp")
 file(GLOB PARSER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/parser/*.cpp")
-
+file(GLOB TOKENIZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tokenizer/*.cpp")
 
 add_library (
 	CuteCompiler
@@ -9,11 +9,12 @@ add_library (
 
 	${NODE_SRC}
 	${PARSER_SRC}
+	${TOKENIZER_SRC}
     compiler.cpp 
 
 )
 
-target_link_libraries(CuteCompiler PRIVATE CuteBytecode CuteTokenizer)
+target_link_libraries(CuteCompiler PRIVATE CuteBytecode)
 
 target_compile_options (
     CuteCompiler
