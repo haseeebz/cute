@@ -1,5 +1,6 @@
 
 file(GLOB NODE_SRC "${CMAKE_CURRENT_SOURCE_DIR}/node/*.cpp")
+file(GLOB PARSER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/parser/*.cpp")
 
 
 add_library (
@@ -7,6 +8,7 @@ add_library (
 	STATIC
 
 	${NODE_SRC}
+	${PARSER_SRC}
     compiler.cpp 
 
 )

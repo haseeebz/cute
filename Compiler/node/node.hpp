@@ -5,7 +5,7 @@
 #pragma once
 
 
-enum class NodeType
+enum class CtNodeType
 {
 	RootProgram,
 	Source,
@@ -23,7 +23,7 @@ enum class NodeType
 };
 
 
-namespace Node
+namespace CtNode
 {
 	struct Base;
 
@@ -55,7 +55,7 @@ namespace Node
 
 	struct Base
 	{
-		NodeType nt;
+		CtNodeType nt;
 	};
 
 	struct Object     : Base{};
@@ -66,7 +66,7 @@ namespace Node
 	struct RootProgram : Object
 	{
 		Source* src;
-		RootProgram() {{nt = NodeType::RootProgram;}};
+		RootProgram() {{nt = CtNodeType::RootProgram;}};
 		~RootProgram();
 	};
 
@@ -74,7 +74,7 @@ namespace Node
 	{
 		std::vector<Function*> functions;
 
-		Source() {{nt = NodeType::Source;}};
+		Source() {{nt = CtNodeType::Source;}};
 		~Source();
 	};
 
@@ -85,7 +85,7 @@ namespace Node
 		std::vector<Declaration*> parameters;
 		std::vector<Statement*>   statements;
 
-		Function() {{nt = NodeType::Function;}};
+		Function() {{nt = CtNodeType::Function;}};
 		~Function();
 	};
 
@@ -97,7 +97,7 @@ namespace Node
 		Identifier* type;
 		Identifier* name;
 
-		Declaration() {nt = NodeType::Declaration;};
+		Declaration() {nt = CtNodeType::Declaration;};
 		~Declaration();
 	};
 
@@ -107,7 +107,7 @@ namespace Node
 		Identifier* name;
 		Expression* value;
 
-		Assignment() {nt = NodeType::Assignment;};
+		Assignment() {nt = CtNodeType::Assignment;};
 		~Assignment();
 	};
 
@@ -116,7 +116,7 @@ namespace Node
 
 		Expression* expr;
 
-		ExprStatment(Expression* expr): expr(expr) {{nt = NodeType::ExprStatement;}};
+		ExprStatment(Expression* expr): expr(expr) {{nt = CtNodeType::ExprStatement;}};
 		~ExprStatment();
 	};
 	
@@ -133,7 +133,7 @@ namespace Node
 			uint64_t u64;
 		} val;
 
-		Int(std::string i): raw(i) {nt = NodeType::Int;};
+		Int(std::string i): raw(i) {nt = CtNodeType::Int;};
 	};
 
 
@@ -146,7 +146,7 @@ namespace Node
 			double f64;
 		} val;
 
-		Float(std::string f): raw(f) {nt = NodeType::Float;};
+		Float(std::string f): raw(f) {nt = CtNodeType::Float;};
 	};
 
 
@@ -154,7 +154,7 @@ namespace Node
 	{
 		std::string val;
 
-		Identifier(std::string val): val(val) {{nt = NodeType::Identifier;}};
+		Identifier(std::string val): val(val) {{nt = CtNodeType::Identifier;}};
 	};
 
 
@@ -172,8 +172,8 @@ namespace Node
 		Expression* left;
 		Expression* right;
 
-		BinaryOp() {nt = NodeType::BinaryOp;};
-		BinaryOp(Type op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = NodeType::BinaryOp;};
+		BinaryOp() {nt = CtNodeType::BinaryOp;};
+		BinaryOp(Type op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
 		~BinaryOp();
 	};
 
@@ -183,8 +183,8 @@ namespace Node
 		Identifier* name;
 		std::vector<Expression*> args;
 
-		FunctionCall() {nt = NodeType::FunctionCall;};
-		FunctionCall(Identifier* name): name(name) {{nt = NodeType::FunctionCall;}};
+		FunctionCall() {nt = CtNodeType::FunctionCall;};
+		FunctionCall(Identifier* name): name(name) {{nt = CtNodeType::FunctionCall;}};
 		~FunctionCall();
 	};
 

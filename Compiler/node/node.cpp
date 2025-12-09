@@ -1,13 +1,13 @@
 #include "node.hpp"
 
 
-Node::RootProgram::~RootProgram()
+CtNode::RootProgram::~RootProgram()
 {
 	delete this->src;
 }
 
 
-Node::Source::~Source()
+CtNode::Source::~Source()
 {
 	for (auto func: this->functions)
 	{
@@ -16,7 +16,7 @@ Node::Source::~Source()
 }
 
 
-Node::Function::~Function()
+CtNode::Function::~Function()
 {
 	delete this->name;
 	
@@ -25,34 +25,34 @@ Node::Function::~Function()
 }
 
 
-Node::Declaration::~Declaration()
+CtNode::Declaration::~Declaration()
 {
 	delete this->type;
 	delete this->name;
 }
 
 
-Node::Assignment::~Assignment()
+CtNode::Assignment::~Assignment()
 {
 	delete this->value;
 	delete this->name;
 }
 
 
-Node::ExprStatment::~ExprStatment()
+CtNode::ExprStatment::~ExprStatment()
 {
 	delete this->expr;
 }
 
 
-Node::BinaryOp::~BinaryOp()
+CtNode::BinaryOp::~BinaryOp()
 {
 	delete this->left;
 	delete this->right;
 }
 
 
-Node::FunctionCall::~FunctionCall()
+CtNode::FunctionCall::~FunctionCall()
 {
 	delete this->name;
 	for (auto arg: this->args) {delete arg;}

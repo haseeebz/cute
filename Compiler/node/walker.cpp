@@ -4,7 +4,8 @@
 #include "node.hpp"
 #include "walker.hpp"
 
-void NodeWalker::walk(Node::Base *node) {
+
+void CtNodeWalker::walk(CtNode::Base *node) {
 
   if (!node) {
     std::cout << "Invalid Node! Node pointer is Null!" << std::endl;
@@ -13,48 +14,48 @@ void NodeWalker::walk(Node::Base *node) {
 
   switch (node->nt) {
 
-  case NodeType::RootProgram:
-    handleRoot(static_cast<Node::RootProgram *>(node));
+  case CtNodeType::RootProgram:
+    handleRoot(static_cast<CtNode::RootProgram *>(node));
     break;
 
-  case NodeType::Source:
-    handleSource(static_cast<Node::Source *>(node));
+  case CtNodeType::Source:
+    handleSource(static_cast<CtNode::Source *>(node));
     break;
 
-  case NodeType::Function:
-    handleFunction(static_cast<Node::Function *>(node));
+  case CtNodeType::Function:
+    handleFunction(static_cast<CtNode::Function *>(node));
     break;
 
-  case NodeType::Declaration:
-    handleDeclaration(static_cast<Node::Declaration *>(node));
+  case CtNodeType::Declaration:
+    handleDeclaration(static_cast<CtNode::Declaration *>(node));
     break;
 
-  case NodeType::Assignment:
-    handleAssignment(static_cast<Node::Assignment *>(node));
+  case CtNodeType::Assignment:
+    handleAssignment(static_cast<CtNode::Assignment *>(node));
     break;
 
-  case NodeType::ExprStatement:
-    walk(static_cast<Node::ExprStatment *>(node)->expr);
+  case CtNodeType::ExprStatement:
+    walk(static_cast<CtNode::ExprStatment *>(node)->expr);
     break;
 
-  case NodeType::Int:
-    handleInt(static_cast<Node::Int *>(node));
+  case CtNodeType::Int:
+    handleInt(static_cast<CtNode::Int *>(node));
     break;
 
-  case NodeType::Float:
-    handleFloat(static_cast<Node::Float *>(node));
+  case CtNodeType::Float:
+    handleFloat(static_cast<CtNode::Float *>(node));
     break;
 
-  case NodeType::Identifier:
-    handleIdentifier(static_cast<Node::Identifier *>(node));
+  case CtNodeType::Identifier:
+    handleIdentifier(static_cast<CtNode::Identifier *>(node));
     break;
 
-  case NodeType::BinaryOp:
-    handleBinaryOp(static_cast<Node::BinaryOp *>(node));
+  case CtNodeType::BinaryOp:
+    handleBinaryOp(static_cast<CtNode::BinaryOp *>(node));
     break;
 
-  case NodeType::FunctionCall:
-    handleFunctionCall(static_cast<Node::FunctionCall *>(node));
+  case CtNodeType::FunctionCall:
+    handleFunctionCall(static_cast<CtNode::FunctionCall *>(node));
     break;
 
   default:
@@ -64,13 +65,13 @@ void NodeWalker::walk(Node::Base *node) {
 }
 
 
-void NodePrinter::reset()
+void CtNodePrinter::reset()
 {
 	this->indent = 0;
 }
 
 
-void NodePrinter::printIndent()
+void CtNodePrinter::printIndent()
 {
 	for (int i = 0; i < this->indent; i++)
 	{
@@ -79,14 +80,14 @@ void NodePrinter::printIndent()
 }
 
 
-void NodePrinter::handleRoot(Node::RootProgram *node)
+void CtNodePrinter::handleRoot(CtNode::RootProgram *node)
 {
 	std::cout << "(Root Node)\n";
 
 	this->walk(node->src);
 }
 
-void NodePrinter::handleSource(Node::Source *node)
+void CtNodePrinter::handleSource(CtNode::Source *node)
 {
 	std::cout << "(Source Node)\n";
 	std::cout << "Function Count: " << node->functions.size() << "\n\n";
@@ -98,7 +99,7 @@ void NodePrinter::handleSource(Node::Source *node)
 }
 
 
-void NodePrinter::handleFunction(Node::Function *node)
+void CtNodePrinter::handleFunction(CtNode::Function *node)
 {
 	std::cout << "(Function Node)\n";
 	std::cout << "Function Identifier: " << node->name->val << "\n";
@@ -119,13 +120,13 @@ void NodePrinter::handleFunction(Node::Function *node)
 	}
 }
 
-void NodePrinter::handleDeclaration(Node::Declaration *node)
+void CtNodePrinter::handleDeclaration(CtNode::Declaration *node)
 {
 	this->printIndent();
 	std::cout << "(Declaration name= " << node->name->val << " type= " << node->type->val << ")\n";
 }
 
-void NodePrinter::handleAssignment(Node::Assignment *node)
+void CtNodePrinter::handleAssignment(CtNode::Assignment *node)
 {
 	this->printIndent();
 	std::cout << "(Assignement \n";
@@ -145,19 +146,19 @@ void NodePrinter::handleAssignment(Node::Assignment *node)
 }
 
 
-void NodePrinter::handleInt(Node::Int *node)
+void CtNodePrinter::handleInt(CtNode::Int *node)
 {
 	this->printIndent();
 	std::cout << "(Int " << node->raw << ")\n";
 }
 
-void NodePrinter::handleFloat(Node::Float *node)
+void CtNodePrinter::handleFloat(CtNode::Float *node)
 {
 	this->printIndent();
 	std::cout << "(Float " << node->raw << ")\n";
 }
 
-void NodePrinter::handleBinaryOp(Node::BinaryOp *node)
+void CtNodePrinter::handleBinaryOp(CtNode::BinaryOp *node)
 {
 	this->printIndent();
 	std::cout << "(BinaryOp \n";
@@ -167,10 +168,10 @@ void NodePrinter::handleBinaryOp(Node::BinaryOp *node)
 	this->printIndent();
 	switch (node->op)
 	{
-        case Node::BinaryOp::Type::Add: std::cout << "+\n"; break;
-        case Node::BinaryOp::Type::Sub: std::cout << "-\n"; break;
-        case Node::BinaryOp::Type::Mul: std::cout << "*\n"; break;
-        case Node::BinaryOp::Type::Div: std::cout << "/\n"; break;
+        case CtNode::BinaryOp::Type::Add: std::cout << "+\n"; break;
+        case CtNode::BinaryOp::Type::Sub: std::cout << "-\n"; break;
+        case CtNode::BinaryOp::Type::Mul: std::cout << "*\n"; break;
+        case CtNode::BinaryOp::Type::Div: std::cout << "/\n"; break;
     }
 	
 	this->walk(node->left);
@@ -183,14 +184,14 @@ void NodePrinter::handleBinaryOp(Node::BinaryOp *node)
 }
 
 
-void NodePrinter::handleIdentifier(Node::Identifier *node)
+void CtNodePrinter::handleIdentifier(CtNode::Identifier *node)
 {
 	this->printIndent();
 	std::cout << "(Identifier " << node->val << ")\n";
 }
 
 
-void NodePrinter::handleFunctionCall(Node::FunctionCall *node)
+void CtNodePrinter::handleFunctionCall(CtNode::FunctionCall *node)
 {
 	this->printIndent();
 	std::cout << "(FunctionCall name:" << node->name->val << " args:\n";
