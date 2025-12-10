@@ -29,19 +29,24 @@ std::string CtTokenStream::toString()
 
 		switch (tok->type) 
 		{
-		case CtTokenType::Int: 	     str.append("[ Int ");
+		case CtTokenType::Int: 	     str.append("[ Int "); str.append(this->viewToken(tok));
 		break;
-		case CtTokenType::Float:     str.append("[ Float ");
+		case CtTokenType::Float:     str.append("[ Float "); str.append(this->viewToken(tok));
 		break; 
-		case CtTokenType::Symbol:    str.append("[ Sym ");
-		break; 
-		case CtTokenType::Word:      str.append("[ Word ");
+		case CtTokenType::Word:      str.append("[ Word "); str.append(this->viewToken(tok));
 		break;
-		case CtTokenType::EndOfFile: str.append("[ EOF ]"); continue;
+		case CtTokenType::EndOfLine: str.append("[ EOL");
+		break;
+		case CtTokenType::EndOfFile: str.append("[ EOF"); 
+		break;
+		case CtTokenType::Keyword:	 str.append("[ Key "); str.append(std::to_string((int)tok->val.keyword)); 
+		break;
+		case CtTokenType::Symbol:    str.append("[ Sym "); str.append(std::to_string((int)tok->val.sym)); 
+		break;
+		case CtTokenType::Invalid:   str.append("[ Invalid"); 
 		break;
 		}
 
-		str.append(this->viewToken(tok));
 		str.append(" ] ");
     }
 
@@ -101,16 +106,26 @@ void CtTokenStream::gotoIndex(uint i)
 
 std::string CtTokenStream::viewToken(CtToken *token)
 {
-	uint len = token->end - token->start + 1;
+	uint len = token->val.view.end - token->val.view.end + 1;
 
-	return this->srcStr.substr(token->start, len);
+	return this->srcStr.substr(token->val.view.start, len);
 }
 
 
-char CtTokenStream::viewSymToken(CtToken *token)
+bool CtTokenStream::getWord(std::string *str)
 {
-	return this->srcStr[token->start];
+	CtToken tok = this->next();
+
+	if (tok.type != CtTokenType::Word)
+	{
+		this->backtrack();
+		return false;
+	}
+
+	*str = this->viewToken(&tok);
+	return true;
 }
+
 
 
 bool CtTokenStream::getInt(std::string *i)
@@ -143,22 +158,23 @@ bool CtTokenStream::getFloat(std::string *d)
 }
 
 
-bool CtTokenStream::getWord(std::string *str)
+bool CtTokenStream::getKeyword(CtSpec::KeyWord *key)
 {
 	CtToken tok = this->next();
 
-	if (tok.type != CtTokenType::Word)
+	if (tok.type != CtTokenType::Keyword)
 	{
 		this->backtrack();
 		return false;
 	}
 
-	*str = this->viewToken(&tok);
+	*key = tok.val.keyword;
 	return true;
 }
 
 
-bool CtTokenStream::getSym(char *sym)
+
+bool CtTokenStream::getSymbol(CtSpec::Symbol *sym)
 {
 	CtToken tok = this->next();
 
@@ -168,54 +184,49 @@ bool CtTokenStream::getSym(char *sym)
 		return false;
 	}
 
-	*sym = this->viewSymToken(&tok);
+	*sym = tok.val.sym;
 	return true;
 }
 
 
-bool CtTokenStream::getKeyword(std::string keyword)
-{
-	std::string str;
 
-	if (this->getWord(&str))
-	{
-		if (str == keyword)
-		{
-			return true;
-		}
-		this->backtrack();
-	}
-
-	return false;
-}
-
-
-bool CtTokenStream::getKeySym(char sym)
-{
-	char c;
-
-	if (this->getSym(&c))
-	{
-		if (sym == c)
-		{
-			return true;
-		}
-		this->backtrack();
-	}
-
-	return false;
-}
-
-
-bool CtTokenStream::expectType(CtTokenType type)
+bool CtTokenStream::obtainKeyword(CtSpec::KeyWord key)
 {
 	CtToken tok = this->next();
-	this->backtrack();
-
-	if (tok.type != type)
+	
+	if (tok.val.keyword != key)
 	{
+		this->backtrack();
 		return false;
 	}
 
+	return true;
+}
+
+
+bool CtTokenStream::obtainSymbol(CtSpec::Symbol sym)
+{
+	CtToken tok = this->next();
+	
+	if (tok.val.sym != sym)
+	{
+		this->backtrack();
+		return false;
+	}
+
+	return true;
+}
+
+
+bool CtTokenStream::expectType(CtTokenType type, CtToken *token)
+{
+	CtToken tok = this->peek();
+
+	if (tok.type != type)
+	{	
+		return false;
+	}
+
+	*token = this->next();
 	return true;
 }

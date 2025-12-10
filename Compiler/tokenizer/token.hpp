@@ -1,3 +1,4 @@
+#include "CuteSpec.hpp"
 #include <string>
 #include <sys/types.h>
 #include <vector>
@@ -9,32 +10,46 @@ enum CtTokenType
 {
 	Int,
 	Float,
-	Symbol,
 	Word,
-	EndOfFile
+	Symbol,
+	Keyword,
+	EndOfLine,
+	EndOfFile,
+	Invalid
 };
 
 
 struct CtToken
 {
 	CtTokenType type;
-	uint start;
-	uint end;
-
+	
+	union
+	{
+		struct
+		{
+			uint start;
+			uint end;
+		} view;
+		CtSpec::KeyWord keyword;
+		CtSpec::Symbol  sym;
+	} val;
+	
 	CtToken() = default;
-	CtToken(CtTokenType t, uint s, uint e) : type(t), start(s), end(e) {};
+	CtToken(CtTokenType t) : type(t) {}
+	CtToken(CtTokenType t, uint s, uint e) : type(t) {val.view.start = s; val.view.end = e;};
+	CtToken(CtSpec::KeyWord keyword) : type(CtTokenType::Keyword) {val.keyword = keyword;}
+	CtToken(CtSpec::Symbol sym) : type(CtTokenType::Symbol) {val.sym = sym;}
 };
 
 
 class CtTokenStream
 {
-	
 	std::vector<CtToken> tokens;
 	uint curr_token;
+	std::string srcStr;
 
 	public:
 
-	std::string srcStr;
 
 	CtTokenStream() {};
 	CtTokenStream(std::string src);
@@ -43,31 +58,33 @@ class CtTokenStream
 	std::string toString();
 	
 
-	CtToken next(); // gives you the current CtToken and increments the counter
-	CtToken peek(); // gives you the current CtToken but does'nt increment
-	uint currentIndex(); // gives you the current index duh
-	void backtrack(uint i = 1); // backtracks the index by the given amount. 
-	void gotoIndex(uint i);	// goes to the given index... duh...
+	CtToken next(); 
+	CtToken peek(); 
+	uint currentIndex();
+	void backtrack(uint i = 1);
+	void gotoIndex(uint i);	
 
-
-	// viewing token
 	std::string viewToken(CtToken *token);
-	char viewSymToken(CtToken *token);
-
-	// all of these functions try to get the specified type. 
-	// if type found, it is written to the pointer, true is returned and the counter is increased
-	// if not, it returns false, the pointer and the counter is'nt modified 
-	bool getInt(std::string *str); 
-	bool getFloat(std::string *str);
-	bool getWord(std::string *str);
-	bool getSym(char *sym);
-
-	// returns true if the current CtToken is word AND matches the given string
-	bool getKeyword(std::string keyword);
-	bool getKeySym(char sym);
-
-	bool expectType(CtTokenType type);
 	
+
+	// get___ functions write the indicated token's content to the passed pointer and return true
+	// if token is not of expected type, it returns false and does'nt move forward
+
+	bool getWord(std::string *str);
+
+	bool getInt(std::string *d);
+	bool getFloat(std::string *f);
+
+	bool getKeyword(CtSpec::KeyWord *key);
+	bool getSymbol(CtSpec::Symbol *sym);
+
+	// obtain___ functions expect a particular keyword/sym and return true
+
+	bool obtainKeyword(CtSpec::KeyWord key);
+	bool obtainSymbol(CtSpec::Symbol sym);
+
+	// returns true if the next token is of the indicated type and updates the token
+	bool expectType(CtTokenType t, CtToken *token);
 };
 
 
@@ -78,10 +95,11 @@ class CtTokenizer
 	std::string *currSrc;
 	uint currIndex;
 
-	public:
-
-	CtTokenStream tokenize(std::string input_file);
 	void tokenizeNumber();
 	void tokenizeSymbol();
 	void tokenizeWord();
+
+	public:
+
+	CtTokenStream tokenize(std::string input_file);
 };
