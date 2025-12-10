@@ -54,6 +54,8 @@ class CtTokenStream
 	CtTokenStream() {};
 	CtTokenStream(std::string src);
 
+	std::string* source();
+
 	void add(CtToken token);
 	std::string toString();
 	

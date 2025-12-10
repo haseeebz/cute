@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ostream>
 
+#include "CuteSpec.hpp"
 #include "node.hpp"
 
 
@@ -167,10 +168,11 @@ void CtNodePrinter::handleBinaryOp(CtNode::BinaryOp *node)
 	this->printIndent();
 	switch (node->op)
 	{
-        case CtNode::BinaryOp::Type::Add: std::cout << "+\n"; break;
-        case CtNode::BinaryOp::Type::Sub: std::cout << "-\n"; break;
-        case CtNode::BinaryOp::Type::Mul: std::cout << "*\n"; break;
-        case CtNode::BinaryOp::Type::Div: std::cout << "/\n"; break;
+        case CtSpec::Symbol::Plus:  std::cout << "+\n"; break;
+        case CtSpec::Symbol::Minus: std::cout << "-\n"; break;
+        case CtSpec::Symbol::Star:  std::cout << "*\n"; break;
+        case CtSpec::Symbol::Slash: std::cout << "/\n"; break;
+		default:					std::cout << "u\n"; break;
     }
 	
 	this->walk(node->left);

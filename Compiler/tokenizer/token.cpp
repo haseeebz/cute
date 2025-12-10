@@ -11,6 +11,10 @@ CtTokenStream::CtTokenStream(std::string src)
 	this->curr_token = 0;
 }
 
+std::string* CtTokenStream::source()
+{
+	return &this->srcStr;
+}
 
 void CtTokenStream::add(CtToken token)
 {
@@ -106,7 +110,7 @@ void CtTokenStream::gotoIndex(uint i)
 
 std::string CtTokenStream::viewToken(CtToken *token)
 {
-	uint len = token->val.view.end - token->val.view.end + 1;
+	uint len = token->val.view.end - token->val.view.start + 1;
 
 	return this->srcStr.substr(token->val.view.start, len);
 }

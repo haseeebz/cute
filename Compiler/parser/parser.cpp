@@ -1,6 +1,7 @@
 #include "../node/node.hpp"
 
 #include "../tokenizer/token.hpp"
+#include "CuteSpec.hpp"
 #include <iostream>
 
 #include "parser.hpp"
@@ -37,21 +38,6 @@ CtNode::Statement* CtParser::parseStatement()
 
 CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 {
-	static std::map<char, uint> ops_prec = {
-		{'+', 1},
-		{'-', 1},
-		{'*', 2},
-		{'/', 2}
-	};
-
-	static std::map<char, CtNode::BinaryOp::Type> ops_node = {
-		{'+', CtNode::BinaryOp::Type::Add},
-		{'-', CtNode::BinaryOp::Type::Sub},
-		{'*', CtNode::BinaryOp::Type::Mul},
-		{'/', CtNode::BinaryOp::Type::Div}
-	};
-
-
 	CtToken tok;
 
 	CtNode::Expression *lhs;
@@ -80,20 +66,18 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	
 	while (true)
 	{
-		tok = this->tokens->next();
-
-		if (tok.type == CtTokenType::Symbol)
+		CtSpec::Symbol sym;
+		if (this->tokens->getSymbol(&sym))
 		{
-			char sym = this->tokens->viewSymToken(&tok);
 
-			if (sym == ';')
+			if (sym == CtSpec::Symbol::Colon)
 			{
 				break;
 			}
 
 			auto *binary = new CtNode::BinaryOp();
 
-			uint prec = ops_prec[sym];
+			uint prec = CtSpec::binaryOpMap[sym];
 
 			if (prec < prev_precedence)
 			{
@@ -101,7 +85,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 				break;
 			}
 
-			binary->op = ops_node[sym];
+			binary->op = sym;
 			binary->left = lhs;
 			binary->right = this->parseExpression(prec);
 

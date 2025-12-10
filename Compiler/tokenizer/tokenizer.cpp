@@ -5,6 +5,7 @@
 #include <string>
 
 
+#include "CuteSpec.hpp"
 #include "token.hpp"
 
 
@@ -16,7 +17,7 @@ CtTokenStream CtTokenizer::tokenize(std::string input_file)
 	buffer << stream.rdbuf();
 	this->currStream = CtTokenStream(buffer.str());
 
-	this->currSrc = &this->currStream.srcStr;
+	this->currSrc = this->currStream.source();
 	
 	char c;
 	
@@ -24,7 +25,12 @@ CtTokenStream CtTokenizer::tokenize(std::string input_file)
 	{
 		c = this->currSrc->at(currIndex);
 
-		if (c == ' ' or c == '\n') {continue;}
+		if (c == ' ') {continue;}
+
+		if (c == '\n')
+		{
+			this->currStream.add(CtToken(CtTokenType::EndOfLine));
+		}
 
 		if (std::isdigit(c))
 		{
@@ -85,7 +91,27 @@ void CtTokenizer::tokenizeNumber()
 
 void CtTokenizer::tokenizeSymbol()
 {
-	this->currStream.add(CtToken(CtTokenType::Symbol, this->currIndex, this->currIndex));
+	std::string sym;
+	sym.push_back(this->currSrc->at(currIndex++));
+
+	if (!CtSpec::symbolMap.contains(sym))
+	{
+		this->currStream.add(CtToken(CtTokenType::Invalid));
+		return;
+	}
+
+	if (this->currIndex < this->currSrc->length()) 
+	{
+		sym.push_back(this->currSrc->at(currIndex++));
+
+		if (!CtSpec::symbolMap.contains(sym))
+		{
+			currIndex--;
+			sym.pop_back();
+		}
+	}
+	
+	this->currStream.add(CtToken(CtSpec::symbolMap[sym]));
 }
 
 
@@ -95,6 +121,8 @@ void CtTokenizer::tokenizeWord()
 	uint start, end;
 	start = this->currIndex;
 
+	std::string str;
+
 	while (true)
 	{
 		if (this->currIndex >= this->currSrc->length()) {break;}
@@ -102,6 +130,7 @@ void CtTokenizer::tokenizeWord()
 
 		if (std::isalpha(c) || std::isdigit(c))
 		{
+			str.push_back(c);
 			this->currIndex++;
 			continue;
 		}
@@ -112,6 +141,14 @@ void CtTokenizer::tokenizeWord()
 	this->currIndex--;
 	end = this->currIndex;
 
-	this->currStream.add(CtToken(CtTokenType::Word, start, end));
+	if (CtSpec::keywordMap.contains(str))
+	{
+		this->currStream.add(CtToken(CtSpec::keywordMap[str]));
+	}
+	else 
+	{
+		this->currStream.add(CtToken(CtTokenType::Word, start, end));
+	}
+	
 }
 

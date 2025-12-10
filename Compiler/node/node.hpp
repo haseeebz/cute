@@ -1,3 +1,4 @@
+#include "CuteSpec.hpp"
 #include <cstdint>
 #include <map>
 #include <string>
@@ -160,20 +161,12 @@ namespace CtNode
 
 	struct BinaryOp : Expression
 	{
-		enum class Type
-		{
-			Add,
-			Sub,
-			Mul,
-			Div
-		};
-
-		Type op;
+		CtSpec::Symbol op;
 		Expression* left;
 		Expression* right;
 
 		BinaryOp() {nt = CtNodeType::BinaryOp;};
-		BinaryOp(Type op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
+		BinaryOp(CtSpec::Symbol op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
 		~BinaryOp();
 	};
 
