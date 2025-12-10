@@ -54,16 +54,12 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	{
 		lhs = new CtNode::Float(this->tokens->viewToken(&tok));
 	}
-	else if (tok.type == CtTokenType::EndOfFile)
-	{
-		return nullptr;
-	}
 	else 
 	{
-		std::cout << "Invalid Token : " << (int) this->tokens->currentIndex() << "\n";
-		return nullptr;
+		std::cout << "Invalid Token Sequence!\n";
+		std::exit(0);
 	}
-
+	
 	
 	while (true)
 	{
@@ -74,7 +70,6 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 			if (sym == CtSpec::Symbol::Colon)
 			{	
-				std::cout << "Token Type: " << (int) this->tokens->currentIndex() << "\n";
 				break;
 			}
 
@@ -84,6 +79,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 			if (prec < prev_precedence)
 			{
+				this->tokens->backtrack();
 				break;
 			}
 
