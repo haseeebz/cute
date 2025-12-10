@@ -6,7 +6,6 @@
 #include "node/node.hpp"
 
 
-using namespace CtNode;
 
 void CuteCompiler::compile(std::string filepath, std::string outfile)
 {	
@@ -14,9 +13,16 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 	std::cout << tokens.toString() << "\n";
 	auto *source = this->parser.parse(&tokens);
 	
+	auto root = new CtNode::RootProgram();
+	root->src = source;
+
 	CtNodePrinter printer;
 
-	printer.walk(source);
+	printer.walk(root);
+
+	this->emitter.emit(root, outfile);
+
+	delete root;
 }
 
 

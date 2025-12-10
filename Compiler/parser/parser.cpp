@@ -45,6 +45,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 	tok = this->tokens->next();
 
+	
 	if (tok.type == CtTokenType::Int)
 	{
 		lhs = new CtNode::Int(this->tokens->viewToken(&tok));
@@ -59,7 +60,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	}
 	else 
 	{
-		std::cout << "Invalid Token : " << this->tokens->viewToken(&tok) << "\n";
+		std::cout << "Invalid Token : " << (int) this->tokens->currentIndex() << "\n";
 		return nullptr;
 	}
 
@@ -67,11 +68,13 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	while (true)
 	{
 		CtSpec::Symbol sym;
+
 		if (this->tokens->getSymbol(&sym))
 		{
 
 			if (sym == CtSpec::Symbol::Colon)
-			{
+			{	
+				std::cout << "Token Type: " << (int) this->tokens->currentIndex() << "\n";
 				break;
 			}
 
@@ -81,7 +84,6 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 			if (prec < prev_precedence)
 			{
-				this->tokens->backtrack();
 				break;
 			}
 
@@ -94,7 +96,6 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 			continue;
 		}
 
-		this->tokens->backtrack();
 		break;
 	}
 	

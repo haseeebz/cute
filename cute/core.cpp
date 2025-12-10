@@ -4,6 +4,7 @@
 
 
 #include "include/CuteCore.hpp"
+#include <iostream>
 #include <string>
 
 
@@ -24,12 +25,14 @@ void CuteCore::run(int argc, char *argv[])
 
 	if (this->compileFlag)
 	{
+		std::cout << "Compiling..\n";
 		compiler.compile(this->filepath, this->outfile);
 		return;
 	}
 
 	if (this->engineFlag)
 	{
+		std::cout << "Invoking Engine..\n";
 		ctEngine_loadImage(this->filepath.data());
 		ctEngine_run();
 		return;
@@ -49,6 +52,7 @@ void CuteCore::parseArgs(int argc, char *argv[])
 			this->filepath = argv[++i];
 			this->outfile = std::string(this->filepath).append(".out");
 			compileFlag = true;
+			engineFlag = false;
 			return;
 		}
 
@@ -56,6 +60,7 @@ void CuteCore::parseArgs(int argc, char *argv[])
 		{
 			this->filepath = argv[++i];
 			
+			compileFlag = false;
 			engineFlag = true;
 			return;
 		}
