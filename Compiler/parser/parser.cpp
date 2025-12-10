@@ -2,6 +2,7 @@
 
 #include "../tokenizer/token.hpp"
 #include "CuteSpec.hpp"
+#include <exception>
 #include <iostream>
 
 #include "parser.hpp"
@@ -54,10 +55,15 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	{
 		lhs = new CtNode::Float(this->tokens->viewToken(&tok));
 	}
+	else if (tok.type == CtTokenType::EndOfFile)
+	{
+		return nullptr;
+	}
 	else 
 	{
-		std::cout << "Invalid Token Sequence!\n";
-		std::exit(0);
+		std::cout << "Invalid Token Sequence! Token Type:" << int(tok.type) << "\n";
+		throw std::exception();
+		std::exit(2);
 	}
 	
 	
@@ -67,10 +73,9 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 		if (this->tokens->getSymbol(&sym))
 		{
-
 			if (sym == CtSpec::Symbol::Colon)
 			{	
-				break;
+				return lhs;
 			}
 
 			auto *binary = new CtNode::BinaryOp();
@@ -80,7 +85,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 			if (prec < prev_precedence)
 			{
 				this->tokens->backtrack();
-				break;
+				return lhs;
 			}
 
 			binary->op = sym;
