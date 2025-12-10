@@ -6,6 +6,10 @@
 
 namespace CtSpec
 {
+
+	// Keywords
+
+
 	enum class KeyWord
 	{
 		// declaration
@@ -41,29 +45,94 @@ namespace CtSpec
 	};
 
 
-	enum class BinaryOp
+	// symbols
+
+	enum class Symbol
 	{
-		Add,
-		Sub,
-		Mul,
-		Div
+		Plus,
+		Minus,
+		Star,
+		Slash,
+		Percentage,
+		
+
+		LeftParan,
+		RightParan,
+		LeftBracket,
+		RightBracket,
+		LeftBraces,
+		RightBraces,
+
+		Equal,
+		DoubleEqual,
+
+		Greater,
+		GreaterEqual,
+		DoubleGreater,
+
+		Lesser,
+		LesserEqual,
+		DoubleLesser,
+
+		Hashtag,
+		Exclamation,
+		Colon,
+		Dot,
+
+		SingleQuote,
+		DoubleQuote,
 	};
 
-	inline std::map<char, BinaryOp> binaryOpMap =
-	{
-		{'+', BinaryOp::Add},
-		{'-', BinaryOp::Sub},
-		{'*', BinaryOp::Mul},
-		{'/', BinaryOp::Div},
-	};	
 
-	inline std::map<char, int> binaryPrecedenceMap =
+	inline std::map<std::string, Symbol> symbolMap =
 	{
-		{'+', 1},
-		{'-', 1},
-		{'*', 2},
-		{'/', 2},
-	};	
+		{ "+",  Symbol::Plus },
+		{ "-",  Symbol::Minus },
+		{ "*",  Symbol::Star },
+		{ "/",  Symbol::Slash },
+		{ "%",  Symbol::Percentage },
+
+		{ "(",  Symbol::LeftParan },
+		{ ")",  Symbol::RightParan },
+		{ "[",  Symbol::LeftBracket },
+		{ "]",  Symbol::RightBracket },
+		{ "{",  Symbol::LeftBraces },
+		{ "}",  Symbol::RightBraces },
+
+		{ "=",  Symbol::Equal },
+		{ "==", Symbol::DoubleEqual },
+
+		{ ">",  Symbol::Greater },
+		{ ">=", Symbol::GreaterEqual },
+		{ ">>", Symbol::DoubleGreater },
+
+		{ "<",  Symbol::Lesser },
+		{ "<=", Symbol::LesserEqual },
+		{ "<<", Symbol::DoubleLesser },
+
+		{ "#",  Symbol::Hashtag },
+		{ "!",  Symbol::Exclamation },
+		{ ":",  Symbol::Colon },
+		{ ".",  Symbol::Dot },
+
+		{ "'",  Symbol::SingleQuote },
+		{ "\"", Symbol::DoubleQuote }
+	};
+
+ 
+
+	inline std::map<Symbol, uint> binaryOpMap =
+	{
+		{Symbol::Plus,  	 1},
+		{Symbol::Minus, 	 1},
+		{Symbol::Star,  	 2},
+		{Symbol::Slash,      2},
+		{Symbol::Percentage, 2}
+	};
+
+
+	// types
+
 
 	enum class TypeKind {Int32, Int64, Float32, Float64, Bool, Container};
 
