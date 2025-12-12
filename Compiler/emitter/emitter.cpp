@@ -44,24 +44,25 @@ void CtEmitter::handleSource(CtNode::Source *node)
 
 void CtEmitter::handleFunction(CtNode::Function *node)
 {
-	ctFuncMetadata meta;
-	meta.func_id = 0;
-	meta.args_count = 0;
-	meta.locals_count = 0;
-	meta.instr_address = 0;
-
-
 	for (auto stmt: node->statements)
 	{
 		this->walk(stmt);
-		this->instrs.push_back(instrOut);
-
-		ctInstrSize packed[4];
-		int i = 2;
-		ctProgramImage_packInt32(&i, packed);
-
-		for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
 	}	
+
+	this->instrs.push_back(instrExit);
+
+	ctInstrSize packed[4];
+	int i = 0;
+	ctProgramImage_packInt32(&i, packed);
+
+	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
+
+
+	ctFuncMetadata meta;
+	meta.func_id = 0;
+	meta.args_count = 0;
+	meta.locals_count = this->variables.size();
+	meta.instr_address = 0;
 
 	this->img.func_table = new ctFuncMetadata(meta);
 }
@@ -76,6 +77,7 @@ void CtEmitter::handleInt(CtNode::Int *node)
 	ctProgramImage_packInt32(&i, packed);
 
 	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
+
 }
 
 
@@ -95,4 +97,45 @@ void CtEmitter::handleBinaryOp(CtNode::BinaryOp *node)
 	}
 
 	this->instrs.push_back(op);
+}
+
+
+
+void CtEmitter::handleDeclaration(CtNode::Declaration *node)
+{
+	this->variables[node->name->val] = this->variables.size();
+}
+
+
+void CtEmitter::handleAssignment(CtNode::Assignment *node)
+{
+	this->walk(node->value);
+
+	this->instrs.push_back(instrStoreI32);
+	ctInstrSize packed[4];
+	int i = this->variables[node->name->val];
+	ctProgramImage_packInt32(&i, packed);
+	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
+
+
+	this->instrs.push_back(instrLoadI32);
+	i = this->variables[node->name->val];
+	ctProgramImage_packInt32(&i, packed);
+	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
+
+	this->instrs.push_back(instrOut);
+	i = 2;
+	ctProgramImage_packInt32(&i, packed);
+	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
+}
+
+
+
+void CtEmitter::handleIdentifier(CtNode::Identifier *node)
+{
+	this->instrs.push_back(instrLoadI32);
+	ctInstrSize packed[4];
+	int i = this->variables[node->val];
+	ctProgramImage_packInt32(&i, packed);
+	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
 }
