@@ -30,6 +30,7 @@ CtTokenStream CtTokenizer::tokenize(std::string input_file)
 		if (c == '\n')
 		{
 			this->currStream.add(CtToken(CtTokenType::EndOfLine));
+			continue;
 		}
 
 		if (std::isdigit(c))

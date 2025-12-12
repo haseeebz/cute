@@ -16,11 +16,10 @@ void CtParser::start()
 	auto *func = new CtNode::Function();
 	func->name = new CtNode::Identifier("main");
 
-
-	while (true)
+	while (this->tokens->peek().type != CtTokenType::EndOfFile)
 	{
-		auto *stmt = this->parseStatement();
-		if (!stmt) {break;}
+		CtNode::Statement* stmt = this->parseStatement();
+		if (stmt == nullptr) {break;}
 		func->statements.push_back(stmt);
 	}
 
@@ -31,15 +30,83 @@ void CtParser::start()
 
 CtNode::Statement* CtParser::parseStatement()
 {
+	CtNode::Statement* stmt;
+
+	CtToken token;
+
+	if (this->tokens->expectType(CtTokenType::Keyword, &token))
+	{
+		switch (token.val.keyword)
+		{
+			case CtSpec::KeyWord::Let: stmt = this->parseDeclaration(); break;
+		}
+
+		return stmt;
+	}
+
+	if (this->tokens->peek().type == CtTokenType::Word)
+	{
+		std::string id;
+		this->tokens->getWord(&id);
+
+		CtSpec::Symbol assign;
+
+		if (this->tokens->getSymbol(&assign))
+		{
+			if (assign != CtSpec::Symbol::Equal)
+			{
+				this->tokens->backtrack();
+			}
+
+			auto* assignment = new CtNode::Assignment();
+			assignment->name = new CtNode::Identifier(id);
+			assignment->value = this->parseExpression();
+			return assignment;
+		}
+
+		this->tokens->backtrack();
+	}
+
 	auto *expr = this->parseExpression();
 	if (!expr) {return nullptr;}
-	auto *stmt = new CtNode::ExprStatment(expr);
+
+	stmt = new CtNode::ExprStatment(expr);
 	return stmt;
 }
 
+
+CtNode::Declaration* CtParser::parseDeclaration()
+{
+	CtNode::Declaration* dec = new CtNode::Declaration();
+
+	std::string str;
+
+	if (this->tokens->getWord(&str))
+	{
+		dec->name = new CtNode::Identifier(str);
+	}
+
+	this->tokens->obtainSymbol(CtSpec::Symbol::Colon);
+
+	if (this->tokens->getWord(&str))
+	{
+		dec->type = new CtNode::Identifier(str);
+	}
+
+	CtToken token;
+
+	this->tokens->expectType(CtTokenType::EndOfLine, &token);
+
+	return dec;
+};
+
+
 CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 {
+	std::cout  << " Index: " << this->tokens->currentIndex() << "\n";
+
 	CtToken tok;
+	CtNodePrinter printer;
 
 	CtNode::Expression *lhs;
 	CtNode::Expression *rhs;
@@ -55,9 +122,9 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	{
 		lhs = new CtNode::Float(this->tokens->viewToken(&tok));
 	}
-	else if (tok.type == CtTokenType::EndOfFile)
+	else if (tok.type == CtTokenType::Word)
 	{
-		return nullptr;
+		lhs = new CtNode::Identifier(this->tokens->viewToken(&tok));
 	}
 	else 
 	{
@@ -65,11 +132,16 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 		throw std::exception();
 		std::exit(2);
 	}
-	
+
 	
 	while (true)
 	{
 		CtSpec::Symbol sym;
+
+		if (this->tokens->expectType(CtTokenType::EndOfLine, &tok))
+		{
+			return lhs;
+		}
 
 		if (this->tokens->getSymbol(&sym))
 		{

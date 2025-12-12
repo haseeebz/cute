@@ -17,6 +17,7 @@ class CtParser
 	CtNode::Statement* parseStatement();
 	CtNode::Expression* parseExpression(uint prev_precedence = 0);
 
+	CtNode::Declaration* parseDeclaration();
 	public:
 
 	CtNode::Source* parse(CtTokenStream *tokens);
