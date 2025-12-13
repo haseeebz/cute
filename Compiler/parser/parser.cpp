@@ -106,9 +106,9 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	}
 	else 
 	{
-		std::cout << "Invalid Token Sequence! Token Type: " << int(tok.type) <<  ":" << int(tok.val.sym) << " Index: " << this->tokens->currentIndex()-1 << "\n";
+		std::cout << "Invalid Token Sequence! Token Type: " << int(tok.type) <<  ":" << int(tok.val.sym) << "\n";
 		throw std::exception();
-		std::exit(2);
+		std::exit(1);
 	}
 
 	
@@ -162,8 +162,6 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
-	std::cout << tokens.toString() << "\n";
-
 	this->source = new CtNode::Source();
 	this->startParsingFile();
 	return this->source;

@@ -25,14 +25,12 @@ void CuteCore::run(int argc, char *argv[])
 
 	if (this->compileFlag)
 	{
-		std::cout << "Compiling..\n";
 		compiler.compile(this->filepath, this->outfile);
 		return;
 	}
 
 	if (this->engineFlag)
 	{
-		std::cout << "Invoking Engine..\n";
 		ctEngine_loadImage(this->filepath.data());
 		ctEngine_run();
 		return;
