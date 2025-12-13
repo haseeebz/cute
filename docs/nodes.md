@@ -37,29 +37,29 @@ These are statement nodes that do something special and are not evaluated normal
 ### 2.1- Declaration
 Contains a type identifier and name identifier, the analyzer handles these types.
 
-### 2.2- Assign
-Indicates an assign operation between two nodes.
-
-### 2.3- Expression
+### 2.2- Expression
 Holds a node of the expression type. Only here so standalone expressions can execute as statements too. Also used by assign.
 
 
 
-### 3- Expression 
+## 3- Expression 
 
 Represents an expression.
 
-#### 3.1- Int 
+### 3.1- Int 
 Basically stores an int in string form which is assigned to a real int by the analyzer.
 
-#### 3.2- Float 
+### 3.2- Float 
 Same as Int Node but for float types.
 
-#### 3.3- Binary Operation 
+### 3.3- Binary Operation 
 Used to show binary operations, has two child nodes which should be an expression node.
 
-#### 3.4- Identifier
+### 3.4- Identifier
 Contains an identifier which might be interpreted by the compiler differently depending upon the context
 
-#### 3.5- Function Call
+### 3.5- Function Call
 Indicates a function call. Contains the name of the function and arguments passed.
+
+### 3.6- Assign
+Indicates an assign operation between two nodes.

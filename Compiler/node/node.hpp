@@ -41,7 +41,6 @@ namespace CtNode
 	
 	// Statement Nodes
 	struct Declaration;
-	struct Assignment;
 	struct ExprStatment;
 	
 	// Expression Nodes
@@ -50,6 +49,7 @@ namespace CtNode
 	struct Identifier;
 	struct BinaryOp;
 	struct FunctionCall;
+	struct Assignment;
 
 
 	// Defintions
@@ -101,16 +101,6 @@ namespace CtNode
 
 		Declaration() {nt = CtNodeType::Declaration;};
 		~Declaration();
-	};
-
-	struct Assignment : Statement
-	{
-
-		Identifier* name;
-		Expression* value;
-
-		Assignment() {nt = CtNodeType::Assignment;};
-		~Assignment();
 	};
 
 	struct ExprStatment : Statement
@@ -179,6 +169,16 @@ namespace CtNode
 		FunctionCall() {nt = CtNodeType::FunctionCall;};
 		FunctionCall(Identifier* name): name(name) {{nt = CtNodeType::FunctionCall;}};
 		~FunctionCall();
+	};
+
+	struct Assignment : Expression
+	{
+
+		Identifier* name;
+		Expression* value;
+
+		Assignment() {nt = CtNodeType::Assignment;};
+		~Assignment();
 	};
 
 };
