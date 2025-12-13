@@ -1,6 +1,5 @@
 #include "CuteCompiler.hpp"
 
-#include <iostream>
 #include <string>
 
 #include "node/node.hpp"
@@ -9,11 +8,7 @@
 
 void CuteCompiler::compile(std::string filepath, std::string outfile)
 {	
-	auto tokens = this->tokenizer.tokenize(filepath);
-	
-	std::cout << tokens.toString() << "\n";
-
-	auto* root = this->parser.parse(outfile);
+	auto* root = this->parser.parse(filepath);
 	
 	CtNodePrinter printer;
 

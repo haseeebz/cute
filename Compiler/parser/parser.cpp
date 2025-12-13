@@ -34,41 +34,21 @@ CtNode::Function* CtParser::parseFunction()
 
 CtNode::Statement* CtParser::parseStatement()
 {
-	CtNode::Statement* stmt;
+	CtNode::Statement* stmt = nullptr;
 
 	CtToken token;
+
+	while (this->tokens->expectType(CtTokenType::EndOfLine, nullptr)) {continue;};
 
 	if (this->tokens->expectType(CtTokenType::Keyword, &token))
 	{
 		switch (token.val.keyword)
 		{
 			case CtSpec::KeyWord::Let: stmt = this->parseDeclaration(); break;
+			default: std::cout << "Unimplemented keyword!\n";
 		}
 
 		return stmt;
-	}
-
-	if (this->tokens->peek().type == CtTokenType::Word)
-	{
-		std::string id;
-		this->tokens->getWord(&id);
-
-		CtSpec::Symbol assign;
-
-		if (this->tokens->getSymbol(&assign))
-		{
-			if (assign != CtSpec::Symbol::Equal)
-			{
-				this->tokens->backtrack();
-			}
-
-			auto* assignment = new CtNode::Assignment();
-			assignment->name = new CtNode::Identifier(id);
-			assignment->value = this->parseExpression();
-			return assignment;
-		}
-
-		this->tokens->backtrack();
 	}
 
 	auto *expr = this->parseExpression();
@@ -97,19 +77,18 @@ CtNode::Declaration* CtParser::parseDeclaration()
 		dec->type = new CtNode::Identifier(str);
 	}
 
-	this->tokens->expectType(CtTokenType::EndOfLine, NULL);
+	this->tokens->expectType(CtTokenType::EndOfLine, nullptr);
 	return dec;
 };
 
 
+
+
 CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 {
-	std::cout  << " Index: " << this->tokens->currentIndex() << "\n";
-
 	CtToken tok;
 
 	CtNode::Expression *lhs;
-	CtNode::Expression *rhs;
 
 	tok = this->tokens->next();
 
@@ -127,7 +106,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	}
 	else 
 	{
-		std::cout << "Invalid Token Sequence! Token Type:" << int(tok.type) << "\n";
+		std::cout << "Invalid Token Sequence! Token Type: " << int(tok.type) <<  ":" << int(tok.val.sym) << " Index: " << this->tokens->currentIndex()-1 << "\n";
 		throw std::exception();
 		std::exit(2);
 	}
@@ -135,6 +114,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	
 	while (true)
 	{
+		
 		CtSpec::Symbol sym;
 
 		if (this->tokens->expectType(CtTokenType::EndOfLine, NULL))
@@ -144,10 +124,17 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 		if (this->tokens->getSymbol(&sym))
 		{
+			if (sym == CtSpec::Symbol::Equal)
+			{
+				auto* assign = new CtNode::Assignment();
+				assign->name = static_cast<CtNode::Identifier*>(lhs); //assuming this is right for now
+				assign->value = this->parseExpression();
+				return assign;
+			}
 
 			auto *binary = new CtNode::BinaryOp();
 
-			uint prec = CtSpec::binaryOpMap[sym];
+			uint prec = CtSpec::binaryOpMap.at(sym);
 
 			if (prec < prev_precedence)
 			{
@@ -175,6 +162,8 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
+	std::cout << tokens.toString() << "\n";
+
 	this->source = new CtNode::Source();
 	this->startParsingFile();
 	return this->source;
