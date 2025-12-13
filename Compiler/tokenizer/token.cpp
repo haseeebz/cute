@@ -1,3 +1,4 @@
+#include <format>
 #include <string>
 #include <sys/types.h>
 #include <vector>
@@ -39,15 +40,15 @@ std::string CtTokenStream::toString()
 		break; 
 		case CtTokenType::Word:      str.append("[ Word "); 
 		break;
-		case CtTokenType::EndOfLine: str.append("[ EOL");
+		case CtTokenType::EndOfLine: str.append("[ EOL ]"); continue;
 		break;
-		case CtTokenType::EndOfFile: str.append("[ EOF"); 
+		case CtTokenType::EndOfFile: str.append("[ EOF ]"); continue;
 		break;
 		case CtTokenType::Keyword:	 str.append("[ Key "); 
 		break;
 		case CtTokenType::Symbol:    str.append("[ Sym "); 
 		break;
-		case CtTokenType::Invalid:   str.append("[ Invalid"); 
+		case CtTokenType::Invalid:   str.append("[ Invalid ]"); continue;
 		break;
 		}
 		str.append(this->viewToken(tok));
@@ -111,7 +112,6 @@ void CtTokenStream::gotoIndex(uint i)
 std::string CtTokenStream::viewToken(CtToken *token)
 {
 	uint len = token->view.end - token->view.start + 1;
-
 	return this->srcStr.substr(token->view.start, len);
 }
 

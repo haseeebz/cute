@@ -29,7 +29,7 @@ CtTokenStream CtTokenizer::tokenize(std::string input_file)
 
 		if (c == '\n')
 		{
-			this->currStream.add(CtToken(CtTokenType::EndOfLine));
+			this->currStream.add(CtToken(CtTokenType::EndOfLine, 0, 0));
 			continue;
 		}
 
@@ -93,6 +93,9 @@ void CtTokenizer::tokenizeNumber()
 void CtTokenizer::tokenizeSymbol()
 {
 	std::string sym;
+	int start = currIndex;
+	int end;
+
 	sym.push_back(this->currSrc->at(currIndex++));
 
 	if (!CtSpec::symbolMap.contains(sym))
@@ -101,18 +104,22 @@ void CtTokenizer::tokenizeSymbol()
 		return;
 	}
 
+	end = start;
+
 	if (this->currIndex < this->currSrc->length()) 
 	{
 		sym.push_back(this->currSrc->at(currIndex++));
+		end++;
 
 		if (!CtSpec::symbolMap.contains(sym))
 		{
+			end--;
 			currIndex--;
 			sym.pop_back();
 		}
 	}
 
-	CtToken token(CtTokenType::Symbol, this->currIndex - sym.size(), sym.size());
+	CtToken token(CtTokenType::Symbol, start, end);
 	token.val.sym = CtSpec::symbolMap[sym];
 	this->currStream.add(token);
 }
