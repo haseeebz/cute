@@ -222,7 +222,7 @@ bool CtTokenStream::expectSymbol(CtSpec::Symbol sym)
 
 bool CtTokenStream::expectType(CtTokenType type, CtToken *token)
 {
-	CtToken tok = this->peek();
+	CtToken tok = this->next();
 
 	if (tok.type != type)
 	{	
@@ -231,7 +231,7 @@ bool CtTokenStream::expectType(CtTokenType type, CtToken *token)
 
 	if (token != NULL)
 	{
-		*token = this->next();
+		*token = tok;
 	}
 	
 	return true;
