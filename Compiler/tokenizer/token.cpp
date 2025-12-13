@@ -226,6 +226,7 @@ bool CtTokenStream::expectType(CtTokenType type, CtToken *token)
 
 	if (tok.type != type)
 	{	
+		this->backtrack();
 		return false;
 	}
 
