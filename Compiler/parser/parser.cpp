@@ -9,11 +9,16 @@
 
 
 
-
-
-void CtParser::start()
+void CtParser::startParsingFile()
 {
-	auto *func = new CtNode::Function();
+	auto *func = this->parseFunction();
+	source->functions[func->name->val] = func;
+}
+
+
+CtNode::Function* CtParser::parseFunction()
+{
+	auto* func = new CtNode::Function();
 	func->name = new CtNode::Identifier("main");
 
 	while (this->tokens->peek().type != CtTokenType::EndOfFile)
@@ -23,10 +28,9 @@ void CtParser::start()
 		func->statements.push_back(stmt);
 	}
 
-	source->functions[func->name->val] = func;
+	return func;
 }
 
-//CtNode::Function* CtParser::parseFunction();
 
 CtNode::Statement* CtParser::parseStatement()
 {
@@ -86,17 +90,14 @@ CtNode::Declaration* CtParser::parseDeclaration()
 		dec->name = new CtNode::Identifier(str);
 	}
 
-	this->tokens->obtainSymbol(CtSpec::Symbol::Colon);
+	this->tokens->expectSymbol(CtSpec::Symbol::Colon);
 
 	if (this->tokens->getWord(&str))
 	{
 		dec->type = new CtNode::Identifier(str);
 	}
 
-	CtToken token;
-
-	this->tokens->expectType(CtTokenType::EndOfLine, &token);
-
+	this->tokens->expectType(CtTokenType::EndOfLine, NULL);
 	return dec;
 };
 
@@ -106,14 +107,12 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	std::cout  << " Index: " << this->tokens->currentIndex() << "\n";
 
 	CtToken tok;
-	CtNodePrinter printer;
 
 	CtNode::Expression *lhs;
 	CtNode::Expression *rhs;
 
 	tok = this->tokens->next();
 
-	
 	if (tok.type == CtTokenType::Int)
 	{
 		lhs = new CtNode::Int(this->tokens->viewToken(&tok));
@@ -138,17 +137,13 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	{
 		CtSpec::Symbol sym;
 
-		if (this->tokens->expectType(CtTokenType::EndOfLine, &tok))
+		if (this->tokens->expectType(CtTokenType::EndOfLine, NULL))
 		{
 			return lhs;
 		}
 
 		if (this->tokens->getSymbol(&sym))
 		{
-			if (sym == CtSpec::Symbol::Colon)
-			{	
-				return lhs;
-			}
 
 			auto *binary = new CtNode::BinaryOp();
 
@@ -176,14 +171,21 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 }
 
 
-
-CtNode::Source* CtParser::parse(CtTokenStream *tokens)
+CtNode::Source* CtParser::parseFile(std::string filepath)
 {
-	this->tokens = tokens;
+	auto tokens = tokenizer.tokenize(filepath);
+	this->tokens = &tokens;
 	this->source = new CtNode::Source();
-
-	this->start();
-	
+	this->startParsingFile();
 	return this->source;
+}
+
+
+CtNode::RootProgram* CtParser::parse(std::string filepath)
+{
+	auto* root = new CtNode::RootProgram();
+	root->src = this->parseFile(filepath);
+
+	return root;
 }
 

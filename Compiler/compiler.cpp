@@ -10,12 +10,11 @@
 void CuteCompiler::compile(std::string filepath, std::string outfile)
 {	
 	auto tokens = this->tokenizer.tokenize(filepath);
-	std::cout << tokens.toString() << "\n";
-	auto *source = this->parser.parse(&tokens);
 	
-	auto root = new CtNode::RootProgram();
-	root->src = source;
+	std::cout << tokens.toString() << "\n";
 
+	auto* root = this->parser.parse(outfile);
+	
 	CtNodePrinter printer;
 
 	printer.walk(root);
