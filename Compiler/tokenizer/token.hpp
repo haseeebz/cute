@@ -25,20 +25,19 @@ struct CtToken
 	
 	union
 	{
-		struct
-		{
-			uint start;
-			uint end;
-		} view;
 		CtSpec::KeyWord keyword;
 		CtSpec::Symbol  sym;
 	} val;
 	
+	struct
+	{
+		uint start;
+		uint end;
+	} view;
+
 	CtToken() = default;
 	CtToken(CtTokenType t) : type(t) {}
-	CtToken(CtTokenType t, uint s, uint e) : type(t) {val.view.start = s; val.view.end = e;};
-	CtToken(CtSpec::KeyWord keyword) : type(CtTokenType::Keyword) {val.keyword = keyword;}
-	CtToken(CtSpec::Symbol sym) : type(CtTokenType::Symbol) {val.sym = sym;}
+	CtToken(CtTokenType t, uint s, uint e) : type(t) {view.start = s; view.end = e;};
 };
 
 
@@ -54,38 +53,51 @@ class CtTokenStream
 	CtTokenStream() {};
 	CtTokenStream(std::string src);
 
-	std::string* source();
+	// Gives the source string the stream points to.
+	const std::string* source();
 
+	// Add a token to the stream. Should only used by the tokenizer.
 	void add(CtToken token);
+
+	// Converts all the tokens to a nice string
 	std::string toString();
 	
-
+	// Get the next token and increment
 	CtToken next(); 
+
+	// Get the next token and don't increment
 	CtToken peek(); 
+
+	// Get the current index... duh
 	uint currentIndex();
+
+	// Backtrack the tokens by a given amount
 	void backtrack(uint i = 1);
+
+	// Goto a specific index. i = 0 to reset the token stream and go to the beginning
 	void gotoIndex(uint i);	
 
+	// View the contents of a token
 	std::string viewToken(CtToken *token);
 	
 
-	// get___ functions write the indicated token's content to the passed pointer and return true
-	// if token is not of expected type, it returns false and does'nt move forward
-
+	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
 	bool getWord(std::string *str);
-
+	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
 	bool getInt(std::string *d);
+	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
 	bool getFloat(std::string *f);
-
+	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
 	bool getKeyword(CtSpec::KeyWord *key);
+	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
 	bool getSymbol(CtSpec::Symbol *sym);
 
-	// obtain___ functions expect a particular keyword/sym and return true
+	// expect___ functions expect a particular keyword/sym, return true and increment the counter
+	bool expectKeyword(CtSpec::KeyWord key);
+	// expect___ functions expect a particular keyword/sym, return true and increment the counter
+	bool expectSymbol(CtSpec::Symbol sym);
 
-	bool obtainKeyword(CtSpec::KeyWord key);
-	bool obtainSymbol(CtSpec::Symbol sym);
-
-	// returns true if the next token is of the indicated type and updates the token
+	// expect a specific token type, write the token and return true if the type matches. *token can be NULL if you don't want the value.
 	bool expectType(CtTokenType t, CtToken *token);
 };
 
@@ -94,7 +106,7 @@ class CtTokenizer
 {
 	CtTokenStream currStream;
 
-	std::string *currSrc;
+	const std::string *currSrc;
 	uint currIndex;
 
 	void tokenizeNumber();

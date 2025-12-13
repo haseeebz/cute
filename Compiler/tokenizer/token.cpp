@@ -11,7 +11,7 @@ CtTokenStream::CtTokenStream(std::string src)
 	this->curr_token = 0;
 }
 
-std::string* CtTokenStream::source()
+const std::string* CtTokenStream::source()
 {
 	return &this->srcStr;
 }
@@ -33,24 +33,24 @@ std::string CtTokenStream::toString()
 
 		switch (tok->type) 
 		{
-		case CtTokenType::Int: 	     str.append("[ Int "); str.append(this->viewToken(tok));
+		case CtTokenType::Int: 	     str.append("[ Int ");
 		break;
-		case CtTokenType::Float:     str.append("[ Float "); str.append(this->viewToken(tok));
+		case CtTokenType::Float:     str.append("[ Float "); 
 		break; 
-		case CtTokenType::Word:      str.append("[ Word "); str.append(this->viewToken(tok));
+		case CtTokenType::Word:      str.append("[ Word "); 
 		break;
 		case CtTokenType::EndOfLine: str.append("[ EOL");
 		break;
 		case CtTokenType::EndOfFile: str.append("[ EOF"); 
 		break;
-		case CtTokenType::Keyword:	 str.append("[ Key "); str.append(std::to_string((int)tok->val.keyword)); 
+		case CtTokenType::Keyword:	 str.append("[ Key "); 
 		break;
-		case CtTokenType::Symbol:    str.append("[ Sym "); str.append(std::to_string((int)tok->val.sym)); 
+		case CtTokenType::Symbol:    str.append("[ Sym "); 
 		break;
 		case CtTokenType::Invalid:   str.append("[ Invalid"); 
 		break;
 		}
-
+		str.append(this->viewToken(tok));
 		str.append(" ] ");
     }
 
@@ -110,9 +110,9 @@ void CtTokenStream::gotoIndex(uint i)
 
 std::string CtTokenStream::viewToken(CtToken *token)
 {
-	uint len = token->val.view.end - token->val.view.start + 1;
+	uint len = token->view.end - token->view.start + 1;
 
-	return this->srcStr.substr(token->val.view.start, len);
+	return this->srcStr.substr(token->view.start, len);
 }
 
 
@@ -194,7 +194,7 @@ bool CtTokenStream::getSymbol(CtSpec::Symbol *sym)
 
 
 
-bool CtTokenStream::obtainKeyword(CtSpec::KeyWord key)
+bool CtTokenStream::expectKeyword(CtSpec::KeyWord key)
 {
 	CtToken tok = this->next();
 	
@@ -208,7 +208,7 @@ bool CtTokenStream::obtainKeyword(CtSpec::KeyWord key)
 }
 
 
-bool CtTokenStream::obtainSymbol(CtSpec::Symbol sym)
+bool CtTokenStream::expectSymbol(CtSpec::Symbol sym)
 {
 	CtToken tok = this->next();
 	
@@ -231,6 +231,10 @@ bool CtTokenStream::expectType(CtTokenType type, CtToken *token)
 		return false;
 	}
 
-	*token = this->next();
+	if (token != NULL)
+	{
+		*token = this->next();
+	}
+	
 	return true;
 }

@@ -111,8 +111,10 @@ void CtTokenizer::tokenizeSymbol()
 			sym.pop_back();
 		}
 	}
-	
-	this->currStream.add(CtToken(CtSpec::symbolMap[sym]));
+
+	CtToken token(CtTokenType::Symbol, this->currIndex - sym.size(), sym.size());
+	token.val.sym = CtSpec::symbolMap[sym];
+	this->currStream.add(token);
 }
 
 
@@ -142,13 +144,22 @@ void CtTokenizer::tokenizeWord()
 	this->currIndex--;
 	end = this->currIndex;
 
+	CtToken token;
+
 	if (CtSpec::keywordMap.contains(str))
 	{
-		this->currStream.add(CtToken(CtSpec::keywordMap[str]));
+		token.type = CtTokenType::Keyword;
+		token.view.start = start;
+		token.view.end = end;
+		token.val.keyword = CtSpec::keywordMap[str];
+		this->currStream.add(token);
 	}
 	else 
 	{
-		this->currStream.add(CtToken(CtTokenType::Word, start, end));
+		token.type = CtTokenType::Word;
+		token.view.start = start;
+		token.view.end = end;
+		this->currStream.add(token);
 	}
 	
 }
