@@ -11,22 +11,21 @@ class CtEmitter : CtNodeWalker
 
 	void write(std::string outfile);
 
-	void handleRoot(CtNode::RootProgram *Ctnode);
-	void handleSource(CtNode::Source *Ctnode);
+	void handleRoot(CtNode::RootProgram *node);
+	void handleSource(CtNode::Source *node);
 
-	void handleFunction(CtNode::Function *Ctnode);
+	void handleFunction(CtNode::Function *node);
 
-	void handleDeclaration(CtNode::Declaration *Ctnode);
-	void handleAssignment(CtNode::Assignment *Ctnode);
+	void handleDeclaration(CtNode::Declaration *node);
+	void handleAssignment(CtNode::Assignment *node);
 
-	void handleInt(CtNode::Int *Ctnode);
-	void handleFloat(CtNode::Float *Ctnode) {};
-	void handleBinaryOp(CtNode::BinaryOp *Ctnode);
-	void handleIdentifier(CtNode::Identifier *Ctnode);
-	void handleFunctionCall(CtNode::FunctionCall *Ctnode) {};
+	void handleInt(CtNode::Int *node);
+	void handleFloat(CtNode::Float *node);
+	void handleBinaryOp(CtNode::BinaryOp *node);
+	void handleIdentifier(CtNode::Identifier *node);
+	void handleFunctionCall(CtNode::FunctionCall *node);
 
 	public:
-
 
 	void emit(CtNode::RootProgram *root, std::string outfile);
 };
