@@ -188,46 +188,47 @@ namespace CtNode
 
 class CtNodeWalker
 {
+	virtual void handleRoot(CtNode::RootProgram *node) = 0;
+	virtual void handleSource(CtNode::Source *node) = 0;
+
+	virtual void handleFunction(CtNode::Function *node) = 0;
+
+	virtual void handleDeclaration(CtNode::Declaration *node) = 0;
+	virtual void handleAssignment(CtNode::Assignment *node) = 0;
+
+	virtual void handleInt(CtNode::Int *node) = 0;
+	virtual void handleFloat(CtNode::Float *node) = 0;
+	virtual void handleBinaryOp(CtNode::BinaryOp *node) = 0;
+	virtual void handleIdentifier(CtNode::Identifier *node) = 0;
+	virtual void handleFunctionCall(CtNode::FunctionCall *node) = 0;
+
 	public:
-
-	void walk(CtNode::Base* Ctnode);
-
-	virtual void handleRoot(CtNode::RootProgram *Ctnode) = 0;
-	virtual void handleSource(CtNode::Source *Ctnode) = 0;
-
-	virtual void handleFunction(CtNode::Function *Ctnode) = 0;
-
-	virtual void handleDeclaration(CtNode::Declaration *Ctnode) = 0;
-	virtual void handleAssignment(CtNode::Assignment *Ctnode) = 0;
-
-	virtual void handleInt(CtNode::Int *Ctnode) = 0;
-	virtual void handleFloat(CtNode::Float *Ctnode) = 0;
-	virtual void handleBinaryOp(CtNode::BinaryOp *Ctnode) = 0;
-	virtual void handleIdentifier(CtNode::Identifier *Ctnode) = 0;
-	virtual void handleFunctionCall(CtNode::FunctionCall *Ctnode) = 0;
+	
+	void walk(CtNode::Base* node);
 };
 
 
 class CtNodePrinter: public CtNodeWalker
 {
 	int indent = 0;
+
 	void printIndent();
+
+	void handleRoot(CtNode::RootProgram *node);
+	void handleSource(CtNode::Source *node);
+
+	void handleFunction(CtNode::Function *node);
+
+	void handleDeclaration(CtNode::Declaration *node);
+	void handleAssignment(CtNode::Assignment *node);
+
+	void handleInt(CtNode::Int *node);
+	void handleFloat(CtNode::Float *node);
+	void handleBinaryOp(CtNode::BinaryOp *node);
+	void handleIdentifier(CtNode::Identifier *node);
+	void handleFunctionCall(CtNode::FunctionCall *node);
 	
 	public:
 
-	void reset();
-
-	void handleRoot(CtNode::RootProgram *Ctnode);
-	void handleSource(CtNode::Source *Ctnode);
-
-	void handleFunction(CtNode::Function *Ctnode);
-
-	void handleDeclaration(CtNode::Declaration *Ctnode);
-	void handleAssignment(CtNode::Assignment *Ctnode);
-
-	void handleInt(CtNode::Int *Ctnode);
-	void handleFloat(CtNode::Float *Ctnode);
-	void handleBinaryOp(CtNode::BinaryOp *Ctnode);
-	void handleIdentifier(CtNode::Identifier *Ctnode);
-	void handleFunctionCall(CtNode::FunctionCall *Ctnode);
+	void print(CtNode::Base *node);
 };

@@ -65,9 +65,12 @@ void CtNodeWalker::walk(CtNode::Base *node) {
 }
 
 
-void CtNodePrinter::reset()
+// Printer Implementation. Mainly used for debugging.
+
+void CtNodePrinter::print(CtNode::Base *node)
 {
 	this->indent = 0;
+	this->walk(node);
 }
 
 
@@ -78,7 +81,6 @@ void CtNodePrinter::printIndent()
 		std::cout << "  ";
 	}
 }
-
 
 void CtNodePrinter::handleRoot(CtNode::RootProgram *node)
 {
@@ -112,19 +114,24 @@ void CtNodePrinter::handleFunction(CtNode::Function *node)
 	}
 
 	std::cout << "\nStatements:\n\n";
+	this->indent++;
 
 	for (uint i = 0; i < node->statements.size(); i++)
 	{
 		this->walk(node->statements[i]);
-		std::cout << ";\n";
+		std::cout << "\n";
 	}
+
+	this->indent--;
 }
+
 
 void CtNodePrinter::handleDeclaration(CtNode::Declaration *node)
 {
 	this->printIndent();
 	std::cout << "(Declaration name= " << node->name->val << " type= " << node->type->val << ")\n";
 }
+
 
 void CtNodePrinter::handleAssignment(CtNode::Assignment *node)
 {
