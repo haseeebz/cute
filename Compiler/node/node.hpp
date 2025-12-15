@@ -1,4 +1,5 @@
 #include "../spec/syntax.hpp"
+#include "../spec/scope.hpp"
 
 #include <cstdint>
 #include <map>
@@ -86,9 +87,11 @@ namespace CtNode
 
 	struct Function : Object
 	{
-		Identifier* name;
+		std::string name;
 		std::vector<Declaration*> parameters;
 		std::vector<Statement*>   statements;
+
+		CtScope::Scope* scope;
 
 		Function() {{nt = CtNodeType::Function;}};
 		~Function();
@@ -99,8 +102,8 @@ namespace CtNode
 	struct Declaration : Statement
 	{	
 
-		Identifier* type;
-		Identifier* name;
+		std::string type;
+		std::string name;
 
 		Declaration() {nt = CtNodeType::Declaration;};
 		~Declaration();
@@ -174,11 +177,11 @@ namespace CtNode
 
 	struct FunctionCall : Expression
 	{
-		Identifier* name;
+		std::string name;
 		std::vector<Expression*> args;
 
 		FunctionCall() {nt = CtNodeType::FunctionCall;};
-		FunctionCall(Identifier* name): name(name) {{nt = CtNodeType::FunctionCall;}};
+		FunctionCall(std::string name): name(name) {{nt = CtNodeType::FunctionCall;}};
 		~FunctionCall();
 	};
 

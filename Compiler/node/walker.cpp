@@ -105,7 +105,7 @@ void CtNodePrinter::handleSource(CtNode::Source *node)
 void CtNodePrinter::handleFunction(CtNode::Function *node)
 {
 	std::cout << "(Function Node)\n";
-	std::cout << "Function Identifier: " << node->name->val << "\n";
+	std::cout << "Function Identifier: " << node->name << "\n";
 	std::cout << "Parameters: \n";
 	
 	for (uint i = 0; i < node->parameters.size(); i++)
@@ -130,7 +130,7 @@ void CtNodePrinter::handleFunction(CtNode::Function *node)
 void CtNodePrinter::handleDeclaration(CtNode::Declaration *node)
 {
 	this->printIndent();
-	std::cout << "(Declaration name= " << node->name->val << " type= " << node->type->val << ")\n";
+	std::cout << "(Declaration name= " << node->name << " type= " << node->type << ")\n";
 }
 
 
@@ -142,7 +142,7 @@ void CtNodePrinter::handleAssignment(CtNode::Assignment *node)
 	this->indent++;
 
 	this->printIndent();
-	std::cout <<  " variable= " << node->name->val;
+	std::cout <<  " variable= " << node->name;
 	std::cout <<  " value=\n";
 
 	this->walk(node->value);
@@ -203,7 +203,7 @@ void CtNodePrinter::handleIdentifier(CtNode::Identifier *node)
 void CtNodePrinter::handleFunctionCall(CtNode::FunctionCall *node)
 {
 	this->printIndent();
-	std::cout << "(FunctionCall name:" << node->name->val << " args:\n";
+	std::cout << "(FunctionCall name:" << node->name << " args:\n";
 	this->indent++; 
 	for (auto args: node->args) {this->walk(args);}
 	this->indent--;

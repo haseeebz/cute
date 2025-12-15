@@ -18,8 +18,6 @@ CtNode::Source::~Source()
 
 CtNode::Function::~Function()
 {
-	delete this->name;
-	
 	for (auto para: this->parameters) {delete para;}
 	for (auto stmt: this->statements) {delete stmt;}
 }
@@ -27,15 +25,12 @@ CtNode::Function::~Function()
 
 CtNode::Declaration::~Declaration()
 {
-	delete this->type;
-	delete this->name;
 }
 
 
 CtNode::Assignment::~Assignment()
 {
 	delete this->value;
-	delete this->name;
 }
 
 
@@ -54,6 +49,5 @@ CtNode::BinaryOp::~BinaryOp()
 
 CtNode::FunctionCall::~FunctionCall()
 {
-	delete this->name;
 	for (auto arg: this->args) {delete arg;}
 }

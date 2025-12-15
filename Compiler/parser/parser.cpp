@@ -12,14 +12,14 @@
 void CtParser::startParsingFile()
 {
 	auto *func = this->parseFunction();
-	source->functions[func->name->val] = func;
+	source->functions[func->name] = func;
 }
 
 
 CtNode::Function* CtParser::parseFunction()
 {
 	auto* func = new CtNode::Function();
-	func->name = new CtNode::Identifier("main");
+	func->name = "main";
 
 	while (this->tokens->peek().type != CtTokenType::EndOfFile)
 	{
@@ -67,14 +67,14 @@ CtNode::Declaration* CtParser::parseDeclaration()
 
 	if (this->tokens->getWord(&str))
 	{
-		dec->name = new CtNode::Identifier(str);
+		dec->name = str;
 	}
 
 	this->tokens->expectSymbol(CtSyntax::Symbol::Colon);
 
 	if (this->tokens->getWord(&str))
 	{
-		dec->type = new CtNode::Identifier(str);
+		dec->type = str;
 	}
 
 	this->tokens->expectType(CtTokenType::EndOfLine, nullptr);

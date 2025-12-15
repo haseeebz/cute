@@ -104,7 +104,7 @@ void CtEmitter::handleBinaryOp(CtNode::BinaryOp *node)
 
 void CtEmitter::handleDeclaration(CtNode::Declaration *node)
 {
-	this->variables[node->name->val] = this->variables.size();
+	this->variables[node->name] = this->variables.size();
 }
 
 
