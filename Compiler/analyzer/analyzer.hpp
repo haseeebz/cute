@@ -1,11 +1,12 @@
 #include "../node/node.hpp"
+#include "../spec/types.hpp"
 
 #pragma once
 
 
 class CtAnalyzer: public CtNodeWalker
 {
-	std::map<std::string, CtSpec::TypeInfo> typeMap;
+	std::map<std::string, CtTypes::TypeInfo> typeMap;
 	
 	void handleRoot(CtNode::RootProgram *node);
 	void handleSource(CtNode::Source *node);

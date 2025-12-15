@@ -2,7 +2,7 @@
 #include <sys/types.h>
 #include <vector>
 
-#include "../spec/spec.hpp"
+#include "../spec/syntax.hpp"
 
 #pragma once 
 
@@ -26,8 +26,8 @@ struct CtToken
 	
 	union
 	{
-		CtSpec::KeyWord keyword;
-		CtSpec::Symbol  sym;
+		CtSyntax::KeyWord keyword;
+		CtSyntax::Symbol  sym;
 	} val;
 	
 	struct
@@ -89,14 +89,14 @@ class CtTokenStream
 	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
 	bool getFloat(std::string *f);
 	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
-	bool getKeyword(CtSpec::KeyWord *key);
+	bool getKeyword(CtSyntax::KeyWord *key);
 	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
-	bool getSymbol(CtSpec::Symbol *sym);
+	bool getSymbol(CtSyntax::Symbol *sym);
 
 	// expect___ functions expect a particular keyword/sym, return true and increment the counter
-	bool expectKeyword(CtSpec::KeyWord key);
+	bool expectKeyword(CtSyntax::KeyWord key);
 	// expect___ functions expect a particular keyword/sym, return true and increment the counter
-	bool expectSymbol(CtSpec::Symbol sym);
+	bool expectSymbol(CtSyntax::Symbol sym);
 
 	// expect a specific token type, write the token and return true if the type matches. *token can be NULL if you don't want the value.
 	bool expectType(CtTokenType t, CtToken *token);

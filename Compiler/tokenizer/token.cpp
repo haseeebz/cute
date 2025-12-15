@@ -160,7 +160,7 @@ bool CtTokenStream::getFloat(std::string *d)
 }
 
 
-bool CtTokenStream::getKeyword(CtSpec::KeyWord *key)
+bool CtTokenStream::getKeyword(CtSyntax::KeyWord *key)
 {
 	CtToken tok = this->next();
 
@@ -176,7 +176,7 @@ bool CtTokenStream::getKeyword(CtSpec::KeyWord *key)
 
 
 
-bool CtTokenStream::getSymbol(CtSpec::Symbol *sym)
+bool CtTokenStream::getSymbol(CtSyntax::Symbol *sym)
 {
 	CtToken tok = this->next();
 
@@ -192,7 +192,7 @@ bool CtTokenStream::getSymbol(CtSpec::Symbol *sym)
 
 
 
-bool CtTokenStream::expectKeyword(CtSpec::KeyWord key)
+bool CtTokenStream::expectKeyword(CtSyntax::KeyWord key)
 {
 	CtToken tok = this->next();
 	
@@ -206,7 +206,7 @@ bool CtTokenStream::expectKeyword(CtSpec::KeyWord key)
 }
 
 
-bool CtTokenStream::expectSymbol(CtSpec::Symbol sym)
+bool CtTokenStream::expectSymbol(CtSyntax::Symbol sym)
 {
 	CtToken tok = this->next();
 	

@@ -1,6 +1,8 @@
 #include "../node/node.hpp"
 #include <iostream>
 #include "analyzer.hpp"
+#include "../spec/types.hpp"
+
 
 
 void CtAnalyzer::handleRoot(CtNode::RootProgram *node)
@@ -33,9 +35,9 @@ void CtAnalyzer::handleFunction(CtNode::Function *node)
 
 void CtAnalyzer::handleDeclaration(CtNode::Declaration *node)
 {
-	if (CtSpec::primitiveTypeMap.contains(node->type->val))
+	if (CtTypes::primitiveTypeMap.contains(node->type->val))
 	{
-		auto type = CtSpec::primitiveTypeMap[node->type->val];
+		auto type = CtTypes::primitiveTypeMap[node->type->val];
 		this->typeMap[node->name->val] = type;
 		std::cout << "Registered variable " << node->name->val << " with type " << type.id  << "\n";
 		return;

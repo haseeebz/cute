@@ -1,7 +1,7 @@
 #include "../node/node.hpp"
 
 #include "../tokenizer/token.hpp"
-#include "../spec/spec.hpp"
+#include "../spec/syntax.hpp"
 #include <exception>
 #include <iostream>
 
@@ -44,7 +44,7 @@ CtNode::Statement* CtParser::parseStatement()
 	{
 		switch (token.val.keyword)
 		{
-			case CtSpec::KeyWord::Let: stmt = this->parseDeclaration(); break;
+			case CtSyntax::KeyWord::Let: stmt = this->parseDeclaration(); break;
 			default: std::cout << "Unimplemented keyword!\n";
 		}
 
@@ -70,7 +70,7 @@ CtNode::Declaration* CtParser::parseDeclaration()
 		dec->name = new CtNode::Identifier(str);
 	}
 
-	this->tokens->expectSymbol(CtSpec::Symbol::Colon);
+	this->tokens->expectSymbol(CtSyntax::Symbol::Colon);
 
 	if (this->tokens->getWord(&str))
 	{
@@ -115,7 +115,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	while (true)
 	{
 		
-		CtSpec::Symbol sym;
+		CtSyntax::Symbol sym;
 
 		if (this->tokens->expectType(CtTokenType::EndOfLine, NULL))
 		{
@@ -124,7 +124,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 		if (this->tokens->getSymbol(&sym))
 		{
-			if (sym == CtSpec::Symbol::Equal)
+			if (sym == CtSyntax::Symbol::Equal)
 			{
 				auto* assign = new CtNode::Assignment();
 				assign->name = static_cast<CtNode::Identifier*>(lhs); //assuming this is right for now
@@ -134,7 +134,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 			auto *binary = new CtNode::BinaryOp();
 
-			uint prec = CtSpec::binaryOpMap.at(sym);
+			uint prec = CtSyntax::binaryOpMap.at(sym);
 
 			if (prec < prev_precedence)
 			{

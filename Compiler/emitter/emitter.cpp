@@ -1,6 +1,6 @@
 #include "CuteByte.h"
 #include "../node/node.hpp"
-#include "../spec/spec.hpp"
+#include "../spec/types.hpp"
 
 #include <iostream>
 #include <string>
@@ -91,11 +91,11 @@ void CtEmitter::handleBinaryOp(CtNode::BinaryOp *node)
 
 	switch (node->op)
 	{
-		case CtSpec::Symbol::Plus:       op = instrAddI32; break;
-		case CtSpec::Symbol::Minus:      op = instrSubI32; break;
-		case CtSpec::Symbol::Star:       op = instrMulI32; break;
-		case CtSpec::Symbol::Slash:      op = instrDivI32; break;
-		case CtSpec::Symbol::Percentage: op = instrModI32; break;
+		case CtSyntax::Symbol::Plus:       op = instrAddI32; break;
+		case CtSyntax::Symbol::Minus:      op = instrSubI32; break;
+		case CtSyntax::Symbol::Star:       op = instrMulI32; break;
+		case CtSyntax::Symbol::Slash:      op = instrDivI32; break;
+		case CtSyntax::Symbol::Percentage: op = instrModI32; break;
 	}
 
 	this->instrs.push_back(op);
