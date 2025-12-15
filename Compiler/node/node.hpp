@@ -62,7 +62,7 @@ namespace CtNode
 
 	struct Object     : Base{};
 	struct Statement  : Base{};
-	struct Expression : Base{};
+	struct Expression : Base{std::string result_type;};
 
 
 	struct RootProgram : Object
@@ -154,7 +154,6 @@ namespace CtNode
 		CtSpec::Symbol op;
 		Expression* left;
 		Expression* right;
-
 		BinaryOp() {nt = CtNodeType::BinaryOp;};
 		BinaryOp(CtSpec::Symbol op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
 		~BinaryOp();
@@ -173,7 +172,6 @@ namespace CtNode
 
 	struct Assignment : Expression
 	{
-
 		Identifier* name;
 		Expression* value;
 

@@ -3,6 +3,7 @@ file(GLOB NODE_SRC "${CMAKE_CURRENT_SOURCE_DIR}/node/*.cpp")
 file(GLOB PARSER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/parser/*.cpp")
 file(GLOB TOKENIZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tokenizer/*.cpp")
 
+file(GLOB ANALYZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/analyzer/*.cpp")
 file(GLOB EMITTER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/emitter/*.cpp")
 
 add_library (
@@ -12,6 +13,7 @@ add_library (
 	${NODE_SRC}
 	${PARSER_SRC}
 	${TOKENIZER_SRC}
+	${ANALYZER_SRC}
 	${EMITTER_SRC}
     compiler.cpp 
 

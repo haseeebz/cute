@@ -131,12 +131,9 @@ namespace CtSpec
 	};
 
 
-	// types
+	enum class TypeKind {Void, Int32, Int64, Float32, Float64};
 
 
-	enum class TypeKind {Int32, Int64, Float32, Float64, Bool, Container};
-
-	
 	struct TypeInfo
 	{
 		TypeKind kind;
@@ -144,20 +141,20 @@ namespace CtSpec
 		std::string id;
 		uint size;
 
-		std::map<std::string, TypeInfo> fields;
-
-		TypeInfo(TypeKind kind, uint size): kind(kind), size(size) {};
+		TypeInfo(): kind(TypeKind::Void) {};
+		TypeInfo(std::string id, TypeKind kind, uint size): kind(kind), id(id), size(size) {};
 	};
 
 
 	inline std::map<std::string, TypeInfo> primitiveTypeMap =
 	{
-		{"i32" , TypeInfo(TypeKind::Int32, 4)},
-		{"i64",  TypeInfo(TypeKind::Int64, 8)},
-		{"f32",  TypeInfo(TypeKind::Float32, 4)},
-		{"f64",  TypeInfo(TypeKind::Float64, 8)},
+		{"i32" , TypeInfo("i32", TypeKind::Int32, 4)},
+		{"i64",  TypeInfo("i64", TypeKind::Int64, 8)},
+		{"f32",  TypeInfo("f32", TypeKind::Float32, 4)},
+		{"f64",  TypeInfo("f64", TypeKind::Float64, 8)},
 
-		{"bool", TypeInfo(TypeKind::Bool, 4)},
+		{"bool", TypeInfo("bool", TypeKind::Int32, 4)},
 	};	
+
 
 }

@@ -9,9 +9,9 @@
 void CuteCompiler::compile(std::string filepath, std::string outfile)
 {	
 	auto* root = this->parser.parse(filepath);
-	
-	this->emitter.emit(root, outfile);
 
+	root = this->analyzer.analyze(root);
+	
 	delete root;
 }
 
