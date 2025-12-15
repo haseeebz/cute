@@ -142,7 +142,7 @@ void CtNodePrinter::handleAssignment(CtNode::Assignment *node)
 	this->indent++;
 
 	this->printIndent();
-	std::cout <<  " variable= " << node->name;
+	std::cout <<  " variable= " << node->name->val;
 	std::cout <<  " value=\n";
 
 	this->walk(node->value);
