@@ -1,6 +1,7 @@
 #include "CuteByte.h"
 #include "../node/node.hpp"
-#include "CuteSpec.hpp"
+#include "../spec/spec.hpp"
+
 #include <iostream>
 #include <string>
 

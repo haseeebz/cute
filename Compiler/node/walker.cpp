@@ -1,7 +1,7 @@
 #include <iostream>
 #include <ostream>
 
-#include "CuteSpec.hpp"
+#include "../spec/spec.hpp"
 #include "node.hpp"
 
 

@@ -1,4 +1,5 @@
-#include "CuteSpec.hpp"
+#include "../spec/spec.hpp"
+
 #include <cstdint>
 #include <map>
 #include <string>

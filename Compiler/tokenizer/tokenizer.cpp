@@ -4,8 +4,7 @@
 #include <sstream>
 #include <string>
 
-
-#include "CuteSpec.hpp"
+#include "../spec/spec.hpp"
 #include "token.hpp"
 
 

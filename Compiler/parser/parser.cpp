@@ -1,7 +1,7 @@
 #include "../node/node.hpp"
 
 #include "../tokenizer/token.hpp"
-#include "CuteSpec.hpp"
+#include "../spec/spec.hpp"
 #include <exception>
 #include <iostream>
 

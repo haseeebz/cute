@@ -1,7 +1,8 @@
-#include "CuteSpec.hpp"
 #include <string>
 #include <sys/types.h>
 #include <vector>
+
+#include "../spec/spec.hpp"
 
 #pragma once 
 
