@@ -4,7 +4,7 @@
 #pragma once
 
 
-class CtNameResolver: public CtNodeWalker
+class CtTypeChecker: public CtNodeWalker
 {	
 	CtNode::RootProgram* root;
 
