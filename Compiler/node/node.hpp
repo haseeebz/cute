@@ -21,6 +21,7 @@ enum class CtNodeType
 	Int,
 	Float,
 	Identifier,
+	Variable,
 	BinaryOp,
 	FunctionCall
 };
@@ -48,6 +49,7 @@ namespace CtNode
 	struct Int;
 	struct Float;
 	struct Identifier;
+	struct Variable;
 	struct BinaryOp;
 	struct FunctionCall;
 	struct Assignment;
@@ -147,6 +149,15 @@ namespace CtNode
 		std::string val;
 
 		Identifier(std::string val): val(val) {{nt = CtNodeType::Identifier;}};
+	};
+
+
+	struct Variable: Expression
+	{
+		std::string name;
+		std::string type;
+
+		Variable(std::string name, std::string type): name(name), type(type) {{nt = CtNodeType::Variable;}};
 	};
 
 
