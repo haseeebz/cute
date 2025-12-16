@@ -95,7 +95,7 @@ void CtTokenizer::tokenizeSymbol()
 	int start = currIndex;
 	int end;
 
-	sym.push_back(this->currSrc->at(currIndex++));
+	sym.push_back(this->currSrc->at(currIndex));
 
 	if (!CtSyntax::symbolMap.contains(sym))
 	{
@@ -103,11 +103,12 @@ void CtTokenizer::tokenizeSymbol()
 		return;
 	}
 
+	currIndex++;
 	end = start;
 
 	if (this->currIndex < this->currSrc->length()) 
 	{
-		sym.push_back(this->currSrc->at(currIndex++));
+		sym.push_back(this->currSrc->at(currIndex));
 		end++;
 
 		if (!CtSyntax::symbolMap.contains(sym))
@@ -118,6 +119,7 @@ void CtTokenizer::tokenizeSymbol()
 		}
 	}
 
+	
 	CtToken token(CtTokenType::Symbol, start, end);
 	token.val.sym = CtSyntax::symbolMap[sym];
 	this->currStream.add(token);
