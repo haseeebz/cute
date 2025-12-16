@@ -90,23 +90,29 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 	CtNode::Expression *lhs;
 
-	tok = this->tokens->next();
+	std::string str;
+	CtSyntax::Symbol sym;
 
-	if (tok.type == CtTokenType::Int)
+	if (this->tokens->getInt(&str))
 	{
-		lhs = new CtNode::Int(this->tokens->viewToken(&tok));
+		lhs = new CtNode::Int(str);
 	}
-	else if (tok.type == CtTokenType::Float)
+	else if (this->tokens->getFloat(&str))
 	{
-		lhs = new CtNode::Float(this->tokens->viewToken(&tok));
+		lhs = new CtNode::Float(str);
 	}
-	else if (tok.type == CtTokenType::Word)
+	else if (this->tokens->getWord(&str))
 	{
-		lhs = new CtNode::Identifier(this->tokens->viewToken(&tok));
+		lhs = new CtNode::Identifier(str);
+	}
+	else if (this->tokens->expectSymbol(CtSyntax::Symbol::LeftParan))
+	{
+		lhs = this->parseExpression(0);
 	}
 	else 
 	{
-		std::cout << "Invalid Token Sequence! Token Type: " << int(tok.type) <<  ":" << int(tok.val.sym) << "\n";
+		tok = this->tokens->peek();
+		std::cout << "Invalid Token Sequence! Token Type: " << int(tok.type) << "\n";
 		throw std::exception();
 		std::exit(1);
 	}
@@ -124,6 +130,11 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 		if (this->tokens->getSymbol(&sym))
 		{
+			if (sym == CtSyntax::Symbol::RightParan)
+			{
+				return lhs;
+			}
+
 			if (sym == CtSyntax::Symbol::Equal)
 			{
 				auto* assign = new CtNode::Assignment();
