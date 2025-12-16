@@ -102,6 +102,18 @@ void CtTypeChecker::handleFunctionCall(CtNode::FunctionCall *node)
 }
 
 
+void CtTypeChecker::handleTypeCast(CtNode::TypeCast *node)
+{
+	if (!CtTypes::primitiveTypeMap.contains(node->to_type))
+	{
+		std::cout << "Unknown type specified for type casting: " << node->to_type << std::endl;
+		exit(1);
+	}
+	node->result_type = node->to_type;
+	this->walk(node->expr);
+}
+
+
 CtNode::RootProgram* CtTypeChecker::analyze(CtNode::RootProgram* root)
 {
 	this->root = root;

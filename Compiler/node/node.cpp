@@ -30,6 +30,7 @@ CtNode::Declaration::~Declaration()
 
 CtNode::Assignment::~Assignment()
 {
+	delete this->name;
 	delete this->value;
 }
 
@@ -51,3 +52,10 @@ CtNode::FunctionCall::~FunctionCall()
 {
 	for (auto arg: this->args) {delete arg;}
 }
+
+
+CtNode::TypeCast::~TypeCast()
+{
+	delete this->expr;
+}
+

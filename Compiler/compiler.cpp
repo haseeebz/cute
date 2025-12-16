@@ -13,7 +13,7 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 	root = this->analyzer.analyze(root);
 	
 	this->emitter.emit(root, outfile);
-	
+
 	delete root;
 }
 

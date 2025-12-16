@@ -31,10 +31,6 @@ void CtNodeWalker::walk(CtNode::Base *node) {
     handleDeclaration(static_cast<CtNode::Declaration *>(node));
     break;
 
-  case CtNodeType::Assignment:
-    handleAssignment(static_cast<CtNode::Assignment *>(node));
-    break;
-
   case CtNodeType::ExprStatement:
     walk(static_cast<CtNode::ExprStatment *>(node)->expr);
     break;
@@ -57,6 +53,14 @@ void CtNodeWalker::walk(CtNode::Base *node) {
 
   case CtNodeType::FunctionCall:
     handleFunctionCall(static_cast<CtNode::FunctionCall *>(node));
+    break;
+
+  case CtNodeType::Assignment:
+    handleAssignment(static_cast<CtNode::Assignment *>(node));
+    break;
+
+  case CtNodeType::TypeCast:
+    handleTypeCast(static_cast<CtNode::TypeCast *>(node));
     break;
 
   default:
@@ -206,6 +210,19 @@ void CtNodePrinter::handleFunctionCall(CtNode::FunctionCall *node)
 	std::cout << "(FunctionCall name:" << node->name << " args:\n";
 	this->indent++; 
 	for (auto args: node->args) {this->walk(args);}
+	this->indent--;
+
+	this->printIndent();
+	std::cout << ")\n";
+}
+
+
+void CtNodePrinter::handleTypeCast(CtNode::TypeCast *node)
+{
+	this->printIndent();
+	std::cout << "(TypeCast type:" << node->to_type << " expr:\n";
+	this->indent++; 
+	this->walk(node->expr);
 	this->indent--;
 
 	this->printIndent();

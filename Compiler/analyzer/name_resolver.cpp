@@ -89,6 +89,12 @@ void CtNameResolver::handleFunctionCall(CtNode::FunctionCall *node)
 }
 
 
+void CtNameResolver::handleTypeCast(CtNode::TypeCast *node)
+{
+	this->walk(node->expr);
+}
+
+
 CtNode::RootProgram* CtNameResolver::analyze(CtNode::RootProgram* root)
 {
 	std::cout << "Resolving Root..\n";
@@ -97,3 +103,4 @@ CtNode::RootProgram* CtNameResolver::analyze(CtNode::RootProgram* root)
 	this->walk(root);
 	return root;
 }
+

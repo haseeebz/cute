@@ -16,7 +16,6 @@ enum class CtNodeType
 	Function,
 
 	Declaration,
-	Assignment,
 	ExprStatement,
 
 	Int,
@@ -24,7 +23,9 @@ enum class CtNodeType
 	Identifier,
 	Variable,
 	BinaryOp,
-	FunctionCall
+	FunctionCall,
+	Assignment,
+	TypeCast
 };
 
 
@@ -54,6 +55,7 @@ namespace CtNode
 	struct BinaryOp;
 	struct FunctionCall;
 	struct Assignment;
+	struct TypeCast;
 
 
 	// Defintions
@@ -194,6 +196,15 @@ namespace CtNode
 		~Assignment();
 	};
 
+	struct TypeCast : Expression
+	{
+		std::string to_type;
+		Expression* expr;
+
+		TypeCast() {nt = CtNodeType::TypeCast;};
+		~TypeCast();
+	};
+
 };
 
 
@@ -207,13 +218,14 @@ class CtNodeWalker
 	virtual void handleFunction(CtNode::Function *node) = 0;
 
 	virtual void handleDeclaration(CtNode::Declaration *node) = 0;
-	virtual void handleAssignment(CtNode::Assignment *node) = 0;
 
 	virtual void handleInt(CtNode::Int *node) = 0;
 	virtual void handleFloat(CtNode::Float *node) = 0;
 	virtual void handleBinaryOp(CtNode::BinaryOp *node) = 0;
 	virtual void handleIdentifier(CtNode::Identifier *node) = 0;
 	virtual void handleFunctionCall(CtNode::FunctionCall *node) = 0;
+	virtual void handleAssignment(CtNode::Assignment *node) = 0;
+	virtual void handleTypeCast(CtNode::TypeCast *node) = 0;
 
 	public:
 	
@@ -233,13 +245,15 @@ class CtNodePrinter: public CtNodeWalker
 	void handleFunction(CtNode::Function *node);
 
 	void handleDeclaration(CtNode::Declaration *node);
-	void handleAssignment(CtNode::Assignment *node);
 
 	void handleInt(CtNode::Int *node);
 	void handleFloat(CtNode::Float *node);
 	void handleBinaryOp(CtNode::BinaryOp *node);
 	void handleIdentifier(CtNode::Identifier *node);
 	void handleFunctionCall(CtNode::FunctionCall *node);
+	void handleAssignment(CtNode::Assignment *node);
+	void handleTypeCast(CtNode::TypeCast *node);
+
 	
 	public:
 

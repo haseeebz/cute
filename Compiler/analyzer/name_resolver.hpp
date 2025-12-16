@@ -16,14 +16,15 @@ class CtNameResolver: public CtNodeWalker
 	void handleFunction(CtNode::Function *node);
 
 	void handleDeclaration(CtNode::Declaration *node);
-	void handleAssignment(CtNode::Assignment *node);
 
 	void handleInt(CtNode::Int *node);
 	void handleFloat(CtNode::Float *node);
 	void handleBinaryOp(CtNode::BinaryOp *node);
 	void handleIdentifier(CtNode::Identifier *node);
 	void handleFunctionCall(CtNode::FunctionCall *node);
-	
+	void handleAssignment(CtNode::Assignment *node);
+	void handleTypeCast(CtNode::TypeCast *node);
+
 	public:
 
 	CtNode::RootProgram* analyze(CtNode::RootProgram* root);
