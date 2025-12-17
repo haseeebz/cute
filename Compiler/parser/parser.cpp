@@ -111,6 +111,11 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	{
 		lhs = this->parseExpression(0);
 	}
+	else if (this->tokens->expectSymbol(CtLang::Symbol::Minus))
+	{
+		lhs = this->parseExpression(CtLang::binaryOpMap.size());
+		lhs = new CtNode::BinaryOp(CtLang::Symbol::Minus, new CtNode::Int("0"), lhs); // works, meh
+	}
 	else if (this->tokens->expectSymbol(CtLang::Symbol::LeftBraces))
 	{
 		this->tokens->getWord(&str);

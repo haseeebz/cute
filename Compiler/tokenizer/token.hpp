@@ -100,6 +100,29 @@ class CtTokenStream
 
 	// expect a specific token type, write the token and return true if the type matches. *token can be NULL if you don't want the value.
 	bool expectType(CtTokenType t, CtToken *token);
+
+
+	struct Pattern
+	{
+		enum {fToken, fKeyword, fSymbol} type;
+		union 
+		{
+			CtTokenType t;
+			CtLang::KeyWord k;
+			CtLang::Symbol s;
+		} val;
+
+		Pattern(CtTokenType t): type(fToken) {val.t = t;};
+		Pattern(CtLang::KeyWord k): type(fKeyword) {val.k = k;};
+		Pattern(CtLang::Symbol s): type(fSymbol) {val.s = s;};
+	};
+
+	/*
+	Returns true if the expected pattern is detected. 
+	If true, the tokens vector is filled with the same number of items as in fmt. The stream counter is incremented by the same amount.
+	If false, the tokens vector is untouched, the stream counter remains the same
+	*/
+	bool expectPattern(std::vector<Pattern> fmt, std::vector<CtToken>* tokens);
 };
 
 

@@ -237,3 +237,50 @@ bool CtTokenStream::expectType(CtTokenType type, CtToken *token)
 	
 	return true;
 }
+
+
+bool CtTokenStream::expectPattern(std::vector<CtTokenStream::Pattern> fmt, std::vector<CtToken>* tokens)
+{
+	uint count = fmt.size();
+	CtToken tok;
+	tokens->resize(count);
+	tokens->clear();
+
+	for (uint i = 0; i < count; i++)
+	{
+		auto f = fmt[i];
+		tok = this->next();
+
+		if (f.type == Pattern::fToken)
+		{
+			if (tok.type == f.val.t)
+			{
+				tokens->push_back(tok);
+				continue;
+			}
+			return false;
+		}
+
+		if (f.type == Pattern::fKeyword)
+		{
+			if (tok.val.keyword == f.val.k)
+			{
+				tokens->push_back(tok);
+				continue;
+			}
+			return false;
+		}
+
+		if (f.type == Pattern::fSymbol)
+		{
+			if (tok.val.sym == f.val.s)
+			{
+				tokens->push_back(tok);
+				continue;
+			}
+			return false;
+		}
+	}
+
+	return true;
+};
