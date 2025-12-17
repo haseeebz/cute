@@ -3,7 +3,9 @@
 
 Because I keep forgetting what i need to do:
 
-+ Add typecasting, implict and explicit.
++ Add typecasting, implict and explicit. (done)
+
++ Refactor code and implement proper basic arithmetic
 
 + Implement an IR
 
