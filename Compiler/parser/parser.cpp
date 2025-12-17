@@ -140,13 +140,12 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 			CtError::ErrorType::SyntaxError,
 			std::format("Invalid syntax. Did not expect '{}'", this->tokens->viewToken(&tok))
 		);
-		return nullptr;;
 	}
 
 	
 	while (true)
 	{
-		
+
 		CtLang::Symbol sym;
 
 		if (this->tokens->expectType(CtTokenType::EndOfLine, nullptr))
@@ -156,7 +155,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 		if (this->tokens->expectType(CtTokenType::EndOfFile, nullptr))
 		{
-			return nullptr;
+			return lhs;
 		}
 
 		if (this->tokens->getSymbol(&sym))
