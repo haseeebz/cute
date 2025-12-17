@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-#include "../spec/syntax.hpp"
+#include "../spec/lang.hpp"
 #include "token.hpp"
 
 
@@ -97,7 +97,7 @@ void CtTokenizer::tokenizeSymbol()
 
 	sym.push_back(this->currSrc->at(currIndex));
 
-	if (!CtSyntax::symbolMap.contains(sym))
+	if (!CtLang::symbolMap.contains(sym))
 	{
 		this->currStream.add(CtToken(CtTokenType::Invalid));
 		return;
@@ -111,7 +111,7 @@ void CtTokenizer::tokenizeSymbol()
 		sym.push_back(this->currSrc->at(currIndex));
 		end++;
 
-		if (!CtSyntax::symbolMap.contains(sym))
+		if (!CtLang::symbolMap.contains(sym))
 		{
 			end--;
 			currIndex--;
@@ -121,7 +121,7 @@ void CtTokenizer::tokenizeSymbol()
 
 	
 	CtToken token(CtTokenType::Symbol, start, end);
-	token.val.sym = CtSyntax::symbolMap[sym];
+	token.val.sym = CtLang::symbolMap[sym];
 	this->currStream.add(token);
 }
 
@@ -154,12 +154,12 @@ void CtTokenizer::tokenizeWord()
 
 	CtToken token;
 
-	if (CtSyntax::keywordMap.contains(str))
+	if (CtLang::keywordMap.contains(str))
 	{
 		token.type = CtTokenType::Keyword;
 		token.view.start = start;
 		token.view.end = end;
-		token.val.keyword = CtSyntax::keywordMap[str];
+		token.val.keyword = CtLang::keywordMap[str];
 		this->currStream.add(token);
 	}
 	else 

@@ -1,4 +1,4 @@
-#include "../spec/syntax.hpp"
+#include "../spec/lang.hpp"
 #include "../spec/scope.hpp"
 
 #include <cstdint>
@@ -168,11 +168,11 @@ namespace CtNode
 
 	struct BinaryOp : Expression
 	{
-		CtSyntax::Symbol op;
+		CtLang::Symbol op;
 		Expression* left;
 		Expression* right;
 		BinaryOp() {nt = CtNodeType::BinaryOp;};
-		BinaryOp(CtSyntax::Symbol op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
+		BinaryOp(CtLang::Symbol op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
 		~BinaryOp();
 	};
 

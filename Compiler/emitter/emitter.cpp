@@ -1,6 +1,5 @@
 #include "CuteByte.h"
 #include "../node/node.hpp"
-#include "../spec/types.hpp"
 
 #include <iostream>
 #include <string>
@@ -91,11 +90,11 @@ void CtEmitter::handleBinaryOp(CtNode::BinaryOp *node)
 
 	switch (node->op)
 	{
-		case CtSyntax::Symbol::Plus:       op = (node->result_type == "i32") ?  instrAddI32:instrAddF32; break;
-		case CtSyntax::Symbol::Minus:      op = (node->result_type == "i32") ?  instrSubI32:instrSubF32; break;
-		case CtSyntax::Symbol::Star:       op = (node->result_type == "i32") ?  instrMulI32:instrMulF32; break;
-		case CtSyntax::Symbol::Slash:      op = (node->result_type == "i32") ?  instrDivI32:instrDivF32; break;
-		case CtSyntax::Symbol::Percentage: op = instrModI32; break;
+		case CtLang::Symbol::Plus:       op = (node->result_type == "i32") ?  instrAddI32:instrAddF32; break;
+		case CtLang::Symbol::Minus:      op = (node->result_type == "i32") ?  instrSubI32:instrSubF32; break;
+		case CtLang::Symbol::Star:       op = (node->result_type == "i32") ?  instrMulI32:instrMulF32; break;
+		case CtLang::Symbol::Slash:      op = (node->result_type == "i32") ?  instrDivI32:instrDivF32; break;
+		case CtLang::Symbol::Percentage: op = instrModI32; break;
 	}
 
 	this->instrs.push_back(op);

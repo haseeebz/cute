@@ -7,7 +7,7 @@
 #pragma once 
 
 
-namespace CtSyntax
+namespace CtLang
 {
 
 	// Keywords

@@ -1,7 +1,7 @@
 #include "../node/node.hpp"
 
 #include "../tokenizer/token.hpp"
-#include "../spec/syntax.hpp"
+#include "../spec/lang.hpp"
 #include <exception>
 #include <iostream>
 
@@ -46,7 +46,7 @@ CtNode::Statement* CtParser::parseStatement()
 	{
 		switch (token.val.keyword)
 		{
-			case CtSyntax::KeyWord::Let: stmt = this->parseDeclaration(); break;
+			case CtLang::KeyWord::Let: stmt = this->parseDeclaration(); break;
 			default: std::cout << "Unimplemented keyword!\n";
 		}
 
@@ -72,7 +72,7 @@ CtNode::Declaration* CtParser::parseDeclaration()
 		dec->name = str;
 	}
 
-	this->tokens->expectSymbol(CtSyntax::Symbol::Colon);
+	this->tokens->expectSymbol(CtLang::Symbol::Colon);
 
 	if (this->tokens->getWord(&str))
 	{
@@ -93,7 +93,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	CtNode::Expression *lhs;
 
 	std::string str;
-	CtSyntax::Symbol sym;
+	CtLang::Symbol sym;
 
 	if (this->tokens->getInt(&str))
 	{
@@ -107,17 +107,17 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	{
 		lhs = new CtNode::Identifier(str);
 	}
-	else if (this->tokens->expectSymbol(CtSyntax::Symbol::LeftParan))
+	else if (this->tokens->expectSymbol(CtLang::Symbol::LeftParan))
 	{
 		lhs = this->parseExpression(0);
 	}
-	else if (this->tokens->expectSymbol(CtSyntax::Symbol::LeftBraces))
+	else if (this->tokens->expectSymbol(CtLang::Symbol::LeftBraces))
 	{
 		this->tokens->getWord(&str);
-		this->tokens->expectSymbol(CtSyntax::Symbol::RightBraces);
+		this->tokens->expectSymbol(CtLang::Symbol::RightBraces);
 		auto cast = new CtNode::TypeCast();
 		cast->to_type = str;
-		cast->expr = this->parseExpression(CtSyntax::binaryOpMap.size());
+		cast->expr = this->parseExpression(CtLang::binaryOpMap.size());
 		// What this will do is grab the next literal.
 
 		lhs = cast;
@@ -134,7 +134,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	while (true)
 	{
 		
-		CtSyntax::Symbol sym;
+		CtLang::Symbol sym;
 
 		if (this->tokens->expectType(CtTokenType::EndOfLine, nullptr))
 		{
@@ -148,12 +148,12 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 		if (this->tokens->getSymbol(&sym))
 		{
-			if (sym == CtSyntax::Symbol::RightParan)
+			if (sym == CtLang::Symbol::RightParan)
 			{
 				return lhs;
 			}
 
-			if (sym == CtSyntax::Symbol::Equal)
+			if (sym == CtLang::Symbol::Equal)
 			{
 				auto* assign = new CtNode::Assignment();
 				assign->name = static_cast<CtNode::Identifier*>(lhs); //assuming this is right for now
@@ -163,7 +163,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 			auto *binary = new CtNode::BinaryOp();
 
-			uint prec = CtSyntax::binaryOpMap.at(sym);
+			uint prec = CtLang::binaryOpMap.at(sym);
 
 			if (prec < prev_precedence)
 			{
