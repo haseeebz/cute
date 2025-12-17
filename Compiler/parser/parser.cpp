@@ -2,10 +2,13 @@
 
 #include "../tokenizer/token.hpp"
 #include "../spec/lang.hpp"
+#include "../spec/error.hpp"
+
 #include <exception>
 #include <iostream>
 
 #include "parser.hpp"
+#include "format"
 
 
 
@@ -47,7 +50,10 @@ CtNode::Statement* CtParser::parseStatement()
 		switch (token.val.keyword)
 		{
 			case CtLang::KeyWord::Let: stmt = this->parseDeclaration(); break;
-			default: std::cout << "Unimplemented keyword!\n";
+			default: CtError::raise(
+				CtError::ErrorType::SyntaxError, 
+				std::format("Unimplemented Keyword: {}", this->tokens->viewToken(&token))
+			);
 		}
 
 		return stmt;
@@ -130,9 +136,11 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	else 
 	{
 		tok = this->tokens->peek();
-		std::cout << "Invalid Token Sequence! Token Type: " << int(tok.type) << "\n";
-		throw std::exception();
-		std::exit(1);
+		CtError::raise(
+			CtError::ErrorType::SyntaxError,
+			std::format("Invalid syntax. Did not expect '{}'", this->tokens->viewToken(&tok))
+		);
+		return nullptr;;
 	}
 
 	
@@ -196,7 +204,6 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
-	std::cout << this->tokens->toString() << std::endl;
 	this->source = new CtNode::Source();
 	this->startParsingFile();
 	return this->source;

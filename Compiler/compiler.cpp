@@ -9,6 +9,8 @@
 void CuteCompiler::compile(std::string filepath, std::string outfile)
 {	
 	auto* root = this->parser.parse(filepath);
+	CtNodePrinter p;
+	p.print(root);
 
 	root = this->analyzer.analyze(root);
 	

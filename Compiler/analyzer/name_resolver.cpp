@@ -1,8 +1,10 @@
 #include <iostream>
+#include <format>
 
 #include "../node/node.hpp"
 
 #include "../spec/scope.hpp"
+#include "../spec/error.hpp"
 #include "name_resolver.hpp"
 
 
@@ -23,8 +25,6 @@ void CtNameResolver::handleSource(CtNode::Source *node)
 
 void CtNameResolver::handleFunction(CtNode::Function *node)
 {
-	std::cout << "Resolving Function: " << node->name << "\n";
-
 	node->scope = new CtScope::Scope(this->current_scope);
 	this->current_scope = node->scope;
 
@@ -39,8 +39,10 @@ void CtNameResolver::handleDeclaration(CtNode::Declaration *node)
 {	
 	if (this->current_scope->variables.contains(node->name))
 	{
-		std::cout << "Variable '" << node->name << "' already declared within scope!\n";
-		exit(1);
+		CtError::raise(
+			CtError::ErrorType::NameError, 
+			std::format("Variable already defined within scope: {}", node->name)
+		);
 	};
 
 	this->current_scope->variables[node->name] = CtScope::Variable(CtScope::VarKind::Local, node->name, node->type);
@@ -51,8 +53,10 @@ void CtNameResolver::handleAssignment(CtNode::Assignment *node)
 {
 	if (!this->current_scope->variables.contains(node->name->val))
 	{
-		std::cout << "Variable '" << node->name->val << "' undefined!\n";
-		exit(1);
+		CtError::raise(
+			CtError::ErrorType::NameError, 
+			std::format("Undefined variable: {}", node->name->val)
+		);
 	};
 	this->walk(node->value);
 }
@@ -78,8 +82,10 @@ void CtNameResolver::handleIdentifier(CtNode::Identifier *node)
 {
 	if (!this->current_scope->variables.contains(node->val))
 	{
-		std::cout << "Variable '" << node->val << "' undefined!\n";
-		exit(1);
+		CtError::raise(
+			CtError::ErrorType::NameError, 
+			std::format("Undefined variable: {}", node->val)
+		);
 	};
 }
 
@@ -97,7 +103,6 @@ void CtNameResolver::handleTypeCast(CtNode::TypeCast *node)
 
 CtNode::RootProgram* CtNameResolver::analyze(CtNode::RootProgram* root)
 {
-	std::cout << "Resolving Root..\n";
 	this->root = root;
 	this->current_scope = nullptr;
 	this->walk(root);

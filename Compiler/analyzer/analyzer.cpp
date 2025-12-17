@@ -8,8 +8,6 @@
 
 CtNode::RootProgram*  CtAnalyzer::analyze(CtNode::RootProgram* root)
 {
-	CtNodePrinter printer;
-	printer.print(root);
 	root = this->resolver.analyze(root);
 	root = this->typeChecker.analyze(root);
 	return root;

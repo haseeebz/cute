@@ -1,6 +1,9 @@
 #include "../node/node.hpp"
 #include "../spec/scope.hpp"
 #include "../spec/types.hpp"
+#include "../spec/error.hpp"
+
+#include <format>
 
 #include "iostream"
 
@@ -24,8 +27,6 @@ void CtTypeChecker::handleSource(CtNode::Source *node)
 
 void CtTypeChecker::handleFunction(CtNode::Function *node)
 {
-	std::cout << "Type Checking Function: " << node->name << "\n";
-
 	this->current_scope = node->scope;
 
 	for (auto stmt: node->statements)
@@ -42,8 +43,10 @@ void CtTypeChecker::handleDeclaration(CtNode::Declaration *node)
 	
 	if (!CtTypes::primitiveTypeMap.contains(var.type))
 	{
-		std::cout << "Unknown type: " << var.type << std::endl;
-		exit(1);
+		CtError::raise(
+			CtError::ErrorType::TypeError, 
+			std::format("Unknown type: {}", var.type)
+		);
 	}
 }
 
@@ -55,8 +58,10 @@ void CtTypeChecker::handleAssignment(CtNode::Assignment *node)
 
 	if (var.type != node->value->result_type)
 	{
-		std::cout << "Type Mismatch. "<<var.type<<"="<<node->value->result_type<< std::endl;
-		exit(1);
+		CtError::raise(
+			CtError::ErrorType::TypeError, 
+			std::format("Expression of type {} can not be assigned to variable of type {}", node->value->result_type, var.type)
+		);
 	}
 
 	node->result_type = node->value->result_type;
@@ -82,8 +87,13 @@ void CtTypeChecker::handleBinaryOp(CtNode::BinaryOp *node)
 
 	if (node->left->result_type != node->right->result_type)
 	{
-		std::cout << "Invalid Binary Operation. Type Mismatch." << std::endl;
-		exit(1);
+		CtError::raise(
+			CtError::ErrorType::TypeError, 
+			std::format(
+				"Binary operation '{}' not supported for types {} and {}.", 
+				int(node->op), node->left->result_type, node->right->result_type
+			)
+		);
 	}
 
 	node->result_type = node->left->result_type;
@@ -107,8 +117,10 @@ void CtTypeChecker::handleTypeCast(CtNode::TypeCast *node)
 {
 	if (!CtTypes::primitiveTypeMap.contains(node->to_type))
 	{
-		std::cout << "Unknown type specified for type casting: " << node->to_type << std::endl;
-		exit(1);
+		CtError::raise(
+			CtError::ErrorType::TypeError, 
+			std::format("Unknown type specified for type casting: {}", node->to_type)
+		);
 	}
 	node->result_type = node->to_type;
 	this->walk(node->expr);

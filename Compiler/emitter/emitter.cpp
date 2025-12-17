@@ -11,8 +11,6 @@
 void CtEmitter::write(std::string outfile)
 {
 	ctImageError err = ctProgramImage_write(&this->img, outfile.data());
-
-	std::cout << "Image success code: " << int(err) << "\n";
 }
 
 

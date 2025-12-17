@@ -109,6 +109,10 @@ void CtTokenStream::gotoIndex(uint i)
 
 std::string CtTokenStream::viewToken(CtToken *token)
 {
+	if (token->type == CtTokenType::EndOfFile or token->type == CtTokenType::EndOfLine)
+	{
+		return "EOL/EOF";
+	}
 	uint len = token->view.end - token->view.start + 1;
 	return this->srcStr.substr(token->view.start, len);
 }
