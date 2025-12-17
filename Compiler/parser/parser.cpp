@@ -40,6 +40,8 @@ CtNode::Statement* CtParser::parseStatement()
 
 	while (this->tokens->expectType(CtTokenType::EndOfLine, nullptr)) {continue;};
 
+	if (this->tokens->expectType(CtTokenType::EndOfFile, nullptr)) {return nullptr;}
+
 	if (this->tokens->expectType(CtTokenType::Keyword, &token))
 	{
 		switch (token.val.keyword)
@@ -109,6 +111,17 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	{
 		lhs = this->parseExpression(0);
 	}
+	else if (this->tokens->expectSymbol(CtSyntax::Symbol::LeftBraces))
+	{
+		this->tokens->getWord(&str);
+		this->tokens->expectSymbol(CtSyntax::Symbol::RightBraces);
+		auto cast = new CtNode::TypeCast();
+		cast->to_type = str;
+		cast->expr = this->parseExpression(CtSyntax::binaryOpMap.size());
+		// What this will do is grab the next literal.
+
+		lhs = cast;
+	}
 	else 
 	{
 		tok = this->tokens->peek();
@@ -123,9 +136,14 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 		
 		CtSyntax::Symbol sym;
 
-		if (this->tokens->expectType(CtTokenType::EndOfLine, NULL))
+		if (this->tokens->expectType(CtTokenType::EndOfLine, nullptr))
 		{
 			return lhs;
+		}
+
+		if (this->tokens->expectType(CtTokenType::EndOfFile, nullptr))
+		{
+			return nullptr;
 		}
 
 		if (this->tokens->getSymbol(&sym))

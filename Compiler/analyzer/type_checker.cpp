@@ -59,6 +59,7 @@ void CtTypeChecker::handleAssignment(CtNode::Assignment *node)
 		exit(1);
 	}
 
+	node->result_type = node->value->result_type;
 }
 
 

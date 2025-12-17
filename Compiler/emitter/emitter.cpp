@@ -91,10 +91,10 @@ void CtEmitter::handleBinaryOp(CtNode::BinaryOp *node)
 
 	switch (node->op)
 	{
-		case CtSyntax::Symbol::Plus:       op = instrAddI32; break;
-		case CtSyntax::Symbol::Minus:      op = instrSubI32; break;
-		case CtSyntax::Symbol::Star:       op = instrMulI32; break;
-		case CtSyntax::Symbol::Slash:      op = instrDivI32; break;
+		case CtSyntax::Symbol::Plus:       op = (node->result_type == "i32") ?  instrAddI32:instrAddF32; break;
+		case CtSyntax::Symbol::Minus:      op = (node->result_type == "i32") ?  instrSubI32:instrSubF32; break;
+		case CtSyntax::Symbol::Star:       op = (node->result_type == "i32") ?  instrMulI32:instrMulF32; break;
+		case CtSyntax::Symbol::Slash:      op = (node->result_type == "i32") ?  instrDivI32:instrDivF32; break;
 		case CtSyntax::Symbol::Percentage: op = instrModI32; break;
 	}
 
@@ -125,9 +125,10 @@ void CtEmitter::handleAssignment(CtNode::Assignment *node)
 	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
 
 	this->instrs.push_back(instrOut);
-	i = 2;
+	i = (node->result_type == "i32") ? 2 : 6; // i32 : f32
 	ctProgramImage_packInt32(&i, packed);
 	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
+	this->instrs.push_back(instrPopAtom);
 }
 
 
@@ -139,4 +140,25 @@ void CtEmitter::handleIdentifier(CtNode::Identifier *node)
 	int i = this->variables[node->val];
 	ctProgramImage_packInt32(&i, packed);
 	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
+}
+
+
+void CtEmitter::handleTypeCast(CtNode::TypeCast *node)
+{
+	static std::map<std::string, ctInstr> cast_map = 
+	{
+		{"f32i32", instrF32I32},
+		{"i32f32", instrI32F32},
+		{"i64f64", instrI64F64},
+		{"f64i64", instrF64I64},
+		{"f32f64", instrF32F64},
+		{"f64f32", instrF64F32},
+		{"i32i64", instrI32I64},
+		{"i64i32", instrI64I32}
+	};
+
+	this->walk(node->expr);
+	auto typecast = node->expr->result_type + node->to_type;
+	auto instr = cast_map[typecast];
+	this->instrs.push_back(instr);
 }
