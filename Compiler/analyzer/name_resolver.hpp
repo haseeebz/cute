@@ -16,6 +16,7 @@ class CtNameResolver: public CtNodeWalker
 	void handleFunction(CtNode::Function *node);
 
 	void handleDeclaration(CtNode::Declaration *node);
+	void handleOut(CtNode::Out *node);
 
 	void handleInt(CtNode::Int *node);
 	void handleFloat(CtNode::Float *node);

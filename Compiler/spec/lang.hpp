@@ -17,6 +17,7 @@ namespace CtLang
 	{
 		// declaration
 		Let,
+		Out,
 
 		// control flow
 		If,
@@ -35,6 +36,7 @@ namespace CtLang
 	inline std::map<std::string, KeyWord> keywordMap =
 	{
 		{"let",      KeyWord::Let},
+		{"out",      KeyWord::Out},
 
 		{"if",       KeyWord::If},
 		{"else",     KeyWord::Else},

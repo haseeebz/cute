@@ -105,6 +105,28 @@ void CtEmitter::handleDeclaration(CtNode::Declaration *node)
 }
 
 
+void CtEmitter::handleOut(CtNode::Out *node)
+{
+	this->walk(node->expr);
+
+	static std::map<std::string, int> format_specfier =
+	{
+		{"i32", 2},
+		{"i64", 3},
+		{"u32", 4},
+		{"u64", 5},
+		{"f32", 6},
+		{"f64", 7},
+	};
+
+	this->instrs.push_back(instrOut);
+	int i = format_specfier[node->expr->result_type];
+	ctInstrSize packed[4];
+	ctProgramImage_packInt32(&i, packed);
+	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
+}
+
+
 void CtEmitter::handleAssignment(CtNode::Assignment *node)
 {
 	this->walk(node->value);
@@ -115,17 +137,11 @@ void CtEmitter::handleAssignment(CtNode::Assignment *node)
 	ctProgramImage_packInt32(&i, packed);
 	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
 
-
+	// to keep assignment an expression, we need to have it return some value, this is just for consistency, might remove later.
 	this->instrs.push_back(instrLoadI32);
 	i = this->variables[node->name->val];
 	ctProgramImage_packInt32(&i, packed);
 	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
-
-	this->instrs.push_back(instrOut);
-	i = (node->result_type == "i32") ? 2 : 6; // i32 : f32
-	ctProgramImage_packInt32(&i, packed);
-	for (int i = 0; i < 4; i++) {this->instrs.push_back(packed[i]);}
-	this->instrs.push_back(instrPopAtom);
 }
 
 

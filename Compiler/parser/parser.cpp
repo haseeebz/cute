@@ -50,6 +50,7 @@ CtNode::Statement* CtParser::parseStatement()
 		switch (token.val.keyword)
 		{
 			case CtLang::KeyWord::Let: stmt = this->parseDeclaration(); break;
+			case CtLang::KeyWord::Out: stmt = new CtNode::Out(this->parseExpression(0)); break;
 			default: CtError::raise(
 				CtError::ErrorType::SyntaxError, 
 				std::format("Unimplemented Keyword: {}", this->tokens->viewToken(&token))
@@ -94,12 +95,10 @@ CtNode::Declaration* CtParser::parseDeclaration()
 
 CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 {
-	CtToken tok;
-
 	CtNode::Expression *lhs;
 
+	CtToken tok;
 	std::string str;
-	CtLang::Symbol sym;
 
 	if (this->tokens->getInt(&str))
 	{
@@ -115,6 +114,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	}
 	else if (this->tokens->expectSymbol(CtLang::Symbol::LeftParan))
 	{
+		std::cout << "THIS should run\n";
 		lhs = this->parseExpression(0);
 	}
 	else if (this->tokens->expectSymbol(CtLang::Symbol::Minus))
@@ -145,16 +145,17 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	
 	while (true)
 	{
-
 		CtLang::Symbol sym;
 
 		if (this->tokens->expectType(CtTokenType::EndOfLine, nullptr))
 		{
+			this->tokens->backtrack(); // so EOL propagates
 			return lhs;
 		}
 
 		if (this->tokens->expectType(CtTokenType::EndOfFile, nullptr))
 		{
+			this->tokens->backtrack();
 			return lhs;
 		}
 
@@ -175,6 +176,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 			auto *binary = new CtNode::BinaryOp();
 
+			std::cout << int(sym) << "\n";
 			uint prec = CtLang::binaryOpMap.at(sym);
 
 			if (prec < prev_precedence)
@@ -203,6 +205,7 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
+	std::cout << this->tokens->toString() << "\n";
 	this->source = new CtNode::Source();
 	this->startParsingFile();
 	return this->source;

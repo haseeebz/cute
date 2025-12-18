@@ -8,65 +8,69 @@
 
 void CtNodeWalker::walk(CtNode::Base *node) {
 
-  if (!node) {
-    std::cout << "(Null Node)" << std::endl;
-    return;
-  }
+	if (!node) {
+	std::cout << "(Null Node)" << std::endl;
+	return;
+	}
 
-  switch (node->nt) {
+	switch (node->nt) {
 
-  case CtNodeType::RootProgram:
-    handleRoot(static_cast<CtNode::RootProgram *>(node));
-    break;
+	case CtNodeType::RootProgram:
+	handleRoot(static_cast<CtNode::RootProgram *>(node));
+	break;
 
-  case CtNodeType::Source:
-    handleSource(static_cast<CtNode::Source *>(node));
-    break;
+	case CtNodeType::Source:
+	handleSource(static_cast<CtNode::Source *>(node));
+	break;
 
-  case CtNodeType::Function:
-    handleFunction(static_cast<CtNode::Function *>(node));
-    break;
+	case CtNodeType::Function:
+	handleFunction(static_cast<CtNode::Function *>(node));
+	break;
 
-  case CtNodeType::Declaration:
-    handleDeclaration(static_cast<CtNode::Declaration *>(node));
-    break;
+	case CtNodeType::Declaration:
+	handleDeclaration(static_cast<CtNode::Declaration *>(node));
+	break;
 
-  case CtNodeType::ExprStatement:
-    walk(static_cast<CtNode::ExprStatment *>(node)->expr);
-    break;
+	case CtNodeType::Out:
+	handleOut(static_cast<CtNode::Out *>(node));
+	break;
 
-  case CtNodeType::Int:
-    handleInt(static_cast<CtNode::Int *>(node));
-    break;
+	case CtNodeType::ExprStatement:
+	walk(static_cast<CtNode::ExprStatment *>(node)->expr);
+	break;
 
-  case CtNodeType::Float:
-    handleFloat(static_cast<CtNode::Float *>(node));
-    break;
+	case CtNodeType::Int:
+	handleInt(static_cast<CtNode::Int *>(node));
+	break;
 
-  case CtNodeType::Identifier:
-    handleIdentifier(static_cast<CtNode::Identifier *>(node));
-    break;
+	case CtNodeType::Float:
+	handleFloat(static_cast<CtNode::Float *>(node));
+	break;
 
-  case CtNodeType::BinaryOp:
-    handleBinaryOp(static_cast<CtNode::BinaryOp *>(node));
-    break;
+	case CtNodeType::Identifier:
+	handleIdentifier(static_cast<CtNode::Identifier *>(node));
+	break;
 
-  case CtNodeType::FunctionCall:
-    handleFunctionCall(static_cast<CtNode::FunctionCall *>(node));
-    break;
+	case CtNodeType::BinaryOp:
+	handleBinaryOp(static_cast<CtNode::BinaryOp *>(node));
+	break;
 
-  case CtNodeType::Assignment:
-    handleAssignment(static_cast<CtNode::Assignment *>(node));
-    break;
+	case CtNodeType::FunctionCall:
+	handleFunctionCall(static_cast<CtNode::FunctionCall *>(node));
+	break;
 
-  case CtNodeType::TypeCast:
-    handleTypeCast(static_cast<CtNode::TypeCast *>(node));
-    break;
+	case CtNodeType::Assignment:
+	handleAssignment(static_cast<CtNode::Assignment *>(node));
+	break;
 
-  default:
-    std::cout << "(Undefined Node)" << std::endl;
-    break;
-  }
+	case CtNodeType::TypeCast:
+	handleTypeCast(static_cast<CtNode::TypeCast *>(node));
+	break;
+
+	default:
+	std::cout << "(Undefined Node)" << std::endl;
+	break;
+	}
 }
 
 
@@ -135,6 +139,18 @@ void CtNodePrinter::handleDeclaration(CtNode::Declaration *node)
 {
 	this->printIndent();
 	std::cout << "(Declaration name= " << node->name << " type= " << node->type << ")\n";
+}
+
+
+void CtNodePrinter::handleOut(CtNode::Out *node)
+{
+	this->printIndent();
+	std::cout << "(Out expr=\n";
+	this->indent++;
+	this->walk(node->expr);
+	this->indent--;
+	this->printIndent();
+	std::cout << ")\n";
 }
 
 

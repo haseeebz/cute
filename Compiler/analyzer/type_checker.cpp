@@ -51,6 +51,12 @@ void CtTypeChecker::handleDeclaration(CtNode::Declaration *node)
 }
 
 
+void CtTypeChecker::handleOut(CtNode::Out *node)
+{
+	this->walk(node->expr);
+}
+
+
 void CtTypeChecker::handleAssignment(CtNode::Assignment *node)
 {
 	auto var = this->current_scope->variables[node->name->val];

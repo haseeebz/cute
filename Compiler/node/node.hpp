@@ -16,6 +16,7 @@ enum class CtNodeType
 	Function,
 
 	Declaration,
+	Out,
 	ExprStatement,
 
 	Int,
@@ -45,6 +46,7 @@ namespace CtNode
 	
 	// Statement Nodes
 	struct Declaration;
+	struct Out;
 	struct ExprStatment;
 	
 	// Expression Nodes
@@ -110,6 +112,15 @@ namespace CtNode
 		Declaration() {nt = CtNodeType::Declaration;};
 		~Declaration();
 	};
+
+
+	struct Out : Statement
+	{
+		Expression* expr;
+		Out(Expression* expr): expr(expr) {{nt = CtNodeType::Out;}};
+		~Out();
+	};
+
 
 	struct ExprStatment : Statement
 	{
@@ -218,6 +229,7 @@ class CtNodeWalker
 	virtual void handleFunction(CtNode::Function *node) = 0;
 
 	virtual void handleDeclaration(CtNode::Declaration *node) = 0;
+	virtual void handleOut(CtNode::Out *node) = 0;
 
 	virtual void handleInt(CtNode::Int *node) = 0;
 	virtual void handleFloat(CtNode::Float *node) = 0;
@@ -245,6 +257,7 @@ class CtNodePrinter: public CtNodeWalker
 	void handleFunction(CtNode::Function *node);
 
 	void handleDeclaration(CtNode::Declaration *node);
+	void handleOut(CtNode::Out *node);
 
 	void handleInt(CtNode::Int *node);
 	void handleFloat(CtNode::Float *node);
