@@ -37,3 +37,25 @@ Each version needs three sections:
 ### Tooling
 + No tooling support.
 
+
+
+## v0.0.2
+
+### Language
++ Float32 type supported.
++ Type casting added and done using `{type} expression`
++ Added `Out` instruction for basic printing.
+
+### Stdlib
++ No stdlib implemented yet.
+
+### Compiler
++ **Analyzer** implemented with two functions, name resolution and type checking.
++ **Name Resolver** capable of informing about undefined variables and repeated declaration.
++ **Type checker** can check whether variables are assigned with the correct types and whether binary operations are valid.
+
+### Engine
++ No improvement done to the engine.
+
+### Tooling
++ No tooling support.
