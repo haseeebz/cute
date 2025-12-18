@@ -53,6 +53,7 @@ Each version needs three sections:
 + **Analyzer** implemented with two functions, name resolution and type checking.
 + **Name Resolver** capable of informing about undefined variables and repeated declaration.
 + **Type checker** can check whether variables are assigned with the correct types and whether binary operations are valid.
++ **Errors** are now raised when any of the components fail.
 
 ### Engine
 + No improvement done to the engine.
