@@ -6,6 +6,9 @@ file(GLOB TOKENIZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tokenizer/*.cpp")
 file(GLOB ANALYZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/analyzer/*.cpp")
 file(GLOB EMITTER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/emitter/*.cpp")
 
+file(GLOB WRITER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/bytecode/*.cpp")
+
+
 add_library (
 	CuteCompiler
 	STATIC
@@ -15,6 +18,7 @@ add_library (
 	${TOKENIZER_SRC}
 	${ANALYZER_SRC}
 	${EMITTER_SRC}
+	${WRITER_SRC}
     compiler.cpp 
 
 )
