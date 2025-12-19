@@ -14,6 +14,7 @@ namespace CtError
 		SyntaxError = 0,
 		NameError   = 1,
 		TypeError   = 2,
+		CompilerError = 3
 	};
 
 	struct Error
@@ -32,6 +33,7 @@ namespace CtError
 			"SyntaxError",
 			"NameError",
 			"TypeError"
+			"CompilerError"
 		};
 
 		error.name = error_name[int(type)];
