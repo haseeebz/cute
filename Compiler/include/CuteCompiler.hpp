@@ -4,6 +4,7 @@
 #include "../parser/parser.hpp"
 #include "../analyzer/analyzer.hpp"
 #include "../emitter/emitter.hpp"
+#include "../bytecode/gen.hpp"
 
 
 #pragma once
@@ -15,6 +16,7 @@ class CuteCompiler
 	CtParser parser;
 	CtAnalyzer analyzer;
 	CtEmitter emitter;
+	CtBytecodeWriter writer;
 
 	public:
 

@@ -1,15 +1,16 @@
 #include "CuteByte.h"
 #include "../node/node.hpp"
 
+#include "../bytecode/gen.hpp"
+
 #pragma once
 
 class CtEmitter : CtNodeWalker
 {
-	ctProgramImage img;
-	std::vector<ctInstrSize> instrs;
-	std::map<std::string, int> variables;
-
-	void write(std::string outfile);
+	CtCodeGen::Program* program;
+	CtCodeGen::Function* current_function;
+	
+	std::map<std::string, uint> variables;
 
 	void handleRoot(CtNode::RootProgram *node);
 	void handleSource(CtNode::Source *node);
@@ -21,7 +22,7 @@ class CtEmitter : CtNodeWalker
 
 	
 	void handleInt(CtNode::Int *node);
-	void handleFloat(CtNode::Float *node) {};
+	void handleFloat(CtNode::Float *node);
 	void handleBinaryOp(CtNode::BinaryOp *node);
 	void handleIdentifier(CtNode::Identifier *node);
 	void handleFunctionCall(CtNode::FunctionCall *node) {};
@@ -30,5 +31,5 @@ class CtEmitter : CtNodeWalker
 
 	public:
 
-	void emit(CtNode::RootProgram *root, std::string outfile);
+	CtCodeGen::Program* emit(CtNode::RootProgram *root);
 };
