@@ -15,12 +15,9 @@ void CtCodeGen::AddOp::emit(CtBytecodeWriter* writer)
 
     switch (this->op_type)
     {
-        case CtCodeGen::OpType::i32: instr = instrAddI32; break;
-        case CtCodeGen::OpType::i64: instr = instrAddI64; break;
-        case CtCodeGen::OpType::u32: instr = instrAddI32; break; // unsigned treated same
-        case CtCodeGen::OpType::u64: instr = instrAddI64; break;
-        case CtCodeGen::OpType::f32: instr = instrAddF32; break;
-        case CtCodeGen::OpType::f64: instr = instrAddF64; break;
+        case CtCodeGen::OpType::Int:   instr = instrAddI; break;
+        case CtCodeGen::OpType::UInt:  instr = instrAddI; break; // unsigned treated same
+        case CtCodeGen::OpType::Float: instr = instrAddF; break;
     }
 
     writer->writebackInstr(instr);
@@ -33,12 +30,9 @@ void CtCodeGen::SubOp::emit(CtBytecodeWriter* writer)
 
     switch (this->op_type)
     {
-        case CtCodeGen::OpType::i32: instr = instrSubI32; break;
-        case CtCodeGen::OpType::i64: instr = instrSubI64; break;
-        case CtCodeGen::OpType::u32: instr = instrSubI32; break;
-        case CtCodeGen::OpType::u64: instr = instrSubI64; break;
-        case CtCodeGen::OpType::f32: instr = instrSubF32; break;
-        case CtCodeGen::OpType::f64: instr = instrSubF64; break;
+        case CtCodeGen::OpType::Int:   instr = instrSubI; break;
+        case CtCodeGen::OpType::UInt:  instr = instrSubI; break;
+        case CtCodeGen::OpType::Float: instr = instrSubF; break;
         default: break;
     }
 
@@ -52,12 +46,9 @@ void CtCodeGen::MulOp::emit(CtBytecodeWriter* writer)
 
     switch (this->op_type)
     {
-        case CtCodeGen::OpType::i32: instr = instrMulI32; break;
-        case CtCodeGen::OpType::i64: instr = instrMulI64; break;
-        case CtCodeGen::OpType::u32: instr = instrMulI32; break;
-        case CtCodeGen::OpType::u64: instr = instrMulI64; break;
-        case CtCodeGen::OpType::f32: instr = instrMulF32; break;
-        case CtCodeGen::OpType::f64: instr = instrMulF64; break;
+        case CtCodeGen::OpType::Int:   instr = instrMulI; break;
+        case CtCodeGen::OpType::UInt:  instr = instrMulI; break;
+        case CtCodeGen::OpType::Float: instr = instrMulF; break;
         default: break;
     }
 
@@ -71,12 +62,9 @@ void CtCodeGen::DivOp::emit(CtBytecodeWriter* writer)
 
     switch (this->op_type)
     {
-        case CtCodeGen::OpType::i32: instr = instrDivI32; break;
-        case CtCodeGen::OpType::i64: instr = instrDivI64; break;
-        case CtCodeGen::OpType::u32: instr = instrDivU32; break;
-        case CtCodeGen::OpType::u64: instr = instrDivU64; break;
-        case CtCodeGen::OpType::f32: instr = instrDivF32; break;
-        case CtCodeGen::OpType::f64: instr = instrDivF64; break;
+        case CtCodeGen::OpType::Int:   instr = instrDivI; break;
+        case CtCodeGen::OpType::UInt:  instr = instrDivU; break;
+        case CtCodeGen::OpType::Float: instr = instrDivF; break;
         default: break;
     }
 
@@ -90,10 +78,8 @@ void CtCodeGen::ModOp::emit(CtBytecodeWriter* writer)
 
     switch (this->op_type)
     {
-        case CtCodeGen::OpType::i32: instr = instrModI32; break;
-        case CtCodeGen::OpType::u32: instr = instrModU32; break;
-        case CtCodeGen::OpType::i64: instr = instrModI64; break;
-        case CtCodeGen::OpType::u64: instr = instrModU64; break;
+        case CtCodeGen::OpType::Int:  instr = instrModI; break;
+        case CtCodeGen::OpType::UInt: instr = instrModU; break;
         default: return;
     }
 
@@ -131,8 +117,6 @@ void CtCodeGen::BitWiseOp::emit(CtBytecodeWriter* writer)
         case BitwiseOpType::LShift:      instr = instrBitLShift; break;
         case BitwiseOpType::RShift:      instr = instrBitRShift; break;
         case BitwiseOpType::RaShift:     instr = instrBitRaShift; break;
-        case BitwiseOpType::RShift32:    instr = instrBitRShift32; break;
-        case BitwiseOpType::RaShift32:   instr = instrBitRaShift32; break;
 		break;
 	}
 
@@ -146,12 +130,9 @@ void CtCodeGen::CmpOp::emit(CtBytecodeWriter* writer)
 
 	switch (this->op_type)
 	{
-        case OpType::i32:	instr = instrCmpI32; break;
-        case OpType::i64:   instr = instrCmpI64; break;
-        case OpType::u32:   instr = instrCmpI32; break; // FIX, we need CmpU32
-        case OpType::u64:   instr = instrCmpI64; break;
-        case OpType::f32:   instr = instrCmpF32; break;
-        case OpType::f64:   instr = instrCmpF64; break;
+        case OpType::Int:     instr = instrCmpI; break;
+        case OpType::UInt:    instr = instrCmpU; break;
+        case OpType::Float:   instr = instrCmpF; break; 
 	}
 
 	writer->writebackInstr(instr);
@@ -172,40 +153,34 @@ void CtCodeGen::CmpOp::emit(CtBytecodeWriter* writer)
 
 void CtCodeGen::LoadConstOp::emit(CtBytecodeWriter* writer)
 {
+	ctInstr instr;
 	ctInstrSize packed[8];
 
 
 	switch (this->op_type)
 	{
-        case OpType::i32:	
-        case OpType::u32:	
-		writer->writebackInstr(instrLoadCoI32);
-		break;
-        case OpType::f32:
-		writer->writebackInstr(instrLoadCoF32);
-		break;
-		
-		case OpType::i64:
-		case OpType::u64:
+        case OpType::Int:	
+        case OpType::UInt:	
+
 		writer->writebackInstr(instrLoadCoI64);
 		break;
-        case OpType::f64:
+        case OpType::Float:
 		writer->writebackInstr(instrLoadCoF64);
 		break;
 	}
 
 	switch (this->op_type)
 	{
-        case OpType::i32:	
-        case OpType::u32:	
-        case OpType::f32:
-		ctProgramImage_packInt32((int32_t*) &this->i32, packed);
+        case OpType::Int:
+		ctProgramImage_packInt64((int64_t*) &this->i64, packed);
+		break;
+
+		case OpType::UInt:
+		ctProgramImage_packInt64((int64_t*) &this->u64, packed);
 		break;
 		
-		case OpType::i64:
-		case OpType::u64:
-        case OpType::f64:
-		ctProgramImage_packInt64((int64_t*) &this->i64, packed);
+		case OpType::Float:
+		ctProgramImage_packInt64((int64_t*) &this->f64, packed);
 		break;
 	}
 
@@ -219,11 +194,9 @@ void CtCodeGen::LoadOp::emit(CtBytecodeWriter* writer)
 
     switch (this->op_type)
     {
-        case CtCodeGen::OpType::i32: instr = instrLoadI32; break;
-        case CtCodeGen::OpType::i64: instr = instrLoadI64; break;
-        case CtCodeGen::OpType::f32: instr = instrLoadF32; break;
-        case CtCodeGen::OpType::f64: instr = instrLoadF64; break;
-		default:                     instr = instrLoadI64; break;
+        case CtCodeGen::OpType::Int:   instr = instrLoadI; break;
+        case CtCodeGen::OpType::UInt:  instr = instrLoadI; break;
+        case CtCodeGen::OpType::Float: instr = instrLoadF; break;
     }
 
     writer->writebackInstr(instr);
@@ -241,11 +214,9 @@ void CtCodeGen::StoreOp::emit(CtBytecodeWriter* writer)
 
     switch (this->op_type)
     {
-        case CtCodeGen::OpType::i32: instr = instrStoreI32; break;
-        case CtCodeGen::OpType::i64: instr = instrStoreI64; break;
-        case CtCodeGen::OpType::f32: instr = instrStoreF32; break;
-        case CtCodeGen::OpType::f64: instr = instrStoreF64; break;
-		default:                     instr = instrStoreI64; break;
+        case CtCodeGen::OpType::Int:   instr = instrStoreI; break;
+        case CtCodeGen::OpType::UInt:  instr = instrStoreI; break;
+        case CtCodeGen::OpType::Float: instr = instrStoreF; break;
     }
 
     writer->writebackInstr(instr);
@@ -262,11 +233,9 @@ void CtCodeGen::CopyOp::emit(CtBytecodeWriter* writer)
 
     switch (this->op_type)
     {
-        case CtCodeGen::OpType::i32: instr = instrCopyI32; break;
-        case CtCodeGen::OpType::i64: instr = instrCopyI64; break;
-        case CtCodeGen::OpType::f32: instr = instrCopyF32; break;
-        case CtCodeGen::OpType::f64: instr = instrCopyF64; break;
-		default:                     instr = instrCopyI64; break;
+        case CtCodeGen::OpType::Int:   instr = instrCopyI; break;
+        case CtCodeGen::OpType::UInt:  instr = instrCopyI; break;
+        case CtCodeGen::OpType::Float: instr = instrCopyF; break;
     }
 
     writer->writebackInstr(instr);
@@ -285,33 +254,16 @@ void CtCodeGen::TypeCastOp::emit(CtBytecodeWriter* writer)
 {
 	static const std::map<std::pair<CtCodeGen::OpType, CtCodeGen::OpType>, ctInstr> instr_map
 	{
-		// f32 - i32
-		{{CtCodeGen::OpType::f32, CtCodeGen::OpType::i32}, instrF32I32}, 
-		{{CtCodeGen::OpType::i32, CtCodeGen::OpType::f32}, instrI32F32},
+		// float - int
+		{{CtCodeGen::OpType::Int, CtCodeGen::OpType::Float}, instrItoF}, 
+		{{CtCodeGen::OpType::Float, CtCodeGen::OpType::Int}, instrFtoI},
+		
+		// int - uint
+		{{CtCodeGen::OpType::Int, CtCodeGen::OpType::UInt}, instrNull}, 
+		{{CtCodeGen::OpType::UInt, CtCodeGen::OpType::Int}, instrNull},
 
-		// f64 - i64
-		{{CtCodeGen::OpType::f64, CtCodeGen::OpType::i64}, instrF64I64},
-		{{CtCodeGen::OpType::i64, CtCodeGen::OpType::f64}, instrI64F64},
-
-		// f32 - f64
-		{{CtCodeGen::OpType::f32, CtCodeGen::OpType::f64}, instrF32F64},
-		{{CtCodeGen::OpType::f64, CtCodeGen::OpType::f32}, instrF64F32},
-
-		// i32 - i64
-		{{CtCodeGen::OpType::i32, CtCodeGen::OpType::i64}, instrI32I64},
-		{{CtCodeGen::OpType::i64, CtCodeGen::OpType::i32}, instrI64I32},
-
-		// u32 - u64
-		{{CtCodeGen::OpType::u32, CtCodeGen::OpType::u64}, instrI32I64},
-		{{CtCodeGen::OpType::u64, CtCodeGen::OpType::u32}, instrI64I32},
-
-		// i32 - u32
-		{{CtCodeGen::OpType::u32, CtCodeGen::OpType::i32}, instrNull},
-		{{CtCodeGen::OpType::i32, CtCodeGen::OpType::u32}, instrNull},
-
-		// i64 - u64
-		{{CtCodeGen::OpType::u64, CtCodeGen::OpType::i64}, instrNull},
-		{{CtCodeGen::OpType::i64, CtCodeGen::OpType::u64}, instrNull},
+		{{CtCodeGen::OpType::UInt, CtCodeGen::OpType::Float}, instrItoF}, 
+		{{CtCodeGen::OpType::Float, CtCodeGen::OpType::UInt}, instrFtoI},
 	};
 
 	if (instr_map.contains({this->from_type, this->to_type}))

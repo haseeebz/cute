@@ -38,9 +38,9 @@ static void outHandler(int fmt, CtAtom *atom)
 	{
 		case 0:  goto binary; break;
 		case 1:  printf("0x%016lX\n", atom->u64); break;
-		case 3:  printf("%ld\n", atom->i64); break;
-		case 5:  printf("%lu\n", atom->u64); break;
-		case 7:  printf("%lf\n", atom->f64); break;
+		case 2:  printf("%ld\n", atom->i64); break;
+		case 3:  printf("%lu\n", atom->u64); break;
+		case 4:  printf("%lf\n", atom->f64); break;
 		default: printf("Invalid Format for Out instruction: %d\n", fmt); break;
 	}
 	return;

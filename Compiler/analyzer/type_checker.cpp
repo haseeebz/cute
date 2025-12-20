@@ -77,13 +77,13 @@ void CtTypeChecker::handleAssignment(CtNode::Assignment *node)
 
 void CtTypeChecker::handleInt(CtNode::Int *node)
 {
-	if (CtSpec::strToI64(node->raw, node->val.i64))
+	if (CtSpec::strToInt(node->raw, node->val.i64))
 	{
-		node->expr_type = primitiveTypes["i64"];
+		node->expr_type = primitiveTypes["int"];
 	}
-	else if (CtSpec::strToU64(node->raw, node->val.u64))
+	else if (CtSpec::strToUInt(node->raw, node->val.u64))
 	{
-		node->expr_type = primitiveTypes["u64"];
+		node->expr_type = primitiveTypes["uint"];
 	}
 	else 
 	{
@@ -97,9 +97,9 @@ void CtTypeChecker::handleInt(CtNode::Int *node)
 
 void CtTypeChecker::handleFloat(CtNode::Float *node)
 {
-	if (CtSpec::strToF64(node->raw, node->val.f64))
+	if (CtSpec::strToFloat(node->raw, node->val.f64))
 	{
-		node->expr_type = primitiveTypes["f64"];
+		node->expr_type = primitiveTypes["float"];
 	}
 	else 
 	{

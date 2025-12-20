@@ -10,13 +10,10 @@
 
 static inline std::map<std::string, CtSpec::TypeInfo*> primitiveTypes =
 {
-	{"i32",  new CtSpec::TypeInfo("i32", CtSpec::PrimitiveT::I32)},
-	{"i64",  new CtSpec::TypeInfo("i64", CtSpec::PrimitiveT::I64)},
-	{"u32",  new CtSpec::TypeInfo("u32", CtSpec::PrimitiveT::U32)},
-	{"u64",  new CtSpec::TypeInfo("u64", CtSpec::PrimitiveT::U64)},
-	{"f32",  new CtSpec::TypeInfo("u32", CtSpec::PrimitiveT::F32)},
-	{"f64",  new CtSpec::TypeInfo("f64", CtSpec::PrimitiveT::F64)},
-	{"bool", new CtSpec::TypeInfo("bool", CtSpec::PrimitiveT::Bool)},
+	{"int",    new CtSpec::TypeInfo("int", CtSpec::PrimitiveT::Int)},
+	{"uint",   new CtSpec::TypeInfo("uint", CtSpec::PrimitiveT::UInt)},
+	{"float",  new CtSpec::TypeInfo("float", CtSpec::PrimitiveT::Float)},
+	{"bool",   new CtSpec::TypeInfo("bool", CtSpec::PrimitiveT::Bool)},
 };
 
 

@@ -1,7 +1,6 @@
 #include "../node/node.hpp"
 
 #include <iostream>
-#include <string>
 
 #include "../spec/spec.hpp"
 #include "emitter.hpp"
@@ -9,12 +8,9 @@
 
 static inline std::map<CtSpec::PrimitiveT, CtCodeGen::OpType> op_type_map =
 {
-    {CtSpec::PrimitiveT::I32, CtCodeGen::OpType::i32},
-    {CtSpec::PrimitiveT::I64, CtCodeGen::OpType::i64},
-    {CtSpec::PrimitiveT::U32, CtCodeGen::OpType::u32},
-    {CtSpec::PrimitiveT::U64, CtCodeGen::OpType::u64},
-    {CtSpec::PrimitiveT::F32, CtCodeGen::OpType::f32},
-    {CtSpec::PrimitiveT::F64, CtCodeGen::OpType::f64},
+    {CtSpec::PrimitiveT::Int,   CtCodeGen::OpType::Int},
+    {CtSpec::PrimitiveT::UInt,  CtCodeGen::OpType::UInt},
+    {CtSpec::PrimitiveT::Float, CtCodeGen::OpType::Float}
 };
 
 
@@ -99,12 +95,9 @@ void CtEmitter::handleOut(CtNode::Out *node)
 
 	static std::map<CtSpec::PrimitiveT, int> format_specfier =
 	{
-		{CtSpec::PrimitiveT::I32, 2},
-		{CtSpec::PrimitiveT::I64, 3},
-		{CtSpec::PrimitiveT::U32, 4},
-		{CtSpec::PrimitiveT::U64, 5},
-		{CtSpec::PrimitiveT::F32, 6},
-		{CtSpec::PrimitiveT::F64, 7},
+		{CtSpec::PrimitiveT::Int,   2},
+		{CtSpec::PrimitiveT::UInt,  3},
+		{CtSpec::PrimitiveT::Float, 4},
 	};
 
 	this->current_function->units.push_back(new CtCodeGen::Out(format_specfier[node->expr->expr_type->primitive]));

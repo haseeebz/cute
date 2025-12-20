@@ -41,10 +41,10 @@ namespace CtCodeGen
 	};
 
 
-    enum class OpType         {i32, i64, u32, u64, f32, f64};
+    enum class OpType         {Int, UInt, Float};
 
 	enum class LogicOpType    {And, Or, Not, Xor};
-	enum class BitwiseOpType  {And, Or, Not, Xor, LShift, RShift, RaShift, RShift32, RaShift32};
+	enum class BitwiseOpType  {And, Or, Not, Xor, LShift, RShift, RaShift};
 	enum class CmpType        {Eq, Ue, Gt, Ge, Lt, Le};
 
 	enum class JumpOpType       {Norm, True, False};
@@ -153,21 +153,15 @@ namespace CtCodeGen
 		OpType op_type;
 		union
 		{
-			int32_t i32;
-			uint32_t u32;
 			int64_t i64;
 			uint64_t u64;
-			float f32;
 			double f64;
 		};
 
 		// constructors for each type
-		LoadConstOp(int32_t val)   : op_type(OpType::i32), i32(val)   { ut = UnitType::LoadOp; }
-		LoadConstOp(uint32_t val)  : op_type(OpType::u32), u32(val)   { ut = UnitType::LoadOp; }
-		LoadConstOp(int64_t val)   : op_type(OpType::i64), i64(val)   { ut = UnitType::LoadOp; }
-		LoadConstOp(uint64_t val)  : op_type(OpType::u64), u64(val)   { ut = UnitType::LoadOp; }
-		LoadConstOp(float val)     : op_type(OpType::f32), f32(val)   { ut = UnitType::LoadOp; }
-		LoadConstOp(double val)    : op_type(OpType::f64), f64(val)   { ut = UnitType::LoadOp; }
+		LoadConstOp(int64_t val)   : op_type(OpType::Int),   i64(val)   { ut = UnitType::LoadOp; }
+		LoadConstOp(uint64_t val)  : op_type(OpType::UInt),  u64(val)   { ut = UnitType::LoadOp; }
+		LoadConstOp(double val)    : op_type(OpType::Float), f64(val)   { ut = UnitType::LoadOp; }
 		void emit(CtBytecodeWriter* writer);
 	};
 

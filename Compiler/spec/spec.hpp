@@ -32,7 +32,7 @@ namespace CtSpec
 	enum class TypeKind {Primitive, Container, Function};
 
 
-	enum class PrimitiveT {I32, I64, U32, U64, F32, F64, Bool};
+	enum class PrimitiveT {Int, UInt, Float, Bool};
 
 
 	struct ContainerT
@@ -86,13 +86,8 @@ namespace CtSpec
 
 
 
-	bool strToI32(std::string& str, int32_t& i);
-	bool strToI64(std::string& str, int64_t& i);
-
-	bool strToU32(std::string& str, uint32_t& i);
-	bool strToU64(std::string& str, uint64_t& i);
-
-	bool strToF32(std::string& str, float& i);
-	bool strToF64(std::string& str, double& i);
+	bool strToInt(std::string& str, int64_t& i);
+	bool strToUInt(std::string& str, uint64_t& i);
+	bool strToFloat(std::string& str, double& i);
 
 }
