@@ -40,10 +40,10 @@ typedef enum
     instrStoreF        = 0x25, 
 
     instrGStoreI       = 0x26, 
-    instrGStoreF       = 0x26, 
+    instrGStoreF       = 0x27, 
 
-    instrCopyI         = 0x27, 
-    instrCopyF         = 0x28, 
+    instrCopyI         = 0x28, 
+    instrCopyF         = 0x29, 
 
     instrAddI          = 0xA0, 
     instrAddF          = 0xA1, 
