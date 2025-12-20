@@ -60,3 +60,25 @@ Each version needs three sections:
 
 ### Tooling
 + No tooling support.
+
+
+## v0.0.3
+
+### Language
++ All 32-bit type variants removed for simplicity. They ended up taking the same amount of space in the engine as 64-bit variant so it seemed useless. 
++ Cute now supports three primitive types: int, uint, float.
+
+### Stdlib
++ Nope
+
+### Compiler 
++ `CtSpec` now defines the language's semantics. Stuff like binary operations and types.
++ Added better error messages.
+
+### Engine
++ **MAJOR** engine changes.
++ Instruction set redefined to accomodate only 64-bit primitives.
++ Added the previosly missing `CmpU` instruction for unsigned ints.
+
+### Tooling
++ What's that?
