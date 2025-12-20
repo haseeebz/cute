@@ -55,7 +55,7 @@ typedef enum
     instrMulF          = 0xA5, 
 
     instrDivI          = 0xA6, 
-    instrDivF          = 0xA6, 
+    instrDivF          = 0xA7, 
     instrDivU          = 0xA8, 
 
     instrModI          = 0xA9, 
