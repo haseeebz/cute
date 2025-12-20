@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-#include "../spec/lang.hpp"
+#include "lang.hpp"
 #include "token.hpp"
 
 

@@ -1,5 +1,4 @@
-#include "../spec/lang.hpp"
-#include "../spec/scope.hpp"
+#include "../spec/spec.hpp"
 
 #include <cstdint>
 #include <map>
@@ -95,7 +94,7 @@ namespace CtNode
 		std::vector<Declaration*> parameters;
 		std::vector<Statement*>   statements;
 
-		CtScope::Scope* scope;
+		//CtScope::Scope* scope;
 
 		Function() {{nt = CtNodeType::Function;}};
 		~Function();
@@ -179,11 +178,11 @@ namespace CtNode
 
 	struct BinaryOp : Expression
 	{
-		CtLang::Symbol op;
+		CtSpec::BinaryOpType op;
 		Expression* left;
 		Expression* right;
 		BinaryOp() {nt = CtNodeType::BinaryOp;};
-		BinaryOp(CtLang::Symbol op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
+		BinaryOp(CtSpec::BinaryOpType op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
 		~BinaryOp();
 	};
 

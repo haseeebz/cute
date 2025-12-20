@@ -1,25 +1,16 @@
 #include <map>
 #include <string>
 
-
-
-
 #pragma once 
-
 
 namespace CtLang
 {
 
-	// Keywords
-
-
 	enum class KeyWord
 	{
-		// declaration
 		Let,
 		Out,
 
-		// control flow
 		If,
 		Else,
 		While,
@@ -28,8 +19,7 @@ namespace CtLang
 		Break,
 		Continue,
 
-		// Complex
-		FunctionDef
+		Func
 	};
 
 
@@ -46,7 +36,7 @@ namespace CtLang
 		{"break",    KeyWord::Break},
 		{"continue", KeyWord::Continue},
 
-		{"func",     KeyWord::FunctionDef},
+		{"func",     KeyWord::Func},
 	};
 
 
@@ -122,17 +112,6 @@ namespace CtLang
 
 		{ "'",  Symbol::SingleQuote },
 		{ "\"", Symbol::DoubleQuote }
-	};
-
- 
-
-	inline std::map<Symbol, uint> binaryOpMap =
-	{
-		{Symbol::Plus,  	 1},
-		{Symbol::Minus, 	 1},
-		{Symbol::Star,  	 2},
-		{Symbol::Slash,      2},
-		{Symbol::Percentage, 2}
 	};
 
 }

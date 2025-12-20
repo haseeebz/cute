@@ -1,15 +1,25 @@
+#include "../tokenizer/lang.hpp"
+
 #include "../node/node.hpp"
 
 #include "../tokenizer/token.hpp"
-#include "../spec/lang.hpp"
 #include "../spec/error.hpp"
 
-#include <exception>
+#include "../spec/spec.hpp"
+
 #include <iostream>
 
 #include "parser.hpp"
 #include "format"
 
+
+static inline std::map<CtLang::Symbol, CtSpec::BinaryOpType> symToBinaryOp =
+{
+	{CtLang::Symbol::Plus,  CtSpec::BinaryOpType::Add},
+	{CtLang::Symbol::Minus, CtSpec::BinaryOpType::Sub},
+	{CtLang::Symbol::Star,  CtSpec::BinaryOpType::Mul},
+	{CtLang::Symbol::Slash, CtSpec::BinaryOpType::Div},
+};
 
 
 void CtParser::startParsingFile()
@@ -119,8 +129,8 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	}
 	else if (this->tokens->expectSymbol(CtLang::Symbol::Minus))
 	{
-		lhs = this->parseExpression(CtLang::binaryOpMap.size());
-		lhs = new CtNode::BinaryOp(CtLang::Symbol::Minus, new CtNode::Int("0"), lhs); // works, meh
+		lhs = this->parseExpression(CtSpec::binaryOpPrecedence.size());
+		lhs = new CtNode::BinaryOp(CtSpec::BinaryOpType::Sub, new CtNode::Int("0"), lhs); // works, meh
 	}
 	else if (this->tokens->expectSymbol(CtLang::Symbol::LeftBraces))
 	{
@@ -128,7 +138,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 		this->tokens->expectSymbol(CtLang::Symbol::RightBraces);
 		auto cast = new CtNode::TypeCast();
 		cast->to_type = str;
-		cast->expr = this->parseExpression(CtLang::binaryOpMap.size());
+		cast->expr = this->parseExpression(CtSpec::binaryOpPrecedence.size());
 		// What this will do is grab the next literal.
 
 		lhs = cast;
@@ -174,18 +184,17 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 				return assign;
 			}
 
-			auto *binary = new CtNode::BinaryOp();
+			auto* binary = new CtNode::BinaryOp();
 
 			std::cout << int(sym) << "\n";
-			uint prec = CtLang::binaryOpMap.at(sym);
+			binary->op = symToBinaryOp.at(sym);
+			uint prec = CtSpec::binaryOpPrecedence[binary->op];
 
 			if (prec < prev_precedence)
 			{
 				this->tokens->backtrack();
 				return lhs;
 			}
-
-			binary->op = sym;
 			binary->left = lhs;
 			binary->right = this->parseExpression(prec);
 
