@@ -59,8 +59,9 @@ CtNode::Statement* CtParser::parseStatement()
 	{
 		switch (token.val.keyword)
 		{
-			case CtLang::KeyWord::Let: stmt = this->parseDeclaration(); break;
-			case CtLang::KeyWord::Out: stmt = new CtNode::Out(this->parseExpression(0)); break;
+			case CtLang::KeyWord::Let:  stmt = this->parseDeclaration(); break;
+			case CtLang::KeyWord::Out:  stmt = new CtNode::Out(this->parseExpression(0)); break;
+			case CtLang::KeyWord::Loop: stmt = this->parseLoop(); break;
 			default: CtError::raise(
 				CtError::ErrorType::SyntaxError, 
 				std::format("Unimplemented Keyword: {}", this->tokens->viewToken(&token))
@@ -74,6 +75,7 @@ CtNode::Statement* CtParser::parseStatement()
 	if (!expr) {return nullptr;}
 
 	stmt = new CtNode::ExprStatment(expr);
+	this->tokens->expectType(CtTokenType::EndOfLine, nullptr);
 	return stmt;
 }
 
@@ -100,6 +102,33 @@ CtNode::Declaration* CtParser::parseDeclaration()
 	return dec;
 };
 
+
+
+CtNode::Loop* CtParser::parseLoop()
+{
+	auto loop = new CtNode::Loop();
+
+	while (this->tokens->expectType(CtTokenType::EndOfLine, nullptr)) {continue;};
+
+	if (!this->tokens->expectSymbol(CtLang::Symbol::LeftBracket))
+	{
+		CtError::raise(
+			CtError::ErrorType::SyntaxError, 
+			"Expected '['"
+		);
+	}
+
+	while (true)
+	{
+		if (this->tokens->expectSymbol(CtLang::Symbol::RightBracket)) {break;}
+
+		CtNode::Statement* stmt = this->parseStatement();
+		if (stmt == nullptr) {break;}
+		loop->block.push_back(stmt);
+	}
+
+	return loop;
+}
 
 
 
@@ -168,6 +197,13 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 			return lhs;
 		}
 
+		if (this->tokens->expectSymbol(CtLang::Symbol::RightBracket))
+		{
+			this->tokens->backtrack();
+			return lhs;
+		}
+
+
 		if (this->tokens->getSymbol(&sym))
 		{
 			if (sym == CtLang::Symbol::RightParan)
@@ -212,6 +248,7 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
+	std::cout << this->tokens->toString() << "\n";
 	this->source = new CtNode::Source();
 	this->startParsingFile();
 	return this->source;

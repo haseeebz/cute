@@ -108,7 +108,7 @@ void ctEngine_exec(ctContext *ctx)
         case instrOut:
 			extractInt32(&instrs[ctx->pc], &pts);
 			ctx->pc += 4;
-			a1 = ctx_peekExeAtom(ctx);
+			a1 = ctx_popExeAtom(ctx);
 			outHandler(pts, &a1);
 			break;
 

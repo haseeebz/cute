@@ -25,7 +25,7 @@ Lighter version of ExitEngine, just ends the current state. For the Engine to en
 
 ### instrOut
 
-Operands: [4 bytes] | Pops: 0 | Loads: 0
+Operands: [4 bytes] | Pops: 1 | Loads: 0
 
 Prints the contents of the last atom. The operand is the type specifier. This is for testing purposes.
 

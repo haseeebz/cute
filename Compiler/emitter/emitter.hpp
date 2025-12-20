@@ -19,6 +19,7 @@ class CtEmitter : CtNodeWalker
 
 	void handleDeclaration(CtNode::Declaration *node);
 	void handleOut(CtNode::Out *node);
+	void handleLoop(CtNode::Loop* node);
 
 	
 	void handleInt(CtNode::Int *node);

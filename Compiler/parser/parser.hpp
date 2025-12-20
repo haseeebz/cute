@@ -22,7 +22,7 @@ class CtParser
 	CtNode::Expression* parseExpression(uint prev_precedence = 0);
 
 	CtNode::Declaration* parseDeclaration();
-	CtNode::Assignment* parseAssignment();
+	CtNode::Loop* parseLoop();
 
 	public:
 

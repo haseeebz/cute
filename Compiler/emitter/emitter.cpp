@@ -104,6 +104,21 @@ void CtEmitter::handleOut(CtNode::Out *node)
 }
 
 
+void CtEmitter::handleLoop(CtNode::Loop* node)
+{
+	auto station = new CtCodeGen::StationOp(this->current_function->stations.size());
+	this->current_function->units.push_back(station);
+	
+	for (auto stmt: node->block)
+	{
+		this->walk(stmt);
+	}
+
+	auto jump = new CtCodeGen::JumpOp(station->id, CtCodeGen::JumpOpType::Norm);
+	this->current_function->units.push_back(jump);
+}
+
+
 void CtEmitter::handleAssignment(CtNode::Assignment *node)
 {
 	this->walk(node->value);
