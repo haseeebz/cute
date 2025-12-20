@@ -1,7 +1,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <assert.h>
 
 
 // Definition of Cute Atom, the singular unit for all storage within the engine
@@ -18,55 +17,50 @@
 extern "C" {
 #endif
 
-typedef int32_t  ctI32;
-typedef uint32_t ctU32;
-typedef int64_t  ctI64;
-typedef uint64_t ctU64;
-typedef float    ctF32;
-typedef double   ctF64;
-typedef size_t   ctRef;
+
+struct CtAtom;
+typedef struct CtAtom CtAtom;
 
 
-#define mCtBytecast(src, dest) \
-static_assert(sizeof(*dest) == sizeof(*src), "Invalid bytecast! Trying to copy bytes between operands of different sizes!"); \
-memcpy(dest, src, sizeof(*src));
+typedef struct 
+{
+	uint32_t type_id;
+
+	CtAtom* fields;
+	uint32_t field_count;
+} CtContainer;
 
 
-// Atom Types
+// Atom Def
 
 typedef enum
 {
 
-    typeInt32,
-    typeInt64,
-    typeFloat32,
-    typeFloat64,
-    typeInt8
+	atomInt,
+	atomFloat,
+	atomBool,
+	atomContainer
 
 } AtomType;
 
 
-
-// Main Atom def
-
-struct _ctAtom
+struct CtAtom
 {
+	AtomType type;
+    
     union 
     {
-        ctI32     i32;
-		ctU32	  u32;	
-		ctI64     i64;
-		ctU64     u64;
-        ctF32     f32;
-		ctF64     f64;
-		ctRef     ref;
-		int8_t    by8;
+		int64_t           i64;
+		uint64_t          u64;
+		double            f64;
+		int64_t           b;
+		CtContainer*      con;
     };
-    
+	
 };
 
 
-typedef struct _ctAtom ctAtom;
+
 
 #ifdef __cplusplus
 }
