@@ -123,7 +123,6 @@ void CtEmitter::handleIdentifier(CtNode::Identifier *node)
 
 void CtEmitter::handleTypeCast(CtNode::TypeCast *node)
 {
-	std::cout << node->expr->expr_type->name << " " << node->expr_type->name << std::endl; 
 	this->walk(node->expr);
 	this->current_function->units.push_back(
 		new CtCodeGen::TypeCastOp(op_type_map[node->expr->expr_type->primitive], op_type_map[node->expr_type->primitive])

@@ -124,7 +124,6 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	}
 	else if (this->tokens->expectSymbol(CtLang::Symbol::LeftParan))
 	{
-		std::cout << "THIS should run\n";
 		lhs = this->parseExpression(0);
 	}
 	else if (this->tokens->expectSymbol(CtLang::Symbol::Minus))
@@ -186,7 +185,6 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 			auto* binary = new CtNode::BinaryOp();
 
-			std::cout << int(sym) << "\n";
 			binary->op = symToBinaryOp.at(sym);
 			uint prec = CtSpec::binaryOpPrecedence[binary->op];
 
@@ -214,7 +212,6 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
-	std::cout << this->tokens->toString() << "\n";
 	this->source = new CtNode::Source();
 	this->startParsingFile();
 	return this->source;

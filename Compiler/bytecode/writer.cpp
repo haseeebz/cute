@@ -80,7 +80,6 @@ void CtBytecodeWriter::makeImage(std::string outfile)
 	img.instrs = this->program->instrs.data();
 
 	ctImageError code = ctProgramImage_write(&this->img, outfile.data());
-	std::cout << "Image should be written" << code << "\n";
 }
 
 
