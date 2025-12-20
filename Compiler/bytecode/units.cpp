@@ -1,8 +1,10 @@
 #include "CuteByte.h"
-#include <cstdint>
+#include <format>
 #include <map>
 
 #include "gen.hpp"
+
+#include "../spec/error.hpp"
 
 
 
@@ -283,21 +285,51 @@ void CtCodeGen::TypeCastOp::emit(CtBytecodeWriter* writer)
 {
 	static const std::map<std::pair<CtCodeGen::OpType, CtCodeGen::OpType>, ctInstr> instr_map
 	{
-		{{CtCodeGen::OpType::f32, CtCodeGen::OpType::i32}, instrF32I32},
+		// f32 - i32
+		{{CtCodeGen::OpType::f32, CtCodeGen::OpType::i32}, instrF32I32}, 
 		{{CtCodeGen::OpType::i32, CtCodeGen::OpType::f32}, instrI32F32},
 
+		// f64 - i64
 		{{CtCodeGen::OpType::f64, CtCodeGen::OpType::i64}, instrF64I64},
 		{{CtCodeGen::OpType::i64, CtCodeGen::OpType::f64}, instrI64F64},
 
+		// f32 - f64
 		{{CtCodeGen::OpType::f32, CtCodeGen::OpType::f64}, instrF32F64},
 		{{CtCodeGen::OpType::f64, CtCodeGen::OpType::f32}, instrF64F32},
 
+		// i32 - i64
 		{{CtCodeGen::OpType::i32, CtCodeGen::OpType::i64}, instrI32I64},
 		{{CtCodeGen::OpType::i64, CtCodeGen::OpType::i32}, instrI64I32},
+
+		// u32 - u64
+		{{CtCodeGen::OpType::u32, CtCodeGen::OpType::u64}, instrI32I64},
+		{{CtCodeGen::OpType::u64, CtCodeGen::OpType::u32}, instrI64I32},
+
+		// i32 - u32
+		{{CtCodeGen::OpType::u32, CtCodeGen::OpType::i32}, instrNull},
+		{{CtCodeGen::OpType::i32, CtCodeGen::OpType::u32}, instrNull},
+
+		// i64 - u64
+		{{CtCodeGen::OpType::u64, CtCodeGen::OpType::i64}, instrNull},
+		{{CtCodeGen::OpType::i64, CtCodeGen::OpType::u64}, instrNull},
 	};
 
-	ctInstr instr = instr_map.at({this->from_type, this->to_type});
-	writer->writebackInstr(instr);
+	if (instr_map.contains({this->from_type, this->to_type}))
+	{
+		ctInstr instr = instr_map.at({this->from_type, this->to_type});
+
+		if (instr != instrNull)
+		{
+			writer->writebackInstr(instr);
+		}
+
+		return;
+	}
+	
+	CtError::raise(
+		CtError::ErrorType::CompilerError,
+		std::format("Invalid type cast! Cannot convert {} to {}", (int)this->from_type, (int)this->to_type)
+	);
 }
 
 
