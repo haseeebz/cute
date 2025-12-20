@@ -14,25 +14,25 @@ extern "C" {
 typedef struct
 {
 	ctProgramImage img;
-} ctEngine;
+} CuteEngine;
 
-extern ctEngine engine;
+extern CuteEngine CtEngine;
 
 
 // Initializes the Engine
-void ctEngine_init();
+void CuteEngine_init();
 
 // Ends the Engine and all its states
-void ctEngine_end(int exit_code);
+void CuteEngine_end(int exit_code);
 
 // Executes a state struct, the state struct must be properly initialized
-void ctEngine_exec(ctContext *ctx);
+void CuteEngine_exec(ctContext *ctx);
 
 // Sets up state struct with function 0 and executes it.
-void ctEngine_run(); 
+void CuteEngine_run(); 
 
 // Loading an image file
-void ctEngine_loadImage(char *filepath);
+void CuteEngine_loadImage(char *filepath);
 
 
 #ifdef __cplusplus

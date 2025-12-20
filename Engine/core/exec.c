@@ -62,7 +62,7 @@ static void outHandler(int fmt, CtAtom *atom)
 
 
 
-void ctEngine_exec(ctContext *ctx)
+void CuteEngine_exec(ctContext *ctx)
 {
 	CtAtom a1;
 	CtAtom a2;
@@ -85,7 +85,7 @@ void ctEngine_exec(ctContext *ctx)
 			if (ctx->error_encountered)
 			{
 				printf("%s :: %s\n", ctx->error.name, ctx->error.msg);
-				ctEngine_end(1);
+				CuteEngine_end(1);
 			}
 		}
 
@@ -97,7 +97,7 @@ void ctEngine_exec(ctContext *ctx)
         case instrExitEngine:
 			extractInt32(&instrs[ctx->pc], &pts);
 			ctx_end(ctx);
-			ctEngine_end(pts);
+			CuteEngine_end(pts);
 			return;
 
         case instrExit:

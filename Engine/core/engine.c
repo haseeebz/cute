@@ -7,16 +7,16 @@
 #include "../core/context.h"
 
 // The main engine struct
-ctEngine engine;
+CuteEngine ctEngine;
 
 
-void ctEngine_init()
+void CuteEngine_init()
 {
 	
 };
 
 // Ends the Engine and all its states
-void ctEngine_end(int exit_code)
+void CuteEngine_end(int exit_code)
 {
 	exit(exit_code);
 }
@@ -24,20 +24,20 @@ void ctEngine_end(int exit_code)
 
 
 // Sets up state struct with function 0 and executes it.
-void ctEngine_run()
+void CuteEngine_run()
 {
 	ctContext ctx;
-	ctx_init(&ctx, &engine.img);
+	ctx_init(&ctx, &ctEngine.img);
 	ctx_funcCall(&ctx, 0);
-	ctEngine_exec(&ctx);
-	ctEngine_end(0);
+	CuteEngine_exec(&ctx);
+	CuteEngine_end(0);
 }
 
 
 // Loading an image file
-void ctEngine_loadImage(char *filepath)
+void CuteEngine_loadImage(char *filepath)
 {
-	ctImageError code = ctProgramImage_read(&engine.img, filepath);
+	ctImageError code = ctProgramImage_read(&ctEngine.img, filepath);
 	
 	if (code != ctImageError_Success)
 	{
@@ -55,7 +55,7 @@ void ctEngine_loadImage(char *filepath)
 			printf("Invalid Image file: %s\n", filepath);
 		}
 
-		ctEngine_end(1);
+		CuteEngine_end(1);
 	}
 
 }
