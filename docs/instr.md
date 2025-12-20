@@ -104,47 +104,37 @@ Arrays of complex types like containers will be assigned iteratively in the byte
 ## Memory Operations
 
 
-### instrLoadI32
-### instrLoadI64
-### instrLoadF32
-### instrLoadF64
+### instrLoadI
+### instrLoadF
 
 Operands: [4 bytes] | Pops: 0 | Loads: 1
 
 Takes an index and loads the local atom at that index to the execution stack.
 
-### instrGLoadI32
-### instrGLoadI64
-### instrGLoadF32
-### instrGLoadF64
+### instrGLoadI
+### instrGLoadF
 
 Operands: [4 bytes] | Pops: 0 | Loads: 1
 
 Same principle but globally.
 
-### instrStoreI32
-### instrStoreI64
-### instrStoreF32
-### instrStoreF64
+### instrStoreI
+### instrStoreF
 
 Operands: [4 bytes] | Pops: 1 | Loads: 0
 
 Takes an index and stores the top atom on the execution stack to the local at that index.
 Same prinicple applies, only I64 is enough since its just byte copying but other types are kept for consistency.
 
-### instrGStoreI32
-### instrGStoreI64
-### instrGStoreF32
-### instrGStoreF64
+### instrGStoreI
+### instrGStoreF
 
 Operands: [4 bytes] | Pops: 1 | Loads: 0
 
 Same but globally.
 
-### instrCopyI32
-### instrCopyI64
-### instrCopyF32
-### instrCopyF64
+### instrCopyI
+### instrCopyF
 
 Operands: [4 bytes, 4 bytes] | Pops: 0 | Loads: 0
 
@@ -161,54 +151,37 @@ instrGStoreI64 dest
 ## Arithmetic Operations
 
 
-### instrAddI32
-### instrAddI64
-### instrAddF32
-### instrAddF64
+### instrAddI
+### instrAddF
 
 Operands: [None] | Pops: 2 | Loads: 1
 
 Adds the last two atoms and pushes the result back. 
 
-### instrSubI32
-### instrSubI64
-### instrSubF32
-### instrSubF64
+### instrSubI
+### instrSubF
 
 Operands: [None] | Pops: 2 | Loads: 1
 
 Subtracts  the last two atoms and pushes the result back. The atom that was pushed first will be the first operand in the subtraction.
 
-### instrMulI32
-### instrMulI64
-### instrMulF32
-### instrMulF64
+### instrMulI
+### instrMulF
 
 Operands: [None] | Pops: 2 | Loads: 1
 
 Multiplies the last two atoms and pushes the result back. 
 
-### instrDivI32
-### instrDivI64
-### instrDivF32
-### instrDivF64
+### instrDivI
+### instrDivU
+### instrDivF
 
 Operands: [None] | Pops: 2 | Loads: 1
 
-Divides the last two atoms and pushes the result back. The atom that was pushed first is the dividend and the one which was pushed later is divisor. 
+Divides the last two atoms and pushes the result back. The atom that was pushed first is the dividend and the one which was pushed later is divisor. DivU for unsigned int.
 
-### instrDivU32
-### instrDivU64
-
-Operands: [None] | Pops: 2 | Loads: 1
-
-Unsigned division for I32 and I64, same principle.
-
-
-### instrModI32
-### instrModU32
-### instrModI64
-### instrModU64
+### instrModI
+### instrModU
 
 Operands: [None] | Pops: 2 | Loads: 1
 
@@ -244,23 +217,18 @@ Bitwise comparison between the last two atoms. Does the bitwise operation on the
 ### instrBitRShift
 ### instrBitRaShift
 
-### instrBitRShift32
-### instrBitRaShift32
 
 Operands: [None] | Pops: 2 | Loads: 1
 
 Shift operations, operate on the whole 64 bits. The first-to-be-pushed atom is the one on which the bitwise is applied and the second is the amount by which the bits are shifted. Ra means arithmetic shift.
 
-32 bit variants for R Shift also exists.
-
 
 ## Comparison Operations
 
 
-### instrCmpI32
-### instrCmpI64
-### instrCmpF32
-### instrCmpF64
+### instrCmpI
+### instrCmpU
+### instrCmpF
 
 Operands: [None] | Pops: 2 | Loads: 1
 
@@ -287,23 +255,12 @@ Takes the result of Cmp instruction and outputs 0(false)/1(true) depending upon 
 ## Type Conversions
 
 
-### instrF32I32
-### instrI32F32
-### instrI64F64
-### instrF64I64
+### instrFtoI
+### instrItoF
 
 Operands: [None] | Pops: 1 | Loads: 1
 
 Converts from int to float and float to int.
-
-### instrF32F64
-### instrF64F32
-### instrI32I64
-### instrI64I32
-
-Operands: [None] | Pops: 1 | Loads: 1
-
-Converts between sizes. 
 
 
 ## Control Flow
