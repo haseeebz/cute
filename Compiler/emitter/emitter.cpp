@@ -57,15 +57,13 @@ void CtEmitter::handleFunction(CtNode::Function *node)
 
 void CtEmitter::handleInt(CtNode::Int *node)
 {
-	int i = std::stoi(node->raw);
-	this->current_function->units.push_back(new CtCodeGen::LoadConstOp(i));
+	this->current_function->units.push_back(new CtCodeGen::LoadConstOp(node->val.i64));
 }
 
 
 void CtEmitter::handleFloat(CtNode::Float *node)
 {
-	float f = std::stof(node->raw);
-	this->current_function->units.push_back(new CtCodeGen::LoadConstOp(f));
+	this->current_function->units.push_back(new CtCodeGen::LoadConstOp(node->val.f64));
 }
 
 

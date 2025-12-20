@@ -77,13 +77,37 @@ void CtTypeChecker::handleAssignment(CtNode::Assignment *node)
 
 void CtTypeChecker::handleInt(CtNode::Int *node)
 {
-	node->expr_type = primitiveTypes["i32"];
+	if (CtSpec::strToI64(node->raw, node->val.i64))
+	{
+		node->expr_type = primitiveTypes["i64"];
+	}
+	else if (CtSpec::strToU64(node->raw, node->val.u64))
+	{
+		node->expr_type = primitiveTypes["u64"];
+	}
+	else 
+	{
+		CtError::raise(
+			CtError::ErrorType::TypeError, 
+			std::format("Invalid integar : {}", node->raw)
+		);
+	}
 }
 
 
 void CtTypeChecker::handleFloat(CtNode::Float *node)
 {
-	node->expr_type = primitiveTypes["f32"];
+	if (CtSpec::strToF64(node->raw, node->val.f64))
+	{
+		node->expr_type = primitiveTypes["f64"];
+	}
+	else 
+	{
+		CtError::raise(
+			CtError::ErrorType::TypeError, 
+			std::format("Invalid floating number : {}", node->raw)
+		);
+	}
 }
 
 

@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <map>
 #include <string>
 
@@ -81,5 +82,17 @@ namespace CtSpec
 			return !(*this == rhs);
 		}
 	};
+
+
+
+
+	bool strToI32(std::string& str, int32_t& i);
+	bool strToI64(std::string& str, int64_t& i);
+
+	bool strToU32(std::string& str, uint32_t& i);
+	bool strToU64(std::string& str, uint64_t& i);
+
+	bool strToF32(std::string& str, float& i);
+	bool strToF64(std::string& str, double& i);
 
 }
