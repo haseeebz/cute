@@ -36,7 +36,7 @@ void ctx_end(ctContext *ctx)
 }
 
 
-void ctx_pushExeAtom(ctContext *ctx, ctAtom atom)
+void ctx_pushExeAtom(ctContext *ctx, CtAtom atom)
 {
 	if (ctx->exestack.count >= ctx->exestack.cap)
 	{
@@ -54,7 +54,7 @@ void ctx_pushExeAtom(ctContext *ctx, ctAtom atom)
 }
 
 
-ctAtom ctx_popExeAtom(ctContext *ctx)
+CtAtom ctx_popExeAtom(ctContext *ctx)
 {
 	if (ctx->exestack.count <= 0)
 	{
@@ -64,14 +64,14 @@ ctAtom ctx_popExeAtom(ctContext *ctx)
 			"ExeStack Underflow. No more atoms to pop."
 		);
 		ctx_raiseError(ctx);
-		return (ctAtom) {.i64 = 0};
+		return (CtAtom) {.i64 = 0};
 	}
 
 	return ctx->exestack.atoms[--ctx->exestack.count];
 }
 
 
-ctAtom ctx_peekExeAtom(ctContext *ctx)
+CtAtom ctx_peekExeAtom(ctContext *ctx)
 {
 	if (ctx->exestack.count <= 0)
 	{
@@ -81,7 +81,7 @@ ctAtom ctx_peekExeAtom(ctContext *ctx)
 			"ExeStack Underflow. No atoms to peek."
 		);
 		ctx_raiseError(ctx);
-		return (ctAtom) {.i64 = 0};
+		return (CtAtom) {.i64 = 0};
 	}
 
 	return ctx->exestack.atoms[ctx->exestack.count-1];
@@ -140,11 +140,11 @@ void ctx_funcCall(ctContext *ctx, uint32_t func_id)
 
 	ctFuncFrame frame;
 	frame.locals_count = meta->locals_count;
-	frame.locals = malloc(sizeof(ctAtom) * meta->locals_count);
+	frame.locals = malloc(sizeof(CtAtom) * meta->locals_count);
 	
 	for (uint32_t i = 0; i < meta->args_count; i++)
 	{
-		ctAtom atom = ctx_popExeAtom(ctx);
+		CtAtom atom = ctx_popExeAtom(ctx);
 		frame.locals[meta->args_count - i - 1] = atom;
 	}
 
@@ -171,7 +171,7 @@ void ctx_funcReturn(ctContext *ctx)
 }
 
 
-void ctx_storeLocal(ctContext *ctx, uint32_t pos, ctAtom atom)
+void ctx_storeLocal(ctContext *ctx, uint32_t pos, CtAtom atom)
 {
 	ctFuncFrame top_frame = ctx->funcstack.frames[ctx->funcstack.count-1];
 
@@ -190,7 +190,7 @@ void ctx_storeLocal(ctContext *ctx, uint32_t pos, ctAtom atom)
 }
 
 
-ctAtom ctx_loadLocal(ctContext *ctx, uint32_t pos)
+CtAtom ctx_loadLocal(ctContext *ctx, uint32_t pos)
 {
 	ctFuncFrame top_frame = ctx->funcstack.frames[ctx->funcstack.count-1];
 
@@ -203,7 +203,7 @@ ctAtom ctx_loadLocal(ctContext *ctx, uint32_t pos)
 			"Internal Cute Error",
 			"Invalid local load operation."
 		);
-		return (ctAtom) {.i64 = 0};
+		return (CtAtom) {.i64 = 0};
 	}
 
 	return top_frame.locals[pos];

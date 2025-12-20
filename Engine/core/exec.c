@@ -32,17 +32,14 @@ static inline void extractFloat64(ctInstrSize *instrs, double *i)
 }
 
 
-static void outHandler(int fmt, ctAtom *atom)
+static void outHandler(int fmt, CtAtom *atom)
 {
 	switch (fmt)
 	{
 		case 0:  goto binary; break;
 		case 1:  printf("0x%016lX\n", atom->u64); break;
-		case 2:  printf("%d\n", atom->i32); break;
 		case 3:  printf("%ld\n", atom->i64); break;
-		case 4:  printf("%u\n", atom->u32); break;
 		case 5:  printf("%lu\n", atom->u64); break;
-		case 6:  printf("%f\n", atom->f32); break;
 		case 7:  printf("%lf\n", atom->f64); break;
 		default: printf("Invalid Format for Out instruction: %d\n", fmt); break;
 	}
@@ -67,15 +64,16 @@ static void outHandler(int fmt, ctAtom *atom)
 
 void ctEngine_exec(ctContext *ctx)
 {
-	ctAtom a1;
-	ctAtom a2;
+	CtAtom a1;
+	CtAtom a2;
 
 	ctInstrSize *instrs = ctx->img->instrs;
 
-	ctU32 ptu;
-	ctU32 ptv;
+	uint32_t ptu;
+	uint32_t ptv;
 
-	ctI32 pts;
+	int32_t  pts;
+	float    ptf;
 
 	ctInstr instr;
 
@@ -131,12 +129,9 @@ void ctEngine_exec(ctContext *ctx)
         case instrNull:
 			break;
 
-        case instrModCall:
-			printf("ModCall instruction not implemented yet.\n");
-			break;
-
         case instrLoadCoI32:
-			extractInt32(&instrs[ctx->pc], &a1.i32);
+			extractInt32(&instrs[ctx->pc], &pts);
+			a1.i64 = pts;
 			ctx->pc += 4;
 			ctx_pushExeAtom(ctx, a1);
 			break;
@@ -148,7 +143,8 @@ void ctEngine_exec(ctContext *ctx)
 			break;
 
         case instrLoadCoF32:
-			extractFloat32(&instrs[ctx->pc], &a1.f32);
+			extractFloat32(&instrs[ctx->pc], &ptf);
+			a1.f64 = ptf;
 			ctx->pc += 4;
 			ctx_pushExeAtom(ctx, a1);
 			break;
@@ -163,199 +159,101 @@ void ctEngine_exec(ctContext *ctx)
 			printf("LoadConst instruction not implemented yet.\n");
 			break;
 
-        case instrLoadI32:
+        case instrLoadI:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
 			ctx->pc += 4;
 			ctx_pushExeAtom(ctx, ctx_loadLocal(ctx, ptu));
 			break;
 
-        case instrLoadI64:
+        case instrLoadF:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
 			ctx->pc += 4;
 			ctx_pushExeAtom(ctx, ctx_loadLocal(ctx, ptu));
 			break;
 
-        case instrLoadF32:
-			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			ctx->pc += 4;
-			ctx_pushExeAtom(ctx, ctx_loadLocal(ctx, ptu));
-			break;
-
-        case instrLoadF64:
-			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			ctx->pc += 4;
-			ctx_pushExeAtom(ctx, ctx_loadLocal(ctx, ptu));
-			break;
-
-        case instrGLoadI32:
+        case instrGLoadI:
 			printf("GLoad instruction not implemented yet.\n");
 			break;
 
-        case instrGLoadI64:
+        case instrGLoadF:
 			printf("GLoad instruction not implemented yet.\n");
 			break;
 
-        case instrGLoadF32:
-			printf("GLoad instruction not implemented yet.\n");
-			break;
-
-        case instrGLoadF64:
-			printf("GLoad instruction not implemented yet.\n");
-			break;
-
-        case instrStoreI32:
+        case instrStoreI:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
 			ctx->pc += 4;
 			ctx_storeLocal(ctx, ptu, ctx_popExeAtom(ctx));
 			break;
 
-        case instrStoreI64:
+        case instrStoreF:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
 			ctx->pc += 4;
 			ctx_storeLocal(ctx, ptu, ctx_popExeAtom(ctx));
 			break;
 
-        case instrStoreF32:
-			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			ctx->pc += 4;
-			ctx_storeLocal(ctx, ptu, ctx_popExeAtom(ctx));
-			break;
-
-        case instrStoreF64:
-			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			ctx->pc += 4;
-			ctx_storeLocal(ctx, ptu, ctx_popExeAtom(ctx));
-			break;
-
-        case instrGStoreI32:
+        case instrGStoreI:
 			printf("GStore instruction not implemented yet.\n");
 			break;
 
-        case instrGStoreI64:
+        case instrGStoreF:
 			printf("GStore instruction not implemented yet.\n");
 			break;
 
-        case instrGStoreF32:
-			printf("GStore instruction not implemented yet.\n");
-			break;
-
-        case instrGStoreF64:
-			printf("GStore instruction not implemented yet.\n");
-			break;
-
-        case instrCopyI32:
+        case instrCopyI:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptv);
 			ctx->pc += 8;
 			ctx_copyLocal(ctx, ptu, ptv);
 			break;
 
-        case instrCopyI64:
+        case instrCopyF:
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
 			extractInt32(&instrs[ctx->pc], (int32_t*)&ptv);
 			ctx->pc += 8;
 			ctx_copyLocal(ctx, ptu, ptv);
 			break;
 
-        case instrCopyF32:
-			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			extractInt32(&instrs[ctx->pc], (int32_t*)&ptv);
-			ctx->pc += 8;
-			ctx_copyLocal(ctx, ptu, ptv);
-			break;
-
-        case instrCopyF64:
-			extractInt32(&instrs[ctx->pc], (int32_t*)&ptu);
-			extractInt32(&instrs[ctx->pc], (int32_t*)&ptv);
-			ctx->pc += 8;
-			ctx_copyLocal(ctx, ptu, ptv);
-			break;
-
-        case instrAddI32:
-			mCtBinaryOp(i32, a1, a2, +, ctx);
-			break;
-
-		case instrAddI64:
+		case instrAddI:
 			mCtBinaryOp(i64, a1, a2, +, ctx);
 			break;
 
-		case instrAddF32:
-			mCtBinaryOp(f32, a1, a2, +, ctx);
-			break;
-
-		case instrAddF64:
+		case instrAddF:
 			mCtBinaryOp(f64, a1, a2, +, ctx);
 			break;
 
-		case instrSubI32:
-			mCtBinaryOp(i32, a1, a2, -, ctx);
-			break;
-
-		case instrSubI64:
+		case instrSubI:
 			mCtBinaryOp(i64, a1, a2, -, ctx);
 			break;
-
-		case instrSubF32:
-			mCtBinaryOp(f32, a1, a2, -, ctx);
-			break;
-
-		case instrSubF64:
+			
+		case instrSubF:
 			mCtBinaryOp(f64, a1, a2, -, ctx);
 			break;
 
-		case instrMulI32:
-			mCtBinaryOp(i32, a1, a2, *, ctx);
-			break;
-
-		case instrMulI64:
+		case instrMulI:
 			mCtBinaryOp(i64, a1, a2, *, ctx);
 			break;
 
-		case instrMulF32:
-			mCtBinaryOp(f32, a1, a2, *, ctx);
-			break;
-
-		case instrMulF64:
+		case instrMulF:
 			mCtBinaryOp(f64, a1, a2, *, ctx);
 			break;
 
-		case instrDivI32:
-			mCtBinaryOp(i32, a1, a2, /, ctx);
-			break;
-
-		case instrDivI64:
+		case instrDivI:
 			mCtBinaryOp(i64, a1, a2, /, ctx);
 			break;
 
-		case instrDivF32:
-			mCtBinaryOp(f32, a1, a2, /, ctx);
-			break;
-
-		case instrDivF64:
+		case instrDivF:
 			mCtBinaryOp(f64, a1, a2, /, ctx);
 			break;
 
-		case instrDivU32:
-			mCtBinaryOp(u32, a1, a2, /, ctx);
-			break;
-
-		case instrDivU64:
+		case instrDivU:
 			mCtBinaryOp(u64, a1, a2, /, ctx);
 			break;
 
-		case instrModI32:
-			mCtBinaryOp(i32, a1, a2, %, ctx);
-			break;
-
-		case instrModU32:
-			mCtBinaryOp(u32, a1, a2, %, ctx);
-			break;
-
-		case instrModI64:
+		case instrModI:
 			mCtBinaryOp(i64, a1, a2, %, ctx);
 			break;
 
-		case instrModU64:
+		case instrModU:
 			mCtBinaryOp(u64, a1, a2, %, ctx);
 			break;
 
@@ -405,30 +303,17 @@ void ctEngine_exec(ctContext *ctx)
 			mCtBinaryOp(i64, a1, a2, >>, ctx);
 			break;
 
-        case instrBitRShift32:
-			mCtBinaryOp(u32, a1, a2, >>, ctx);
-			break;
-
-        case instrBitRaShift32:
-			mCtBinaryOp(i32, a1, a2, >>, ctx);
-			break;
-
-        case instrCmpI32:
-			mCtCmpOp(i32, a1, a2, ctx);
-			break;
-
-        case instrCmpI64:
+        case instrCmpI:
 			mCtCmpOp(i64, a1, a2, ctx);
 			break;
 
-        case instrCmpF32:
-			mCtCmpOp(f32, a1, a2, ctx);
+		case instrCmpU:
+			mCtCmpOp(u64, a1, a2, ctx);
 			break;
 
-        case instrCmpF64:
+        case instrCmpF:
 			mCtCmpOp(f64, a1, a2, ctx);
 			break;
-
         
         case instrCmp2BoolEq:
 			a1 = ctx_popExeAtom(ctx);
@@ -466,51 +351,15 @@ void ctEngine_exec(ctContext *ctx)
 			ctx_pushExeAtom(ctx, a1);
 			break;
 
-       case instrF32I32:
+		case instrItoF:
 			a1 = ctx_popExeAtom(ctx);
-			a1.i32 = (ctI32)a1.f32;
-			ctx_pushExeAtom(ctx, a1);
-		break;
-
-		case instrI32F32:
-			a1 = ctx_popExeAtom(ctx);
-			a1.f32 = (ctF32)a1.i32;
+			a1.f64 = (double) a1.i64;
 			ctx_pushExeAtom(ctx, a1);
 			break;
 
-		case instrI64F64:
+		case instrFtoI:
 			a1 = ctx_popExeAtom(ctx);
-			a1.f64 = (ctF64)a1.i64;
-			ctx_pushExeAtom(ctx, a1);
-			break;
-
-		case instrF64I64:
-			a1 = ctx_popExeAtom(ctx);
-			a1.i64 = (ctI64)a1.f64;
-			ctx_pushExeAtom(ctx, a1);
-			break;
-
-		case instrF32F64:
-			a1 = ctx_popExeAtom(ctx);
-			a1.f64 = (ctF64)a1.f32;
-			ctx_pushExeAtom(ctx, a1);
-			break;
-
-		case instrF64F32:
-			a1 = ctx_popExeAtom(ctx);
-			a1.f32 = (ctF32)a1.f64;
-			ctx_pushExeAtom(ctx, a1);
-			break;
-
-		case instrI32I64:
-			a1 = ctx_popExeAtom(ctx);
-			a1.i64 = (ctI64)a1.i32;
-			ctx_pushExeAtom(ctx, a1);
-			break;
-
-		case instrI64I32:
-			a1 = ctx_popExeAtom(ctx);
-			a1.i32 = (ctI32)a1.i64;
+			a1.f64 = (int64_t) a1.i64;
 			ctx_pushExeAtom(ctx, a1);
 			break;
 
