@@ -58,6 +58,15 @@ void CtTypeChecker::handleOut(CtNode::Out *node)
 }
 
 
+void CtTypeChecker::handleLoop(CtNode::Loop *node)
+{
+	for (auto stmt: node->block)
+	{
+		this->walk(stmt);
+	}
+}
+
+
 void CtTypeChecker::handleAssignment(CtNode::Assignment *node)
 {
 	auto var = this->current_scope->variables[node->name->val];

@@ -39,6 +39,10 @@ void CtNodeWalker::walk(CtNode::Base *node) {
 	walk(static_cast<CtNode::ExprStatment *>(node)->expr);
 	break;
 
+	case CtNodeType::Loop:
+	handleLoop(static_cast<CtNode::Loop *>(node));
+	break;
+
 	case CtNodeType::Int:
 	handleInt(static_cast<CtNode::Int *>(node));
 	break;
@@ -153,6 +157,17 @@ void CtNodePrinter::handleOut(CtNode::Out *node)
 	std::cout << ")\n";
 }
 
+
+void CtNodePrinter::handleLoop(CtNode::Loop *node)
+{
+	this->printIndent();
+	std::cout << "(Loop statement=\n";
+	this->indent++;
+	for (auto stmt: node->block) {this->walk(stmt);}
+	this->indent--;
+	this->printIndent();
+	std::cout << ")\n";
+}
 
 void CtNodePrinter::handleAssignment(CtNode::Assignment *node)
 {

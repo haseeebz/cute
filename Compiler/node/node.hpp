@@ -18,6 +18,7 @@ enum class CtNodeType
 	Declaration,
 	Out,
 	ExprStatement,
+	Loop,
 
 	Int,
 	Float,
@@ -48,6 +49,7 @@ namespace CtNode
 	struct Declaration;
 	struct Out;
 	struct ExprStatment;
+	struct Loop;
 	
 	// Expression Nodes
 	struct Int;
@@ -129,6 +131,14 @@ namespace CtNode
 
 		ExprStatment(Expression* expr): expr(expr) {{nt = CtNodeType::ExprStatement;}};
 		~ExprStatment();
+	};
+
+	struct Loop : Statement
+	{
+		std::vector<Statement*> block;
+
+		Loop() {{nt = CtNodeType::Loop;}};
+		~Loop();
 	};
 	
 	
@@ -230,6 +240,7 @@ class CtNodeWalker
 	virtual void handleFunction(CtNode::Function *node) = 0;
 
 	virtual void handleDeclaration(CtNode::Declaration *node) = 0;
+	virtual void handleLoop(CtNode::Loop *node) = 0;
 	virtual void handleOut(CtNode::Out *node) = 0;
 
 	virtual void handleInt(CtNode::Int *node) = 0;
@@ -258,6 +269,7 @@ class CtNodePrinter: public CtNodeWalker
 	void handleFunction(CtNode::Function *node);
 
 	void handleDeclaration(CtNode::Declaration *node);
+	void handleLoop(CtNode::Loop *node);
 	void handleOut(CtNode::Out *node);
 
 	void handleInt(CtNode::Int *node);
