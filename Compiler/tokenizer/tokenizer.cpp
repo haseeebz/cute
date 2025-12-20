@@ -24,7 +24,7 @@ CtTokenStream CtTokenizer::tokenize(std::string input_file)
 	{
 		c = this->currSrc->at(currIndex);
 
-		if (c == ' ') {continue;}
+		if (c == ' ' || c == '\t') {continue;}
 
 		if (c == '\n')
 		{
