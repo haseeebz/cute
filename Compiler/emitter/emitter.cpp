@@ -1,4 +1,3 @@
-#include "CuteByte.h"
 #include "../node/node.hpp"
 
 #include <iostream>

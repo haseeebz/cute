@@ -1,5 +1,4 @@
 #include "CuteByte.h"
-#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <sys/types.h>
