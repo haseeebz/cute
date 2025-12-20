@@ -1,5 +1,6 @@
 #include "CuteByte.h"
 #include <cstdint>
+#include <iostream>
 #include <map>
 
 #include "gen.hpp"
@@ -295,7 +296,6 @@ void CtCodeGen::TypeCastOp::emit(CtBytecodeWriter* writer)
 		{{CtCodeGen::OpType::i32, CtCodeGen::OpType::i64}, instrI32I64},
 		{{CtCodeGen::OpType::i64, CtCodeGen::OpType::i32}, instrI64I32},
 	};
-
 
 	ctInstr instr = instr_map.at({this->from_type, this->to_type});
 	writer->writebackInstr(instr);

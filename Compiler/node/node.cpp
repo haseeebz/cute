@@ -1,6 +1,5 @@
 #include "node.hpp"
 
-
 CtNode::RootProgram::~RootProgram()
 {
 	delete this->src;

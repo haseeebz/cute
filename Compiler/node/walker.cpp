@@ -2,7 +2,7 @@
 #include <ostream>
 
 
-#include "../spec/lang.hpp"
+#include "../spec/spec.hpp"
 #include "node.hpp"
 
 
@@ -196,10 +196,11 @@ void CtNodePrinter::handleBinaryOp(CtNode::BinaryOp *node)
 	this->printIndent();
 	switch (node->op)
 	{
-        case CtLang::Symbol::Plus:  std::cout << "+\n"; break;
-        case CtLang::Symbol::Minus: std::cout << "-\n"; break;
-        case CtLang::Symbol::Star:  std::cout << "*\n"; break;
-        case CtLang::Symbol::Slash: std::cout << "/\n"; break;
+        case CtSpec::BinaryOpType::Add:  std::cout << "+\n"; break;
+        case CtSpec::BinaryOpType::Sub:  std::cout << "-\n"; break;
+        case CtSpec::BinaryOpType::Mul:  std::cout << "*\n"; break;
+        case CtSpec::BinaryOpType::Div:  std::cout << "/\n"; break;
+		case CtSpec::BinaryOpType::Mod:  std::cout << "%\n"; break;
 		default:					std::cout << "u\n"; break;
     }
 	

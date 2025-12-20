@@ -4,17 +4,18 @@
 #include <iostream>
 #include <string>
 
+#include "../spec/spec.hpp"
 #include "emitter.hpp"
 
 
-static inline std::map<std::string, CtCodeGen::OpType> op_type_map =
+static inline std::map<CtSpec::PrimitiveT, CtCodeGen::OpType> op_type_map =
 {
-    {"i32", CtCodeGen::OpType::i32},
-    {"i64", CtCodeGen::OpType::i64},
-    {"u32", CtCodeGen::OpType::u32},
-    {"u64", CtCodeGen::OpType::u64},
-    {"f32", CtCodeGen::OpType::f32},
-    {"f64", CtCodeGen::OpType::f64},
+    {CtSpec::PrimitiveT::I32, CtCodeGen::OpType::i32},
+    {CtSpec::PrimitiveT::I64, CtCodeGen::OpType::i64},
+    {CtSpec::PrimitiveT::U32, CtCodeGen::OpType::u32},
+    {CtSpec::PrimitiveT::U64, CtCodeGen::OpType::u64},
+    {CtSpec::PrimitiveT::F32, CtCodeGen::OpType::f32},
+    {CtSpec::PrimitiveT::F64, CtCodeGen::OpType::f64},
 };
 
 
@@ -78,11 +79,11 @@ void CtEmitter::handleBinaryOp(CtNode::BinaryOp *node)
 
 	switch (node->op)
 	{
-		case CtLang::Symbol::Plus:       op = new CtCodeGen::AddOp(op_type_map[node->result_type]); break;
-		case CtLang::Symbol::Minus:      op = new CtCodeGen::SubOp(op_type_map[node->result_type]); break;
-		case CtLang::Symbol::Star:       op = new CtCodeGen::MulOp(op_type_map[node->result_type]); break;
-		case CtLang::Symbol::Slash:      op = new CtCodeGen::DivOp(op_type_map[node->result_type]); break;
-		case CtLang::Symbol::Percentage: op = new CtCodeGen::ModOp(op_type_map[node->result_type]); break;
+		case CtSpec::BinaryOpType::Add:       op = new CtCodeGen::AddOp(op_type_map[node->expr_type->primitive]); break;
+		case CtSpec::BinaryOpType::Sub:       op = new CtCodeGen::SubOp(op_type_map[node->expr_type->primitive]); break;
+		case CtSpec::BinaryOpType::Mul:       op = new CtCodeGen::MulOp(op_type_map[node->expr_type->primitive]); break;
+		case CtSpec::BinaryOpType::Div:       op = new CtCodeGen::DivOp(op_type_map[node->expr_type->primitive]); break;
+		case CtSpec::BinaryOpType::Mod:       op = new CtCodeGen::ModOp(op_type_map[node->expr_type->primitive]); break;
 	}
 
 	this->current_function->units.push_back(op);
@@ -99,17 +100,17 @@ void CtEmitter::handleOut(CtNode::Out *node)
 {
 	this->walk(node->expr);
 
-	static std::map<std::string, int> format_specfier =
+	static std::map<CtSpec::PrimitiveT, int> format_specfier =
 	{
-		{"i32", 2},
-		{"i64", 3},
-		{"u32", 4},
-		{"u64", 5},
-		{"f32", 6},
-		{"f64", 7},
+		{CtSpec::PrimitiveT::I32, 2},
+		{CtSpec::PrimitiveT::I64, 3},
+		{CtSpec::PrimitiveT::U32, 4},
+		{CtSpec::PrimitiveT::U64, 5},
+		{CtSpec::PrimitiveT::F32, 6},
+		{CtSpec::PrimitiveT::F64, 7},
 	};
 
-	this->current_function->units.push_back(new CtCodeGen::Out(format_specfier[node->expr->result_type]));
+	this->current_function->units.push_back(new CtCodeGen::Out(format_specfier[node->expr->expr_type->primitive]));
 }
 
 
@@ -117,7 +118,7 @@ void CtEmitter::handleAssignment(CtNode::Assignment *node)
 {
 	this->walk(node->value);
 	this->current_function->units.push_back(
-		new CtCodeGen::StoreOp(op_type_map[node->result_type], this->variables[node->name->val])
+		new CtCodeGen::StoreOp(op_type_map[node->expr_type->primitive], this->variables[node->name->val])
 	);
 }
 
@@ -125,15 +126,16 @@ void CtEmitter::handleAssignment(CtNode::Assignment *node)
 void CtEmitter::handleIdentifier(CtNode::Identifier *node)
 {
 	this->current_function->units.push_back(
-		new CtCodeGen::LoadOp(op_type_map[node->result_type], this->variables[node->val])
+		new CtCodeGen::LoadOp(op_type_map[node->expr_type->primitive], this->variables[node->val])
 	);
 }
 
 
 void CtEmitter::handleTypeCast(CtNode::TypeCast *node)
 {
+	std::cout << node->expr->expr_type->name << " " << node->expr_type->name << std::endl; 
 	this->walk(node->expr);
 	this->current_function->units.push_back(
-		new CtCodeGen::TypeCastOp(op_type_map[node->expr->result_type], op_type_map[node->to_type])
+		new CtCodeGen::TypeCastOp(op_type_map[node->expr->expr_type->primitive], op_type_map[node->expr_type->primitive])
 	);
 }

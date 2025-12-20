@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include <format>
 
@@ -45,7 +46,7 @@ void CtNameResolver::handleDeclaration(CtNode::Declaration *node)
 		);
 	};
 
-	this->current_scope->variables[node->name] = CtScope::Variable(CtScope::VarKind::Local, node->name, node->type);
+	this->current_scope->variables[node->name] = CtScope::Variable(CtScope::VarKind::Local, node->name, node->type_id);
 }
 
 

@@ -32,7 +32,7 @@ namespace CtError
 		static std::vector<std::string> error_name = {
 			"SyntaxError",
 			"NameError",
-			"TypeError"
+			"TypeError",
 			"CompilerError"
 		};
 

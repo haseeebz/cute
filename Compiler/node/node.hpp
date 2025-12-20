@@ -1,4 +1,5 @@
 #include "../spec/spec.hpp"
+#include "../spec/scope.hpp"
 
 #include <cstdint>
 #include <map>
@@ -69,7 +70,7 @@ namespace CtNode
 
 	struct Object     : Base{};
 	struct Statement  : Base{};
-	struct Expression : Base{std::string result_type;};
+	struct Expression : Base{CtSpec::TypeInfo* expr_type;};
 
 
 	struct RootProgram : Object
@@ -94,7 +95,7 @@ namespace CtNode
 		std::vector<Declaration*> parameters;
 		std::vector<Statement*>   statements;
 
-		//CtScope::Scope* scope;
+		CtScope::Scope* scope;
 
 		Function() {{nt = CtNodeType::Function;}};
 		~Function();
@@ -104,9 +105,10 @@ namespace CtNode
 	// Statement Nodes
 	struct Declaration : Statement
 	{	
-
-		std::string type;
+		std::string type_id;
 		std::string name;
+
+		CtSpec::TypeInfo* type;
 
 		Declaration() {nt = CtNodeType::Declaration;};
 		~Declaration();

@@ -1,6 +1,5 @@
 #include "../node/node.hpp"
 #include "../spec/scope.hpp"
-#include "../spec/types.hpp"
 #include "../spec/error.hpp"
 
 #include <format>
@@ -8,6 +7,7 @@
 #include "iostream"
 
 #include "type_checker.hpp"
+
 
 
 void CtTypeChecker::handleRoot(CtNode::RootProgram *node)
@@ -39,15 +39,17 @@ void CtTypeChecker::handleFunction(CtNode::Function *node)
 void CtTypeChecker::handleDeclaration(CtNode::Declaration *node)
 {	
 	// assuming the name resolver did its job
-	auto var = this->current_scope->variables.at(node->name);
+	auto& var = this->current_scope->variables.at(node->name);
 	
-	if (!CtTypes::primitiveTypeMap.contains(var.type))
+	if (!primitiveTypes.contains(var.type_id))
 	{
 		CtError::raise(
 			CtError::ErrorType::TypeError, 
-			std::format("Unknown type: {}", var.type)
+			std::format("Unknown type: {}", var.type_id)
 		);
 	}
+
+	var.type = primitiveTypes[var.type_id];
 }
 
 
@@ -62,27 +64,27 @@ void CtTypeChecker::handleAssignment(CtNode::Assignment *node)
 	auto var = this->current_scope->variables[node->name->val];
 	this->walk(node->value);
 
-	if (var.type != node->value->result_type)
+	if (*var.type != *node->value->expr_type)
 	{
 		CtError::raise(
 			CtError::ErrorType::TypeError, 
-			std::format("Expression of type {} can not be assigned to variable of type {}", node->value->result_type, var.type)
+			std::format("Expression of type {} can not be assigned to variable of type {}", node->value->expr_type->name, var.type->name)
 		);
 	}
 
-	node->result_type = node->value->result_type;
+	node->expr_type = node->value->expr_type;
 }
 
 
 void CtTypeChecker::handleInt(CtNode::Int *node)
 {
-	node->result_type = "i32";
+	node->expr_type = primitiveTypes["i32"];
 }
 
 
 void CtTypeChecker::handleFloat(CtNode::Float *node)
 {
-	node->result_type = "f32";
+	node->expr_type = primitiveTypes["f32"];
 }
 
 
@@ -91,25 +93,25 @@ void CtTypeChecker::handleBinaryOp(CtNode::BinaryOp *node)
 	this->walk(node->left);
 	this->walk(node->right);
 
-	if (node->left->result_type != node->right->result_type)
+	if (node->left->expr_type != node->right->expr_type)
 	{
 		CtError::raise(
 			CtError::ErrorType::TypeError, 
 			std::format(
 				"Binary operation '{}' not supported for types {} and {}.", 
-				int(node->op), node->left->result_type, node->right->result_type
+				int(node->op), node->left->expr_type->name, node->right->expr_type->name
 			)
 		);
 	}
 
-	node->result_type = node->left->result_type;
+	node->expr_type = node->left->expr_type;
 }
 
 
 void CtTypeChecker::handleIdentifier(CtNode::Identifier *node)
 {
 	auto var = this->current_scope->variables[node->val];
-	node->result_type = var.type;
+	node->expr_type = var.type;
 }
 
 
@@ -121,14 +123,14 @@ void CtTypeChecker::handleFunctionCall(CtNode::FunctionCall *node)
 
 void CtTypeChecker::handleTypeCast(CtNode::TypeCast *node)
 {
-	if (!CtTypes::primitiveTypeMap.contains(node->to_type))
+	if (!primitiveTypes.contains(node->to_type))
 	{
 		CtError::raise(
 			CtError::ErrorType::TypeError, 
 			std::format("Unknown type specified for type casting: {}", node->to_type)
 		);
 	}
-	node->result_type = node->to_type;
+	node->expr_type = primitiveTypes[node->to_type];
 	this->walk(node->expr);
 }
 

@@ -31,7 +31,7 @@ namespace CtSpec
 	enum class TypeKind {Primitive, Container, Function};
 
 
-	enum class PrimitiveT {I32, I64, F32, F64, Bool};
+	enum class PrimitiveT {I32, I64, U32, U64, F32, F64, Bool};
 
 
 	struct ContainerT
@@ -42,21 +42,44 @@ namespace CtSpec
 
 		ContainerT() = default;
 		ContainerT(std::string id): id(id) {};
+		~ContainerT() = default;
 	};
 
 
 	struct TypeInfo
 	{
 		TypeKind kind;
-
+		std::string name;
 		union
 		{
 			PrimitiveT primitive;
 			ContainerT container;
 		};
 
-		TypeInfo(PrimitiveT primitive): kind(TypeKind::Primitive), primitive(primitive) {};
-		TypeInfo(ContainerT container): kind(TypeKind::Container), container(container) {};
+		TypeInfo(std::string name, PrimitiveT primitive): kind(TypeKind::Primitive), name(name), primitive(primitive) {};
+		TypeInfo(std::string name, ContainerT container): kind(TypeKind::Container), name(name), container(container) {};
+		~TypeInfo();
+
+		inline bool operator==(const TypeInfo& rhs) 
+		{
+			if (this->kind != rhs.kind)
+			{
+				return false;
+			}
+
+			if (this->kind == TypeKind::Primitive)
+			{
+				if (this->primitive == rhs.primitive) {return true;}
+				return false;
+			}
+
+			return false;
+		}
+
+		inline bool operator!=(const TypeInfo& rhs) 
+		{
+			return !(*this == rhs);
+		}
 	};
 
 }

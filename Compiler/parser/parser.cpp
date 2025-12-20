@@ -93,7 +93,7 @@ CtNode::Declaration* CtParser::parseDeclaration()
 
 	if (this->tokens->getWord(&str))
 	{
-		dec->type = str;
+		dec->type_id = str;
 	}
 
 	this->tokens->expectType(CtTokenType::EndOfLine, nullptr);

@@ -1,7 +1,23 @@
 #include "../node/node.hpp"
 #include "../spec/scope.hpp"
+#include "../spec/spec.hpp"
+
+#include "map"
+#include <string>
 
 #pragma once
+
+
+static inline std::map<std::string, CtSpec::TypeInfo*> primitiveTypes =
+{
+	{"i32",  new CtSpec::TypeInfo("i32", CtSpec::PrimitiveT::I32)},
+	{"i64",  new CtSpec::TypeInfo("i64", CtSpec::PrimitiveT::I64)},
+	{"u32",  new CtSpec::TypeInfo("u32", CtSpec::PrimitiveT::U32)},
+	{"u64",  new CtSpec::TypeInfo("u64", CtSpec::PrimitiveT::U64)},
+	{"f32",  new CtSpec::TypeInfo("u32", CtSpec::PrimitiveT::F32)},
+	{"f64",  new CtSpec::TypeInfo("f64", CtSpec::PrimitiveT::F64)},
+	{"bool", new CtSpec::TypeInfo("bool", CtSpec::PrimitiveT::Bool)},
+};
 
 
 class CtTypeChecker: public CtNodeWalker
