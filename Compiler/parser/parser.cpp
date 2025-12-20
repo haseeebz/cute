@@ -121,7 +121,7 @@ CtNode::Loop* CtParser::parseLoop()
 	while (true)
 	{
 		while (this->tokens->expectType(CtTokenType::EndOfLine, nullptr)) {continue;};
-		
+
 		if (this->tokens->expectSymbol(CtLang::Symbol::RightBracket)) {break;}
 
 		CtNode::Statement* stmt = this->parseStatement();
@@ -243,7 +243,6 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
-	std::cout << this->tokens->toString() << "\n";
 	this->source = new CtNode::Source();
 	this->startParsingFile();
 	return this->source;
