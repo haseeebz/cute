@@ -172,7 +172,7 @@ void CtCodeGen::CmpOp::emit(CtBytecodeWriter* writer)
 
 void CtCodeGen::LoadConstOp::emit(CtBytecodeWriter* writer)
 {
-	ctInstrSize packed[4];
+	ctInstrSize packed[8];
 
 
 	switch (this->op_type)
@@ -209,7 +209,7 @@ void CtCodeGen::LoadConstOp::emit(CtBytecodeWriter* writer)
 		break;
 	}
 
-	writer->writebackMultipleInstr(packed, 4);
+	writer->writebackMultipleInstr(packed, 8);
 }
 
 
