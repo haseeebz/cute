@@ -9,4 +9,4 @@ add_subdirectory(Compiler)
 
 add_subdirectory(Engine)
 
-add_subdirectory(cute)
+add_subdirectory(entry)

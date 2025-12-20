@@ -4,6 +4,7 @@
 
 #pragma once 
 
+#define CUTE_VERSION "v0.0.3"
 
 #ifdef __cplusplus
 extern "C" {
