@@ -120,6 +120,8 @@ CtNode::Loop* CtParser::parseLoop()
 
 	while (true)
 	{
+		while (this->tokens->expectType(CtTokenType::EndOfLine, nullptr)) {continue;};
+		
 		if (this->tokens->expectSymbol(CtLang::Symbol::RightBracket)) {break;}
 
 		CtNode::Statement* stmt = this->parseStatement();
@@ -196,13 +198,6 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 			this->tokens->backtrack();
 			return lhs;
 		}
-
-		if (this->tokens->expectSymbol(CtLang::Symbol::RightBracket))
-		{
-			this->tokens->backtrack();
-			return lhs;
-		}
-
 
 		if (this->tokens->getSymbol(&sym))
 		{
