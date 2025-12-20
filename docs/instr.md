@@ -31,12 +31,9 @@ Prints the contents of the last atom. The operand is the type specifier. This is
 
 + 0 : raw binary digits
 + 1 : raw bytes in hex format (use this for memory addresses too)
-+ 2 : i32
-+ 3 : i64
-+ 4 : u32
-+ 5 : u64
-+ 6 : f32
-+ 7 : f64
++ 2 : int
++ 3 : uint
++ 4 : float
 
 ### instrDump
 
