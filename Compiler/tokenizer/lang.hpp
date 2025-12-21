@@ -79,6 +79,8 @@ namespace CtLang
 	};
 
 
+	inline char EOL = ';';
+
 	inline std::map<std::string, Symbol> symbolMap =
 	{
 		{ "+",  Symbol::Plus },

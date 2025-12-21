@@ -26,7 +26,7 @@ CtTokenStream CtTokenizer::tokenize(std::string input_file)
 
 		if (c == ' ' || c == '\t') {continue;}
 
-		if (c == '\n')
+		if (c == '\n' || c == CtLang::EOL)
 		{
 			this->currStream.add(CtToken(CtTokenType::EndOfLine, 0, 0));
 			continue;
