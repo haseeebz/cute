@@ -13,13 +13,6 @@
 #include "format"
 
 
-static inline std::map<CtLang::Symbol, CtSpec::BinaryOpType> symToBinaryOp =
-{
-	{CtLang::Symbol::Plus,  CtSpec::BinaryOpType::Add},
-	{CtLang::Symbol::Minus, CtSpec::BinaryOpType::Sub},
-	{CtLang::Symbol::Star,  CtSpec::BinaryOpType::Mul},
-	{CtLang::Symbol::Slash, CtSpec::BinaryOpType::Div},
-};
 
 
 void CtParser::startParsingFile()
@@ -48,7 +41,6 @@ CtNode::Function* CtParser::parseFunction()
 CtNode::Statement* CtParser::parseStatement()
 {
 	CtNode::Statement* stmt = nullptr;
-
 	CtToken token;
 
 	while (this->tokens->expectType(CtTokenType::EndOfLine, nullptr)) {continue;};
@@ -141,38 +133,35 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	CtToken tok;
 	std::string str;
 
-	if (this->tokens->getInt(&str))
+	if (this->tokens->expectTypes({CtTokenType::Int, CtTokenType::Float, CtTokenType::Word}, &tok))
 	{
-		lhs = new CtNode::Int(str);
+		lhs = this->getLeafExpression(tok);
 	}
-	else if (this->tokens->getFloat(&str))
-	{
-		lhs = new CtNode::Float(str);
-	}
-	else if (this->tokens->getWord(&str))
-	{
-		lhs = new CtNode::Identifier(str);
-	}
-	else if (this->tokens->expectSymbol(CtLang::Symbol::LeftParan))
-	{
-		lhs = this->parseExpression(0);
-	}
-	else if (this->tokens->expectSymbol(CtLang::Symbol::Minus))
-	{
-		lhs = this->parseExpression(CtSpec::binaryOpPrecedence.size());
-		lhs = new CtNode::BinaryOp(CtSpec::BinaryOpType::Sub, new CtNode::Int("0"), lhs); // works, meh
-	}
-	else if (this->tokens->expectSymbol(CtLang::Symbol::LeftBraces))
-	{
-		this->tokens->getWord(&str);
-		this->tokens->expectSymbol(CtLang::Symbol::RightBraces);
-		auto cast = new CtNode::TypeCast();
-		cast->to_type = str;
-		cast->expr = this->parseExpression(CtSpec::binaryOpPrecedence.size());
-		// What this will do is grab the next literal.
 
-		lhs = cast;
+	else if (this->tokens->expectType(CtTokenType::Symbol, &tok))
+	{
+
+		if (tok.val.sym == CtLang::Symbol::LeftParan)
+		{
+			lhs = this->parseExpression(0);
+		}
+		else if (tok.val.sym == CtLang::Symbol::Minus)
+		{
+			lhs = this->parseExpression(CtSpec::binaryOpPrecedence.size());
+			lhs = new CtNode::BinaryOp(CtSpec::BinaryOpType::Sub, new CtNode::Int("0"), lhs); // works, meh
+		}
+		else if (tok.val.sym == CtLang::Symbol::LeftBraces)
+		{
+			this->tokens->getWord(&str);
+			this->tokens->expectSymbol(CtLang::Symbol::RightBraces);
+			auto cast = new CtNode::TypeCast();
+			cast->to_type = str;
+			cast->expr = this->parseExpression(CtSpec::binaryOpPrecedence.size()); // grabs the next literal
+			lhs = cast;
+		}
+
 	}
+
 	else 
 	{
 		tok = this->tokens->peek();
@@ -183,19 +172,14 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	}
 
 	
+
 	while (true)
 	{
 		CtLang::Symbol sym;
 
-		if (this->tokens->expectType(CtTokenType::EndOfLine, nullptr))
+		if (this->tokens->expectTypes({CtTokenType::EndOfLine, CtTokenType::EndOfFile}, nullptr))
 		{
 			this->tokens->backtrack(); // so EOL propagates
-			return lhs;
-		}
-
-		if (this->tokens->expectType(CtTokenType::EndOfFile, nullptr))
-		{
-			this->tokens->backtrack();
 			return lhs;
 		}
 
@@ -237,6 +221,34 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	
 	return lhs;
 }
+
+
+CtNode::Expression* CtParser::getLeafExpression(CtToken& token)
+{
+	CtNode::Expression* leaf = nullptr;
+
+	if (token.type == CtTokenType::Int)
+	{
+		leaf = new CtNode::Int(this->tokens->viewToken(&token));
+	}
+	else if (token.type == CtTokenType::Float)
+	{
+		leaf = new CtNode::Float(this->tokens->viewToken(&token));
+	}
+	else if (token.type == CtTokenType::Word)
+	{
+		leaf = new CtNode::Identifier(this->tokens->viewToken(&token));
+	}
+	else 
+	{
+		CtError::raise(
+			CtError::ErrorType::CompilerError,
+			std::format("A leaf node can only be of type: Int, Float or Word. Got: {}", (int) token.type)
+		);
+	}
+
+	return leaf;
+};
 
 
 CtNode::Source* CtParser::parseFile(std::string filepath)

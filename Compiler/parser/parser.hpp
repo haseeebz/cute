@@ -2,7 +2,17 @@
 
 #include "../tokenizer/token.hpp"
 
+
 #pragma once
+
+
+static inline std::map<CtLang::Symbol, CtSpec::BinaryOpType> symToBinaryOp =
+{
+	{CtLang::Symbol::Plus,  CtSpec::BinaryOpType::Add},
+	{CtLang::Symbol::Minus, CtSpec::BinaryOpType::Sub},
+	{CtLang::Symbol::Star,  CtSpec::BinaryOpType::Mul},
+	{CtLang::Symbol::Slash, CtSpec::BinaryOpType::Div},
+};
 
 
 class CtParser
@@ -19,10 +29,12 @@ class CtParser
 
 	CtNode::Statement* parseStatement();
 
-	CtNode::Expression* parseExpression(uint prev_precedence = 0);
-
 	CtNode::Declaration* parseDeclaration();
 	CtNode::Loop* parseLoop();
+
+	CtNode::Expression* parseExpression(uint prev_precedence = 0);
+	CtNode::Expression* getLeafExpression(CtToken& token);
+
 
 	public:
 
