@@ -1,7 +1,10 @@
+#include <format>
 #include <string>
 #include <vector>
 
 #include "token.hpp"
+
+#include "../spec/error.hpp"
 
 
 CtTokenStream::CtTokenStream(std::string src)
@@ -116,51 +119,83 @@ std::string CtTokenStream::viewToken(CtToken *token)
 	uint len = token->view.end - token->view.start + 1;
 	return this->srcStr.substr(token->view.start, len);
 }
+	
+
+bool CtTokenStream::getType(CtTokenType t, CtToken *token)
+{
+	CtToken tok = this->next();
+
+	if (tok.type == t)
+	{
+		if (token != nullptr) {*token = tok;}
+		return true;
+	}
+
+	this->backtrack();
+	return false;
+}
+
+
+bool CtTokenStream::getTypes(std::vector<CtTokenType> t, CtToken *token)
+{
+	CtToken tok = this->next();
+
+	for (auto type: t)
+	{
+		if (tok.type == type)
+		{
+			if (token != nullptr) {*token = tok;}
+			return true;
+		}
+	}
+
+	this->backtrack();
+	return false;
+}
 
 
 bool CtTokenStream::getWord(std::string *str)
 {
 	CtToken tok = this->next();
 
-	if (tok.type != CtTokenType::Word)
+	if (tok.type == CtTokenType::Word)
 	{
-		this->backtrack();
-		return false;
+		*str = this->viewToken(&tok);
+		return true;
 	}
 
-	*str = this->viewToken(&tok);
-	return true;
+	this->backtrack();
+	return false;
 }
 
 
-
-bool CtTokenStream::getInt(std::string *i)
+bool CtTokenStream::getInt(std::string *d)
 {
 	CtToken tok = this->next();
 
-	if (tok.type != CtTokenType::Int)
+	if (tok.type == CtTokenType::Int)
 	{
-		this->backtrack();
-		return false;
+		*d = this->viewToken(&tok);
+		return true;
 	}
 
-	*i = this->viewToken(&tok);
-	return true;
+	this->backtrack();
+	return false;
 }
 
 
-bool CtTokenStream::getFloat(std::string *d)
+bool CtTokenStream::getFloat(std::string *f)
 {
 	CtToken tok = this->next();
 
-	if (tok.type != CtTokenType::Float)
+	if (tok.type == CtTokenType::Float)
 	{
-		this->backtrack();
-		return false;
+		*f = this->viewToken(&tok);
+		return true;
 	}
 
-	*d = this->viewToken(&tok);
-	return true;
+	this->backtrack();
+	return false;
 }
 
 
@@ -168,99 +203,240 @@ bool CtTokenStream::getKeyword(CtLang::KeyWord *key)
 {
 	CtToken tok = this->next();
 
-	if (tok.type != CtTokenType::Keyword)
+	if (tok.type == CtTokenType::Keyword)
 	{
-		this->backtrack();
-		return false;
+		*key = tok.val.keyword;
+		return true;
 	}
 
-	*key = tok.val.keyword;
-	return true;
+	this->backtrack();
+	return false;
 }
-
 
 
 bool CtTokenStream::getSymbol(CtLang::Symbol *sym)
 {
 	CtToken tok = this->next();
 
-	if (tok.type != CtTokenType::Symbol)
+	if (tok.type == CtTokenType::Keyword)
 	{
-		this->backtrack();
-		return false;
+		*sym = tok.val.sym;
+		return true;
 	}
 
-	*sym = tok.val.sym;
-	return true;
+	this->backtrack();
+	return false;
 }
 
 
-
-bool CtTokenStream::expectKeyword(CtLang::KeyWord key)
-{
-	CtToken tok = this->next();
-	
-	if (tok.val.keyword != key)
-	{
-		this->backtrack();
-		return false;
-	}
-
-	return true;
-}
-
-
-bool CtTokenStream::expectSymbol(CtLang::Symbol sym)
-{
-	CtToken tok = this->next();
-	
-	if (tok.val.sym != sym)
-	{
-		this->backtrack();
-		return false;
-	}
-
-	return true;
-}
-
-
-bool CtTokenStream::expectType(CtTokenType type, CtToken *token)
+bool CtTokenStream::getKeywordSpecific(CtLang::KeyWord key)
 {
 	CtToken tok = this->next();
 
-	if (tok.type != type)
-	{	
-		this->backtrack();
-		return false;
-	}
-
-	if (token != NULL)
+	if (tok.type == CtTokenType::Keyword)
 	{
-		*token = tok;
-	}
-	
-	return true;
-}
-
-
-bool CtTokenStream::expectTypes(std::vector<CtTokenType> types, CtToken *token)
-{
-	CtToken tok = this->next();
-
-	for (auto t: types)
-	{
-		if (tok.type == t)
-		{	
-			if (token != NULL)
-			{
-				*token = tok;
-			}
-			
+		if (tok.val.keyword == key)
+		{
 			return true;
 		}
 	}
-	
+
 	this->backtrack();
 	return false;
+}
 
+
+bool CtTokenStream::getSymbolSpecific(CtLang::Symbol sym)
+{
+	CtToken tok = this->next();
+
+	if (tok.type == CtTokenType::Symbol)
+	{
+		if (tok.val.sym == sym)
+		{
+			return true;
+		}
+	}
+
+	this->backtrack();
+	return false;
+}
+
+
+
+void CtTokenStream::expectType(CtTokenType t, CtToken *token)
+{
+	CtToken tok = this->next();
+
+	if (tok.type == t)
+	{
+		if (token != nullptr) {*token = tok;}
+		return;
+	}
+
+	this->backtrack();
+	
+	CtError::raise(
+		CtError::ErrorType::SyntaxError, 
+		"Unexpected Token"
+	);
+}
+
+
+void CtTokenStream::expectTypes(std::vector<CtTokenType> t, CtToken *token)
+{
+	CtToken tok = this->next();
+
+	for (auto type: t)
+	{
+		if (tok.type == type)
+		{
+			if (token != nullptr) {*token = tok;}
+			return;
+		}
+	}
+
+	this->backtrack();
+	
+	CtError::raise(
+		CtError::ErrorType::SyntaxError, 
+		"Unexpected Token"
+	);
+}
+
+
+void CtTokenStream::expectWord(std::string *str)
+{
+	CtToken tok = this->next();
+
+	if (tok.type == CtTokenType::Word)
+	{
+		*str = this->viewToken(&tok);
+		return;
+	}
+
+	this->backtrack();
+
+	CtError::raise(
+		CtError::ErrorType::SyntaxError, 
+		"Unexpected token."
+	);
+}
+
+
+void CtTokenStream::expectInt(std::string *d)
+{
+	CtToken tok = this->next();
+
+	if (tok.type == CtTokenType::Int)
+	{
+		*d = this->viewToken(&tok);
+		return;
+	}
+
+	this->backtrack();
+
+	CtError::raise(
+		CtError::ErrorType::SyntaxError, 
+		"Unexpected Token Int"
+	);
+}
+
+
+void CtTokenStream::expectFloat(std::string *f)
+{
+	CtToken tok = this->next();
+
+	if (tok.type == CtTokenType::Float)
+	{
+		*f = this->viewToken(&tok);
+		return;
+	}
+
+	this->backtrack();
+
+	CtError::raise(
+		CtError::ErrorType::SyntaxError, 
+		"Unexpected Token Float"
+	);
+}
+
+
+void CtTokenStream::expectKeyword(CtLang::KeyWord *key)
+{
+	CtToken tok = this->next();
+
+	if (tok.type == CtTokenType::Keyword)
+	{
+		*key = tok.val.keyword;
+		return;
+	}
+
+	this->backtrack();
+
+	CtError::raise(
+		CtError::ErrorType::SyntaxError, 
+		"Unexpected Token Keyword"
+	);
+}
+
+
+void CtTokenStream::expectSymbol(CtLang::Symbol *sym)
+{
+	CtToken tok = this->next();
+
+	if (tok.type == CtTokenType::Symbol)
+	{
+		*sym = tok.val.sym;
+		return;
+	}
+
+	this->backtrack();
+
+	CtError::raise(
+		CtError::ErrorType::SyntaxError, 
+		"Unexpected Token Symbol"
+	);
+}
+
+
+void CtTokenStream::expectKeywordSpecific(CtLang::KeyWord key)
+{
+	CtToken tok = this->next();
+
+	if (tok.type == CtTokenType::Keyword)
+	{
+		if (tok.val.keyword == key)
+		{
+			return;
+		}
+	}
+
+	this->backtrack();
+
+	CtError::raise(
+		CtError::ErrorType::SyntaxError, 
+		"Unexpected Token Specific keyword"
+	);
+}
+
+
+void CtTokenStream::expectSymbolSpecific(CtLang::Symbol sym)
+{
+	CtToken tok = this->next();
+
+	if (tok.type == CtTokenType::Symbol)
+	{
+		if (tok.val.sym == sym)
+		{
+			return;
+		}
+	}
+
+	this->backtrack();
+
+	CtError::raise(
+		CtError::ErrorType::SyntaxError, 
+		"Unexpected Token Symbol specific"
+	);
 }

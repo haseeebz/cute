@@ -7,7 +7,7 @@
 #pragma once 
 
 
-enum CtTokenType 
+enum CtTokenType
 {
 	Int,
 	Float,
@@ -83,46 +83,30 @@ class CtTokenStream
 	
 
 	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
+	
+	bool getType(CtTokenType t, CtToken *token);
+	bool getTypes(std::vector<CtTokenType> t, CtToken *token);
 	bool getWord(std::string *str);
-	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
 	bool getInt(std::string *d);
-	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
 	bool getFloat(std::string *f);
-	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
 	bool getKeyword(CtLang::KeyWord *key);
-	// get_ functions return true , write the value to the pointer and increment if the next token is of the specified type.
 	bool getSymbol(CtLang::Symbol *sym);
-
-	// expect___ functions expect a particular keyword/sym, return true and increment the counter
-	bool expectKeyword(CtLang::KeyWord key);
-	// expect___ functions expect a particular keyword/sym, return true and increment the counter
-	bool expectSymbol(CtLang::Symbol sym);
-
-	// expect a specific token type, write the token and return true if the type matches. *token can be NULL if you don't want the value.
-	bool expectType(CtTokenType t, CtToken *token);
+	bool getKeywordSpecific(CtLang::KeyWord key);
+	bool getSymbolSpecific(CtLang::Symbol sym);
 
 
-	struct Pattern
-	{
-		enum {fToken, fKeyword, fSymbol} type;
-		union 
-		{
-			CtTokenType t;
-			CtLang::KeyWord k;
-			CtLang::Symbol s;
-		} val;
+	// expect_ functions behave the same as get but raise error too.
 
-		Pattern(CtTokenType t): type(fToken) {val.t = t;};
-		Pattern(CtLang::KeyWord k): type(fKeyword) {val.k = k;};
-		Pattern(CtLang::Symbol s): type(fSymbol) {val.s = s;};
-	};
-
-	/*
-	Returns true if the expected pattern is detected. 
-	If true, the tokens vector is filled with the same number of items as in fmt. The stream counter is incremented by the same amount.
-	If false, the tokens vector is untouched, the stream counter remains the same
-	*/
-	bool expectPattern(std::vector<Pattern> fmt, std::vector<CtToken>* tokens);
+	void expectType(CtTokenType t, CtToken *token);
+	void expectTypes(std::vector<CtTokenType> t, CtToken *token);
+	void expectWord(std::string *str);
+	void expectInt(std::string *d);
+	void expectFloat(std::string *f);
+	void expectKeyword(CtLang::KeyWord *key);
+	void expectSymbol(CtLang::Symbol *sym);
+	void expectKeywordSpecific(CtLang::KeyWord key);
+	void expectSymbolSpecific(CtLang::Symbol sym);
+	
 };
 
 
