@@ -82,3 +82,25 @@ Each version needs three sections:
 
 ### Tooling
 + What's that?
+
+
+## v0.0.4
+
+### Language
++ Added loops
++ Added the `bool` type.
++ Simpler entry point for both the compiler and the engine.
+
+### Stdlib
++ Hell nah
+
+### Compiler 
++ Added loop compilation.
++ Tokenizer can now raise errors as well when called from parser.
++ Refactored parser.
+
+### Engine
++ No changes.
+
+### Tooling
++ T-T
