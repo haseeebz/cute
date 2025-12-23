@@ -63,6 +63,16 @@ void CtNameResolver::handleLoop(CtNode::Loop *node)
 }
 
 
+void CtNameResolver::handleIf(CtNode::If *node)
+{
+	this->walk(node->condition);
+	for (auto stmt: node->block)
+	{
+		this->walk(stmt);
+	}
+}
+
+
 void CtNameResolver::handleAssignment(CtNode::Assignment *node)
 {
 	if (!this->current_scope->variables.contains(node->name->val))

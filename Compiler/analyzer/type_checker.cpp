@@ -67,6 +67,24 @@ void CtTypeChecker::handleLoop(CtNode::Loop *node)
 }
 
 
+void CtTypeChecker::handleIf(CtNode::If *node)
+{
+	this->walk(node->condition);
+	if (*node->condition->expr_type != *primitiveTypes["bool"])
+	{
+		CtError::raise(
+			CtError::ErrorType::TypeError, 
+			std::format("If condition must evaluate to type 'bool', not {}.", node->condition->expr_type->name)
+		);
+	}
+
+	for (auto stmt: node->block)
+	{
+		this->walk(stmt);
+	}
+}
+
+
 void CtTypeChecker::handleAssignment(CtNode::Assignment *node)
 {
 	auto var = this->current_scope->variables[node->name->val];

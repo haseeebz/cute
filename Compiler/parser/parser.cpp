@@ -54,6 +54,7 @@ CtNode::Statement* CtParser::parseStatement()
 			case CtLang::KeyWord::Let:   stmt = this->parseDeclaration(); break;
 			case CtLang::KeyWord::Out:   stmt = new CtNode::Out(this->parseExpression(0)); break;
 			case CtLang::KeyWord::Loop:  stmt = this->parseLoop(); break;
+			case CtLang::KeyWord::If:    stmt = this->parseIf(); break;
 			default: CtError::raise(
 				CtError::ErrorType::SyntaxError, 
 				std::format("Unimplemented Keyword: {}", this->tokens->viewToken(&token))
@@ -115,6 +116,36 @@ CtNode::Loop* CtParser::parseLoop()
 	return loop;
 }
 
+
+CtNode::If* CtParser::parseIf()
+{
+	auto if_node = new CtNode::If();
+
+	while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
+
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftParan);
+
+	if_node->condition = this->parseExpression(0);
+
+	this->tokens->getSymbolSpecific(CtLang::Symbol::RightParan); // Expression parser will catch that right paran. Fix needed here.
+
+	while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
+
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftBracket);
+
+	while (true)
+	{
+		while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
+
+		if (this->tokens->getSymbolSpecific(CtLang::Symbol::RightBracket)) {break;}
+
+		CtNode::Statement* stmt = this->parseStatement();
+		if (stmt == nullptr) {break;}
+		if_node->block.push_back(stmt);
+	}
+
+	return if_node;
+}
 
 
 CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
@@ -266,6 +297,8 @@ CtNode::RootProgram* CtParser::parse(std::string filepath)
 	auto* root = new CtNode::RootProgram();
 	root->src = this->parseFile(filepath);
 
+	CtNodePrinter p;
+	p.print(root);
 	return root;
 }
 

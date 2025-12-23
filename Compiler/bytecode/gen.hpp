@@ -21,6 +21,7 @@ namespace CtCodeGen
 		uint arg_count;
 		uint locals_count;
 		uint address;
+		uint station_count = 0;
 
 		std::vector<Unit*> units;
 

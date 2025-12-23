@@ -31,6 +31,7 @@ class CtParser
 
 	CtNode::Declaration* parseDeclaration();
 	CtNode::Loop* parseLoop();
+	CtNode::If* parseIf();
 
 	CtNode::Expression* parseExpression(uint prev_precedence = 0);
 	CtNode::Expression* getLeafExpression(CtToken& token);

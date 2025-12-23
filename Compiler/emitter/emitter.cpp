@@ -113,7 +113,7 @@ void CtEmitter::handleOut(CtNode::Out *node)
 
 void CtEmitter::handleLoop(CtNode::Loop* node)
 {
-	auto station = new CtCodeGen::StationOp(this->current_function->stations.size());
+	auto station = new CtCodeGen::StationOp(this->current_function->station_count++);
 	this->current_function->units.push_back(station);
 	
 	for (auto stmt: node->block)
@@ -123,6 +123,22 @@ void CtEmitter::handleLoop(CtNode::Loop* node)
 
 	auto jump = new CtCodeGen::JumpOp(station->id, CtCodeGen::JumpOpType::Norm);
 	this->current_function->units.push_back(jump);
+}
+
+
+void CtEmitter::handleIf(CtNode::If* node)
+{
+	auto station = new CtCodeGen::StationOp(this->current_function->station_count++);
+
+	this->walk(node->condition);
+	this->current_function->units.push_back(new CtCodeGen::JumpOp(station->id, CtCodeGen::JumpOpType::False));
+
+	for (auto stmt: node->block)
+	{
+		this->walk(stmt);
+	}
+
+	this->current_function->units.push_back(station);
 }
 
 
