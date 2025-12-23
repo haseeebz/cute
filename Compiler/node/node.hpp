@@ -22,6 +22,7 @@ enum class CtNodeType
 
 	Int,
 	Float,
+	Bool,
 	Identifier,
 	Variable,
 	BinaryOp,
@@ -54,6 +55,7 @@ namespace CtNode
 	// Expression Nodes
 	struct Int;
 	struct Float;
+	struct Bool;
 	struct Identifier;
 	struct Variable;
 	struct BinaryOp;
@@ -171,6 +173,13 @@ namespace CtNode
 	};
 
 
+	struct Bool : Expression
+	{
+		bool val;
+		Bool(bool b): val(b) {nt = CtNodeType::Bool;}
+	};
+
+
 	struct Identifier : Expression
 	{
 		std::string val;
@@ -245,6 +254,7 @@ class CtNodeWalker
 
 	virtual void handleInt(CtNode::Int *node) = 0;
 	virtual void handleFloat(CtNode::Float *node) = 0;
+	virtual void handleBool(CtNode::Bool *node) = 0;
 	virtual void handleBinaryOp(CtNode::BinaryOp *node) = 0;
 	virtual void handleIdentifier(CtNode::Identifier *node) = 0;
 	virtual void handleFunctionCall(CtNode::FunctionCall *node) = 0;
@@ -274,6 +284,7 @@ class CtNodePrinter: public CtNodeWalker
 
 	void handleInt(CtNode::Int *node);
 	void handleFloat(CtNode::Float *node);
+	void handleBool(CtNode::Bool *node);
 	void handleBinaryOp(CtNode::BinaryOp *node);
 	void handleIdentifier(CtNode::Identifier *node);
 	void handleFunctionCall(CtNode::FunctionCall *node);

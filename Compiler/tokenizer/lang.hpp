@@ -19,7 +19,10 @@ namespace CtLang
 		Break,
 		Continue,
 
-		Func
+		Func,
+
+		True,
+		False
 	};
 
 
@@ -37,6 +40,9 @@ namespace CtLang
 		{"continue", KeyWord::Continue},
 
 		{"func",     KeyWord::Func},
+
+		{"true",     KeyWord::True},
+		{"false",    KeyWord::False},
 	};
 
 

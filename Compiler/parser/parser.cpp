@@ -51,9 +51,9 @@ CtNode::Statement* CtParser::parseStatement()
 	{
 		switch (token.val.keyword)
 		{
-			case CtLang::KeyWord::Let:  stmt = this->parseDeclaration(); break;
-			case CtLang::KeyWord::Out:  stmt = new CtNode::Out(this->parseExpression(0)); break;
-			case CtLang::KeyWord::Loop: stmt = this->parseLoop(); break;
+			case CtLang::KeyWord::Let:   stmt = this->parseDeclaration(); break;
+			case CtLang::KeyWord::Out:   stmt = new CtNode::Out(this->parseExpression(0)); break;
+			case CtLang::KeyWord::Loop:  stmt = this->parseLoop(); break;
 			default: CtError::raise(
 				CtError::ErrorType::SyntaxError, 
 				std::format("Unimplemented Keyword: {}", this->tokens->viewToken(&token))
@@ -127,6 +127,16 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	if (this->tokens->getTypes({CtTokenType::Int, CtTokenType::Float, CtTokenType::Word}, &tok))
 	{
 		lhs = this->getLeafExpression(tok);
+	}
+
+	else if (this->tokens->getKeywordSpecific(CtLang::KeyWord::True))
+	{
+		lhs = new CtNode::Bool(true);
+	}
+
+	else if (this->tokens->getKeywordSpecific(CtLang::KeyWord::False))
+	{
+		lhs = new CtNode::Bool(false);
 	}
 
 	else if (this->tokens->getType(CtTokenType::Symbol, &tok))
@@ -244,6 +254,7 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
+	std::cout << this->tokens->toString() << std::endl;
 	this->source = new CtNode::Source();
 	this->startParsingFile();
 	return this->source;

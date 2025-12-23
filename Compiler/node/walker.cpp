@@ -51,6 +51,10 @@ void CtNodeWalker::walk(CtNode::Base *node) {
 	handleFloat(static_cast<CtNode::Float *>(node));
 	break;
 
+	case CtNodeType::Bool:
+	handleBool(static_cast<CtNode::Bool *>(node));
+	break;
+
 	case CtNodeType::Identifier:
 	handleIdentifier(static_cast<CtNode::Identifier *>(node));
 	break;
@@ -199,6 +203,12 @@ void CtNodePrinter::handleFloat(CtNode::Float *node)
 {
 	this->printIndent();
 	std::cout << "(Float " << node->raw << ")\n";
+}
+
+void CtNodePrinter::handleBool(CtNode::Bool *node)
+{
+	this->printIndent();
+	std::cout << "(Bool " << node->val << ")\n";
 }
 
 void CtNodePrinter::handleBinaryOp(CtNode::BinaryOp *node)

@@ -63,6 +63,12 @@ void CtEmitter::handleFloat(CtNode::Float *node)
 }
 
 
+void CtEmitter::handleBool(CtNode::Bool *node)
+{
+	this->current_function->units.push_back(new CtCodeGen::LoadConstOp(int64_t(node->val)));
+};
+
+
 void CtEmitter::handleBinaryOp(CtNode::BinaryOp *node)
 {
 	this->walk(node->left);
@@ -95,9 +101,10 @@ void CtEmitter::handleOut(CtNode::Out *node)
 
 	static std::map<CtSpec::PrimitiveT, int> format_specfier =
 	{
-		{CtSpec::PrimitiveT::Int,   2},
-		{CtSpec::PrimitiveT::UInt,  3},
-		{CtSpec::PrimitiveT::Float, 4},
+		{CtSpec::PrimitiveT::Bool,   2},
+		{CtSpec::PrimitiveT::Int,    2},
+		{CtSpec::PrimitiveT::UInt,   3},
+		{CtSpec::PrimitiveT::Float,  4},
 	};
 
 	this->current_function->units.push_back(new CtCodeGen::Out(format_specfier[node->expr->expr_type->primitive]));

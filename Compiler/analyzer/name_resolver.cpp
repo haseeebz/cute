@@ -86,6 +86,11 @@ void CtNameResolver::handleFloat(CtNode::Float *node)
 	// does not need to do anythings
 };
 
+void CtNameResolver::handleBool(CtNode::Bool *node)
+{
+
+};
+
 void CtNameResolver::handleBinaryOp(CtNode::BinaryOp *node)
 {
 	this->walk(node->left);

@@ -120,10 +120,27 @@ void CtTypeChecker::handleFloat(CtNode::Float *node)
 }
 
 
+void CtTypeChecker::handleBool(CtNode::Bool *node)
+{
+	node->expr_type = primitiveTypes["bool"];
+};
+
+
 void CtTypeChecker::handleBinaryOp(CtNode::BinaryOp *node)
 {
 	this->walk(node->left);
 	this->walk(node->right);
+
+	if (node->left->expr_type == primitiveTypes["bool"])
+	{
+		CtError::raise(
+			CtError::ErrorType::TypeError, 
+			std::format(
+				"Binary operation '{}' not supported for bool types. {} & {}", 
+				int(node->op), node->left->expr_type->name, node->right->expr_type->name
+			)
+		);
+	}
 
 	if (node->left->expr_type != node->right->expr_type)
 	{

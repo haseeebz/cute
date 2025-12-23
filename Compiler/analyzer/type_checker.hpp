@@ -10,10 +10,10 @@
 
 static inline std::map<std::string, CtSpec::TypeInfo*> primitiveTypes =
 {
-	{"int",    new CtSpec::TypeInfo("int", CtSpec::PrimitiveT::Int)},
-	{"uint",   new CtSpec::TypeInfo("uint", CtSpec::PrimitiveT::UInt)},
+	{"int",    new CtSpec::TypeInfo("int",   CtSpec::PrimitiveT::Int)},
+	{"uint",   new CtSpec::TypeInfo("uint",  CtSpec::PrimitiveT::UInt)},
 	{"float",  new CtSpec::TypeInfo("float", CtSpec::PrimitiveT::Float)},
-	{"bool",   new CtSpec::TypeInfo("bool", CtSpec::PrimitiveT::Bool)},
+	{"bool",   new CtSpec::TypeInfo("bool",  CtSpec::PrimitiveT::Bool)},
 };
 
 
@@ -34,6 +34,7 @@ class CtTypeChecker: public CtNodeWalker
 
 	void handleInt(CtNode::Int *node);
 	void handleFloat(CtNode::Float *node);
+	void handleBool(CtNode::Bool *node);
 	void handleBinaryOp(CtNode::BinaryOp *node);
 	void handleIdentifier(CtNode::Identifier *node);
 	void handleFunctionCall(CtNode::FunctionCall *node);

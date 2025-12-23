@@ -24,6 +24,7 @@ class CtEmitter : CtNodeWalker
 	
 	void handleInt(CtNode::Int *node);
 	void handleFloat(CtNode::Float *node);
+	void handleBool(CtNode::Bool *node);
 	void handleBinaryOp(CtNode::BinaryOp *node);
 	void handleIdentifier(CtNode::Identifier *node);
 	void handleFunctionCall(CtNode::FunctionCall *node) {};
