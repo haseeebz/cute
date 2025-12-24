@@ -160,7 +160,16 @@ void CtNodePrinter::handleStmtBlock(CtNode::StmtBlock *node)
 void CtNodePrinter::handleDeclaration(CtNode::Declaration *node)
 {
 	this->printIndent();
-	std::cout << "(Declaration name= " << node->name << " type= " << node->type << ")\n";
+	std::cout << "(Declaration name= " << node->name << " type= " << node->type << "\n";
+	if (!node->assignment) {return;}
+
+	this->printIndent();
+	this->indent++;
+	std::cout << "assignment=\n";
+	this->walk(node->assignment);
+	this->indent--;
+	this->printIndent();
+	std::cout<< ")\n";
 }
 
 

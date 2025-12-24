@@ -127,7 +127,7 @@ namespace CtNode
 	{	
 		std::string type_id;
 		std::string name;
-
+		Assignment* assignment = nullptr;
 		CtSpec::TypeInfo* type;
 
 		Declaration() {nt = CtNodeType::Declaration;};
@@ -163,7 +163,7 @@ namespace CtNode
 	{
 		Expression* condition;
 		StmtBlock* then_block;
-		Statement* else_stmt; // can be either an else (stmtblock) or else if (If node)
+		Statement* else_stmt = nullptr; // can be either an else (stmtblock) or else if (If node)
 
 		If() {nt = CtNodeType::If;}
 		~If();

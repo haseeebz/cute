@@ -98,6 +98,11 @@ void CtEmitter::handleStmtBlock(CtNode::StmtBlock *node)
 void CtEmitter::handleDeclaration(CtNode::Declaration *node)
 {
 	this->variables[node->name] = this->variables.size();
+
+	if (node->assignment)
+	{
+		this->walk(node->assignment);
+	}
 }
 
 

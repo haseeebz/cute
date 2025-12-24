@@ -54,6 +54,8 @@ void CtTypeChecker::handleDeclaration(CtNode::Declaration *node)
 	}
 
 	var.type = primitiveTypes[var.type_id];
+
+	if (node->assignment) {this->walk(node->assignment);}
 }
 
 

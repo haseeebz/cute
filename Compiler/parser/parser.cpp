@@ -38,7 +38,7 @@ CtNode::StmtBlock* CtParser::parseBlock()
 	auto* block = new CtNode::StmtBlock();
 
 	while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
-	
+
 	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftBracket);
 
 	while (true)
@@ -104,6 +104,15 @@ CtNode::Declaration* CtParser::parseDeclaration()
 
 	this->tokens->expectWord(&str);
 	dec->type_id = str;
+
+	if (this->tokens->getSymbolSpecific(CtLang::Symbol::Equal))
+	{
+		auto* assign = new CtNode::Assignment();
+		assign->name = new CtNode::Identifier(dec->name);
+		assign->value = this->parseExpression(0);
+		
+		dec->assignment = assign;
+	}
 
 	this->tokens->expectType(CtTokenType::EndOfLine, nullptr);
 
