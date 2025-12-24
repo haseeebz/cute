@@ -27,6 +27,8 @@ class CtParser
 
 	CtNode::Function* parseFunction();
 
+	CtNode::StmtBlock* parseBlock();
+
 	CtNode::Statement* parseStatement();
 
 	CtNode::Declaration* parseDeclaration();

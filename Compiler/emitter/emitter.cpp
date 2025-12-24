@@ -131,16 +131,19 @@ void CtEmitter::handleLoop(CtNode::Loop* node)
 
 void CtEmitter::handleIf(CtNode::If* node)
 {
-	auto station = new CtCodeGen::StationOp(this->current_function->station_count++);
+	auto exiting_station = new CtCodeGen::StationOp(this->current_function->station_count++);
 
 	this->walk(node->condition);
-	this->current_function->units.push_back(new CtCodeGen::JumpOp(station->id, CtCodeGen::JumpOpType::False));
+	this->current_function->units.push_back(new CtCodeGen::JumpOp(exiting_station->id, CtCodeGen::JumpOpType::False));
 
 	this->walk(node->then_block);
+	auto ran_station = new CtCodeGen::StationOp(this->current_function->station_count++);
+	this->current_function->units.push_back(new CtCodeGen::JumpOp(ran_station->id, CtCodeGen::JumpOpType::Norm));
 
-	this->current_function->units.push_back(station);
-
+	this->current_function->units.push_back(exiting_station);
 	if (node->else_stmt) {this->walk(node->else_stmt);}
+
+	this->current_function->units.push_back(ran_station);
 }
 
 

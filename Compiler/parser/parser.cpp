@@ -27,14 +27,32 @@ CtNode::Function* CtParser::parseFunction()
 	auto* func = new CtNode::Function();
 	func->name = "main";
 
-	while (this->tokens->peek().type != CtTokenType::EndOfFile)
-	{
-		CtNode::Statement* stmt = this->parseStatement();
-		if (stmt == nullptr) {break;}
-		func->statements.push_back(stmt);
-	}
+	func->block = this->parseBlock();
 
 	return func;
+}
+
+
+CtNode::StmtBlock* CtParser::parseBlock()
+{
+	auto* block = new CtNode::StmtBlock();
+
+	while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
+	
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftBracket);
+
+	while (true)
+	{
+		while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
+
+		if (this->tokens->getSymbolSpecific(CtLang::Symbol::RightBracket)) {break;}
+
+		CtNode::Statement* stmt = this->parseStatement();
+		if (stmt == nullptr) {break;}
+		block->stmts.push_back(stmt);
+	}
+
+	return block;
 }
 
 
@@ -100,18 +118,7 @@ CtNode::Loop* CtParser::parseLoop()
 
 	while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
 
-	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftBracket);
-
-	while (true)
-	{
-		while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
-
-		if (this->tokens->getSymbolSpecific(CtLang::Symbol::RightBracket)) {break;}
-
-		CtNode::Statement* stmt = this->parseStatement();
-		if (stmt == nullptr) {break;}
-		loop->block.push_back(stmt);
-	}
+	loop->block = this->parseBlock();
 
 	return loop;
 }
@@ -121,27 +128,26 @@ CtNode::If* CtParser::parseIf()
 {
 	auto if_node = new CtNode::If();
 
-	while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
-
 	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftParan);
 
 	if_node->condition = this->parseExpression(0);
 
 	this->tokens->getSymbolSpecific(CtLang::Symbol::RightParan); // Expression parser will catch that right paran. Fix needed here.
 
+	if_node->then_block = this->parseBlock();
+
 	while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
 
-	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftBracket);
-
-	while (true)
+	if (this->tokens->getKeywordSpecific(CtLang::KeyWord::Else))
 	{
-		while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
-
-		if (this->tokens->getSymbolSpecific(CtLang::Symbol::RightBracket)) {break;}
-
-		CtNode::Statement* stmt = this->parseStatement();
-		if (stmt == nullptr) {break;}
-		if_node->block.push_back(stmt);
+		if (this->tokens->getKeywordSpecific(CtLang::KeyWord::If))
+		{
+			if_node->else_stmt = this->parseIf();
+		}
+		else  
+		{
+			if_node->else_stmt = this->parseBlock();
+		}
 	}
 
 	return if_node;
