@@ -27,6 +27,10 @@ void CtNodeWalker::walk(CtNode::Base *node) {
 	handleFunction(static_cast<CtNode::Function *>(node));
 	break;
 
+	case CtNodeType::StmtBlock:
+	handleStmtBlock(static_cast<CtNode::StmtBlock *>(node));
+	break;
+
 	case CtNodeType::Declaration:
 	handleDeclaration(static_cast<CtNode::Declaration *>(node));
 	break;
@@ -137,13 +141,19 @@ void CtNodePrinter::handleFunction(CtNode::Function *node)
 	std::cout << "\nStatements:\n\n";
 	this->indent++;
 
-	for (uint i = 0; i < node->statements.size(); i++)
-	{
-		this->walk(node->statements[i]);
-		std::cout << "\n";
-	}
+	this->walk(node->block);
 
 	this->indent--;
+}
+
+void CtNodePrinter::handleStmtBlock(CtNode::StmtBlock *node)
+{
+	for (auto stmt: node->stmts)
+	{
+		this->printIndent();
+		this->walk(stmt);
+		std::cout << "\n";
+	}
 }
 
 
@@ -171,7 +181,7 @@ void CtNodePrinter::handleLoop(CtNode::Loop *node)
 	this->printIndent();
 	std::cout << "(Loop statements=\n";
 	this->indent++;
-	for (auto stmt: node->block) {this->walk(stmt);}
+	this->walk(node->block);
 	this->indent--;
 	this->printIndent();
 	std::cout << ")\n";
@@ -184,8 +194,11 @@ void CtNodePrinter::handleIf(CtNode::If *node)
 	this->indent++;
 	this->walk(node->condition);
 	this->printIndent();
-	std::cout << "statments=\n";
-	for (auto stmt: node->block) {this->walk(stmt);}
+	std::cout << "then=\n";
+	this->walk(node->then_block);
+	this->printIndent();
+	std::cout << "else=\n";
+	if (node->else_stmt) {this->walk(node->else_stmt);}
 	this->indent--;
 	this->printIndent();
 	std::cout << ")\n";

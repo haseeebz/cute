@@ -26,8 +26,14 @@ void CtNameResolver::handleFunction(CtNode::Function *node)
 {
 	node->scope = new CtScope::Scope(this->current_scope);
 	this->current_scope = node->scope;
+	this->walk(node->block);
+}
 
-	for (auto stmt: node->statements)
+
+void CtNameResolver::handleStmtBlock(CtNode::StmtBlock *node)
+{
+	// need to start a new scope here!
+	for (auto stmt: node->stmts)
 	{
 		this->walk(stmt);
 	}
@@ -56,20 +62,16 @@ void CtNameResolver::handleOut(CtNode::Out *node)
 
 void CtNameResolver::handleLoop(CtNode::Loop *node)
 {
-	for (auto stmt: node->block)
-	{
-		this->walk(stmt);
-	}
+	this->walk(node->block);
 }
 
 
 void CtNameResolver::handleIf(CtNode::If *node)
 {
 	this->walk(node->condition);
-	for (auto stmt: node->block)
-	{
-		this->walk(stmt);
-	}
+	this->walk(node->then_block);
+
+	if (node->else_stmt) {this->walk(node->else_stmt);}
 }
 
 

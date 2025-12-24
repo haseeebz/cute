@@ -40,10 +40,7 @@ void CtEmitter::handleFunction(CtNode::Function *node)
 	this->current_function = func;
 	this->program->functions[0] = func;
 
-	for (auto stmt: node->statements)
-	{
-		this->walk(stmt);
-	}	
+	this->walk(node->block);
 
 	func->id = 0;
 	func->locals_count = this->variables.size();
@@ -89,6 +86,15 @@ void CtEmitter::handleBinaryOp(CtNode::BinaryOp *node)
 }
 
 
+void CtEmitter::handleStmtBlock(CtNode::StmtBlock *node)
+{
+	for (auto stmt: node->stmts)
+	{
+		this->walk(stmt);
+	}
+}
+
+
 void CtEmitter::handleDeclaration(CtNode::Declaration *node)
 {
 	this->variables[node->name] = this->variables.size();
@@ -116,10 +122,7 @@ void CtEmitter::handleLoop(CtNode::Loop* node)
 	auto station = new CtCodeGen::StationOp(this->current_function->station_count++);
 	this->current_function->units.push_back(station);
 	
-	for (auto stmt: node->block)
-	{
-		this->walk(stmt);
-	}
+	this->walk(node->block);
 
 	auto jump = new CtCodeGen::JumpOp(station->id, CtCodeGen::JumpOpType::Norm);
 	this->current_function->units.push_back(jump);
@@ -133,12 +136,11 @@ void CtEmitter::handleIf(CtNode::If* node)
 	this->walk(node->condition);
 	this->current_function->units.push_back(new CtCodeGen::JumpOp(station->id, CtCodeGen::JumpOpType::False));
 
-	for (auto stmt: node->block)
-	{
-		this->walk(stmt);
-	}
+	this->walk(node->then_block);
 
 	this->current_function->units.push_back(station);
+
+	if (node->else_stmt) {this->walk(node->else_stmt);}
 }
 
 

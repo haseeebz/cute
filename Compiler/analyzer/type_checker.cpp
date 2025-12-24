@@ -27,8 +27,13 @@ void CtTypeChecker::handleSource(CtNode::Source *node)
 void CtTypeChecker::handleFunction(CtNode::Function *node)
 {
 	this->current_scope = node->scope;
+	this->walk(node->block);
+}
 
-	for (auto stmt: node->statements)
+
+void CtTypeChecker::handleStmtBlock(CtNode::StmtBlock *node)
+{
+	for (auto stmt: node->stmts)
 	{
 		this->walk(stmt);
 	}
@@ -60,10 +65,7 @@ void CtTypeChecker::handleOut(CtNode::Out *node)
 
 void CtTypeChecker::handleLoop(CtNode::Loop *node)
 {
-	for (auto stmt: node->block)
-	{
-		this->walk(stmt);
-	}
+	this->walk(node->block);
 }
 
 
@@ -78,10 +80,8 @@ void CtTypeChecker::handleIf(CtNode::If *node)
 		);
 	}
 
-	for (auto stmt: node->block)
-	{
-		this->walk(stmt);
-	}
+	this->walk(node->then_block);
+	if (node->else_stmt) {this->walk(node->else_stmt);}
 }
 
 

@@ -18,12 +18,39 @@ CtNode::Source::~Source()
 CtNode::Function::~Function()
 {
 	for (auto para: this->parameters) {delete para;}
-	for (auto stmt: this->statements) {delete stmt;}
+	delete this->block;
+}
+
+
+CtNode::StmtBlock::~StmtBlock()
+{
+	for (auto stmt: this->stmts)
+	{
+		delete stmt;
+	}
+}
+
+
+CtNode::Out::~Out()
+{
+	delete this->expr;
 }
 
 
 CtNode::Declaration::~Declaration()
 {
+}
+
+CtNode::Loop::~Loop()
+{
+	delete this->block;
+}
+
+CtNode::If::~If()
+{
+	delete this->condition;
+	delete this->then_block;
+	delete this->else_stmt;
 }
 
 

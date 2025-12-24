@@ -15,6 +15,7 @@ enum class CtNodeType
 	Source,
 	Function,
 
+	StmtBlock,
 	Declaration,
 	Out,
 	ExprStatement,
@@ -48,6 +49,7 @@ namespace CtNode
 
 	
 	// Statement Nodes
+	struct StmtBlock;
 	struct Declaration;
 	struct Out;
 	struct ExprStatment;
@@ -100,7 +102,7 @@ namespace CtNode
 	{
 		std::string name;
 		std::vector<Declaration*> parameters;
-		std::vector<Statement*>   statements;
+		StmtBlock* block;
 
 		CtScope::Scope* scope;
 
@@ -110,6 +112,17 @@ namespace CtNode
 
 	
 	// Statement Nodes
+
+
+	struct StmtBlock : Statement
+	{
+		std::vector<Statement*> stmts;
+
+		StmtBlock() {nt = CtNodeType::StmtBlock;};
+		~StmtBlock();
+	};
+
+
 	struct Declaration : Statement
 	{	
 		std::string type_id;
@@ -140,7 +153,7 @@ namespace CtNode
 
 	struct Loop : Statement
 	{
-		std::vector<Statement*> block;
+		StmtBlock* block;
 
 		Loop() {{nt = CtNodeType::Loop;}};
 		~Loop();
@@ -149,9 +162,11 @@ namespace CtNode
 	struct If : Statement
 	{
 		Expression* condition;
-		std::vector<Statement*> block;
+		StmtBlock* then_block;
+		Statement* else_stmt; // can be either an else (stmtblock) or else if (If node)
 
 		If() {nt = CtNodeType::If;}
+		~If();
 	};
 
 	// Expression Nodes
@@ -258,6 +273,7 @@ class CtNodeWalker
 
 	virtual void handleFunction(CtNode::Function *node) = 0;
 
+	virtual void handleStmtBlock(CtNode::StmtBlock *node) = 0;
 	virtual void handleDeclaration(CtNode::Declaration *node) = 0;
 	virtual void handleLoop(CtNode::Loop *node) = 0;
 	virtual void handleIf(CtNode::If *node) = 0;
@@ -289,6 +305,7 @@ class CtNodePrinter: public CtNodeWalker
 
 	void handleFunction(CtNode::Function *node);
 
+	void handleStmtBlock(CtNode::StmtBlock *node);
 	void handleDeclaration(CtNode::Declaration *node);
 	void handleLoop(CtNode::Loop *node);
 	void handleIf(CtNode::If *node);
