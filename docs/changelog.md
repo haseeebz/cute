@@ -104,3 +104,22 @@ Each version needs three sections:
 
 ### Tooling
 + T-T
+
+
+## v0.0.5
+
+### Language
++ Added conditional statements: `if`, `else if` and `else`.
++ Added the ability to assign in the same statement as the declaration of the variable.
+
+### Stdlib
++ NAH
+
+### Compiler 
++ It so much easier adding new features.
+
+### Engine
++ No changes.
+
+### Tooling
++ Nope
