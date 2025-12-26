@@ -33,6 +33,8 @@ class CtParser
 
 	CtNode::Declaration* parseDeclaration();
 	CtNode::Loop* parseLoop();
+	CtNode::While* parseWhile();
+	CtNode::For* parseFor();
 	CtNode::If* parseIf();
 
 	CtNode::Expression* parseExpression(uint prev_precedence = 0);

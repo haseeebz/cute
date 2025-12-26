@@ -69,10 +69,12 @@ CtNode::Statement* CtParser::parseStatement()
 	{
 		switch (token.val.keyword)
 		{
-			case CtLang::KeyWord::Let:   stmt = this->parseDeclaration(); break;
-			case CtLang::KeyWord::Out:   stmt = new CtNode::Out(this->parseExpression(0)); break;
-			case CtLang::KeyWord::Loop:  stmt = this->parseLoop(); break;
-			case CtLang::KeyWord::If:    stmt = this->parseIf(); break;
+			case CtLang::KeyWord::Let:    stmt = this->parseDeclaration(); break;
+			case CtLang::KeyWord::Out:    stmt = new CtNode::Out(this->parseExpression(0)); break;
+			case CtLang::KeyWord::Loop:   stmt = this->parseLoop(); break;
+			case CtLang::KeyWord::While:  stmt = this->parseWhile(); break;
+			case CtLang::KeyWord::For:    stmt = this->parseFor(); break;
+			case CtLang::KeyWord::If:     stmt = this->parseIf(); break;
 			default: CtError::raise(
 				CtError::ErrorType::SyntaxError, 
 				std::format("Unimplemented Keyword: {}", this->tokens->viewToken(&token))
@@ -126,6 +128,42 @@ CtNode::Loop* CtParser::parseLoop()
 	auto loop = new CtNode::Loop();
 
 	while (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
+
+	loop->block = this->parseBlock();
+
+	return loop;
+}
+
+
+CtNode::While* CtParser::parseWhile()
+{
+	auto* loop = new CtNode::While();
+
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftParan);
+
+	loop->condition = this->parseExpression(0);
+
+	this->tokens->getSymbolSpecific(CtLang::Symbol::RightParan); // Expression parser will catch that right paran. Fix needed here.
+
+	loop->block = this->parseBlock();
+
+	return loop;
+}
+
+
+CtNode::For* CtParser::parseFor()
+{
+	auto* loop = new CtNode::For();
+
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftParan);
+
+	loop->init = this->parseStatement();
+	loop->condition = this->parseExpression();
+	this->tokens->expectType(CtTokenType::EndOfLine, nullptr); // duct tape
+	loop->step = this->parseExpression();
+	this->tokens->expectType(CtTokenType::EndOfLine, nullptr);
+
+	this->tokens->getSymbolSpecific(CtLang::Symbol::RightParan); 
 
 	loop->block = this->parseBlock();
 
@@ -212,6 +250,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 	else 
 	{
 		tok = this->tokens->peek();
+		std::cout << this->tokens->currentIndex() << "\n";
 		CtError::raise(
 			CtError::ErrorType::SyntaxError,
 			std::format("Invalid syntax. Did not expect '{}'", this->tokens->viewToken(&tok))

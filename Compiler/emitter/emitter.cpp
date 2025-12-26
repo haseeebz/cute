@@ -164,7 +164,7 @@ void CtEmitter::handleFor(CtNode::For *node)
 	this->current_function->units.push_back(new CtCodeGen::JumpOp(exiting_station->id, CtCodeGen::JumpOpType::False));
 
 	this->walk(node->step);
-	this->walk(node->condition);
+	this->walk(node->block);
 
 	this->current_function->units.push_back(new CtCodeGen::JumpOp(loop_station->id, CtCodeGen::JumpOpType::Norm));
 	this->current_function->units.push_back(exiting_station);

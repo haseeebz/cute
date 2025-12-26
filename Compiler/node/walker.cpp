@@ -47,6 +47,14 @@ void CtNodeWalker::walk(CtNode::Base *node) {
 	handleLoop(static_cast<CtNode::Loop *>(node));
 	break;
 
+	case CtNodeType::While:
+	handleWhile(static_cast<CtNode::While *>(node));
+	break;
+
+	case CtNodeType::For:
+	handleFor(static_cast<CtNode::For *>(node));
+	break;
+
 	case CtNodeType::If:
 	handleIf(static_cast<CtNode::If *>(node));
 	break;
@@ -206,6 +214,7 @@ void CtNodePrinter::handleWhile(CtNode::While *node)
 	this->walk(node->condition);
 	this->printIndent();
 	std::cout << "statements = \n";
+	this->walk(node->block);
 	this->indent--;
 	this->printIndent();
 	std::cout << ")\n";
