@@ -359,7 +359,7 @@ void CuteEngine_exec(ctContext *ctx)
 
 		case instrFtoI:
 			a1 = ctx_popExeAtom(ctx);
-			a1.f64 = (int64_t) a1.i64;
+			a1.i64 = (int64_t) a1.f64;
 			ctx_pushExeAtom(ctx, a1);
 			break;
 
