@@ -196,6 +196,44 @@ void CtNodePrinter::handleLoop(CtNode::Loop *node)
 	std::cout << ")\n";
 }
 
+void CtNodePrinter::handleWhile(CtNode::While *node)
+{
+	this->printIndent();
+	std::cout << "(While\n";
+	this->indent++;
+	this->printIndent();
+	std::cout << "condition = \n";
+	this->walk(node->condition);
+	this->printIndent();
+	std::cout << "statements = \n";
+	this->indent--;
+	this->printIndent();
+	std::cout << ")\n";
+}
+
+void CtNodePrinter::handleFor(CtNode::For *node)
+{
+	this->printIndent();
+	std::cout << "(For\n";
+	this->indent++;
+	this->printIndent();
+	std::cout << "init = \n";
+	this->walk(node->init);
+	this->printIndent();
+	std::cout << "condition = \n";
+	this->walk(node->condition);
+	this->printIndent();
+	std::cout << "step = \n";
+	this->walk(node->step);
+	this->printIndent();
+	std::cout << "statements = \n";
+	this->walk(node->block);
+	this->indent--;
+	this->printIndent();
+	std::cout << ")\n";
+}
+
+
 void CtNodePrinter::handleIf(CtNode::If *node)
 {
 	this->printIndent();

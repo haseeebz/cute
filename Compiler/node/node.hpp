@@ -19,8 +19,10 @@ enum class CtNodeType
 	Declaration,
 	Out,
 	ExprStatement,
-	Loop,
 	If,
+	Loop,
+	While,
+	For,
 
 	Int,
 	Float,
@@ -53,9 +55,10 @@ namespace CtNode
 	struct Declaration;
 	struct Out;
 	struct ExprStatment;
-	struct Loop;
 	struct If;
-	struct Else;
+	struct Loop;
+	struct While;
+	struct For;
 	
 	// Expression Nodes
 	struct Int;
@@ -151,14 +154,6 @@ namespace CtNode
 		~ExprStatment();
 	};
 
-	struct Loop : Statement
-	{
-		StmtBlock* block;
-
-		Loop() {{nt = CtNodeType::Loop;}};
-		~Loop();
-	};
-	
 	struct If : Statement
 	{
 		Expression* condition;
@@ -169,6 +164,37 @@ namespace CtNode
 		~If();
 	};
 
+	struct Loop : Statement
+	{
+		StmtBlock* block;
+
+		Loop() {{nt = CtNodeType::Loop;}};
+		~Loop();
+	};
+
+
+	struct While : Statement
+	{
+		Expression* condition;
+		StmtBlock* block;
+
+		While() {{nt = CtNodeType::While;}};
+		~While();
+	};
+
+	struct For : Statement
+	{
+		Statement* init;
+		Expression* condition;
+		Expression* step;
+		StmtBlock* block;
+
+		For() {{nt = CtNodeType::For;}};
+		~For();
+	};
+	
+	
+	
 	// Expression Nodes
 	struct Int : Expression
 	{
@@ -275,8 +301,10 @@ class CtNodeWalker
 
 	virtual void handleStmtBlock(CtNode::StmtBlock *node) = 0;
 	virtual void handleDeclaration(CtNode::Declaration *node) = 0;
-	virtual void handleLoop(CtNode::Loop *node) = 0;
 	virtual void handleIf(CtNode::If *node) = 0;
+	virtual void handleLoop(CtNode::Loop *node) = 0;
+	virtual void handleWhile(CtNode::While *node) = 0;
+	virtual void handleFor(CtNode::For *node) = 0;
 	virtual void handleOut(CtNode::Out *node) = 0;
 
 	virtual void handleInt(CtNode::Int *node) = 0;
@@ -307,8 +335,10 @@ class CtNodePrinter: public CtNodeWalker
 
 	void handleStmtBlock(CtNode::StmtBlock *node);
 	void handleDeclaration(CtNode::Declaration *node);
-	void handleLoop(CtNode::Loop *node);
 	void handleIf(CtNode::If *node);
+	void handleLoop(CtNode::Loop *node);
+	void handleWhile(CtNode::While *node);
+	void handleFor(CtNode::For *node);
 	void handleOut(CtNode::Out *node);
 
 	void handleInt(CtNode::Int *node);

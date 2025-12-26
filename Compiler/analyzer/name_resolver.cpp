@@ -68,6 +68,21 @@ void CtNameResolver::handleLoop(CtNode::Loop *node)
 }
 
 
+void CtNameResolver::handleWhile(CtNode::While *node)
+{
+	this->walk(node->condition);
+	this->walk(node->block);
+}
+
+void CtNameResolver::handleFor(CtNode::For *node)
+{
+	this->walk(node->init);
+	this->walk(node->condition);
+	this->walk(node->step);
+	this->walk(node->block);
+}
+
+
 void CtNameResolver::handleIf(CtNode::If *node)
 {
 	this->walk(node->condition);
