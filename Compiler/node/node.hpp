@@ -28,8 +28,8 @@ enum class CtNodeType
 	Float,
 	Bool,
 	Identifier,
-	Variable,
 	BinaryOp,
+	UnaryOp,
 	FunctionCall,
 	Assignment,
 	TypeCast
@@ -67,6 +67,7 @@ namespace CtNode
 	struct Identifier;
 	struct Variable;
 	struct BinaryOp;
+	struct UnaryOp;
 	struct FunctionCall;
 	struct Assignment;
 	struct TypeCast;
@@ -144,7 +145,6 @@ namespace CtNode
 		Out(Expression* expr): expr(expr) {{nt = CtNodeType::Out;}};
 		~Out();
 	};
-
 
 	struct ExprStatment : Statement
 	{
@@ -238,16 +238,6 @@ namespace CtNode
 		Identifier(std::string val): val(val) {{nt = CtNodeType::Identifier;}};
 	};
 
-
-	struct Variable: Expression
-	{
-		std::string name;
-		std::string type;
-
-		Variable(std::string name, std::string type): name(name), type(type) {{nt = CtNodeType::Variable;}};
-	};
-
-
 	struct BinaryOp : Expression
 	{
 		CtSpec::BinaryOpType op;
@@ -256,6 +246,16 @@ namespace CtNode
 		BinaryOp() {nt = CtNodeType::BinaryOp;};
 		BinaryOp(CtSpec::BinaryOpType op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
 		~BinaryOp();
+	};
+
+
+	struct UnaryOp : Expression
+	{
+		CtSpec::UnaryOpType op;
+		Expression* operand;
+		UnaryOp() {nt = CtNodeType::UnaryOp;};
+		UnaryOp(CtSpec::UnaryOpType op, Expression* oper): op(op), operand(oper) {nt = CtNodeType::UnaryOp;};
+		~UnaryOp();
 	};
 
 
