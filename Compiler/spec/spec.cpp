@@ -7,6 +7,67 @@
 #include "spec.hpp"
 
 
+using Bin = CtSpec::BinaryOpType;
+
+bool CtSpec::isArithmetic(Bin op)
+{
+	switch (op) 
+	{
+		case Bin::Add:
+		case Bin::Sub:
+		case Bin::Mul:
+		case Bin::Div:
+		case Bin::Mod:
+		return true;
+		default: 
+		return false;
+	}
+}
+
+bool CtSpec::isComparison(CtSpec::BinaryOpType op)
+{
+	switch (op) 
+	{
+		case Bin::Greater:
+		case Bin::GreaterEqual:
+		case Bin::Lesser:
+		case Bin::LesserEqual:
+		case Bin::Equal:
+		case Bin::NotEqual:
+		return true;
+		default: 
+		return false;
+	}
+}
+
+bool CtSpec::isLogical(CtSpec::BinaryOpType op)
+{
+	switch (op) 
+	{
+		case Bin::LogicAnd:
+		case Bin::LogicOr:
+		return true;
+		default: 
+		return false;
+	}
+}
+
+bool CtSpec::isBitwise(CtSpec::BinaryOpType op)
+{
+	switch (op) 
+	{
+		case Bin::BitAnd:
+		case Bin::BitOr:
+		case Bin::BitXor:
+		case Bin::BitShiftRight:
+		case Bin::BitShiftLeft:
+		return true;
+		default: 
+		return false;
+	}
+}
+
+
 bool CtSpec::strToInt(std::string& str, int64_t& i)
 {
 	try 

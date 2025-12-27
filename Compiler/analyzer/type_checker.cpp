@@ -53,7 +53,7 @@ void CtTypeChecker::handleDeclaration(CtNode::Declaration *node)
 		);
 	}
 
-	var.type = primitiveTypes[var.type_id];
+	var.type = primitiveTypes.at(var.type_id);
 
 	if (node->assignment) {this->walk(node->assignment);}
 }
@@ -74,7 +74,7 @@ void CtTypeChecker::handleLoop(CtNode::Loop *node)
 void CtTypeChecker::handleWhile(CtNode::While *node)
 {
 	this->walk(node->condition);
-	if (*node->condition->expr_type != *primitiveTypes["bool"])
+	if (*node->condition->expr_type != *primitiveTypes.at("bool"))
 	{
 		CtError::raise(
 			CtError::ErrorType::TypeError, 
@@ -91,7 +91,7 @@ void CtTypeChecker::handleFor(CtNode::For *node)
 	this->walk(node->init);
 
 	this->walk(node->condition);
-	if (*node->condition->expr_type != *primitiveTypes["bool"])
+	if (*node->condition->expr_type != *primitiveTypes.at("bool"))
 	{
 		CtError::raise(
 			CtError::ErrorType::TypeError, 
@@ -107,7 +107,7 @@ void CtTypeChecker::handleFor(CtNode::For *node)
 void CtTypeChecker::handleIf(CtNode::If *node)
 {
 	this->walk(node->condition);
-	if (*node->condition->expr_type != *primitiveTypes["bool"])
+	if (*node->condition->expr_type != *primitiveTypes.at("bool"))
 	{
 		CtError::raise(
 			CtError::ErrorType::TypeError, 
@@ -141,11 +141,11 @@ void CtTypeChecker::handleInt(CtNode::Int *node)
 {
 	if (CtSpec::strToInt(node->raw, node->val.i64))
 	{
-		node->expr_type = primitiveTypes["int"];
+		node->expr_type = primitiveTypes.at("int");
 	}
 	else if (CtSpec::strToUInt(node->raw, node->val.u64))
 	{
-		node->expr_type = primitiveTypes["uint"];
+		node->expr_type = primitiveTypes.at("uint");
 	}
 	else 
 	{
@@ -161,7 +161,7 @@ void CtTypeChecker::handleFloat(CtNode::Float *node)
 {
 	if (CtSpec::strToFloat(node->raw, node->val.f64))
 	{
-		node->expr_type = primitiveTypes["float"];
+		node->expr_type = primitiveTypes.at("float");
 	}
 	else 
 	{
@@ -175,7 +175,7 @@ void CtTypeChecker::handleFloat(CtNode::Float *node)
 
 void CtTypeChecker::handleBool(CtNode::Bool *node)
 {
-	node->expr_type = primitiveTypes["bool"];
+	node->expr_type = primitiveTypes.at("bool");
 };
 
 
@@ -184,29 +184,79 @@ void CtTypeChecker::handleBinaryOp(CtNode::BinaryOp *node)
 	this->walk(node->left);
 	this->walk(node->right);
 
-	if (node->left->expr_type == primitiveTypes["bool"])
+	if (CtSpec::isArithmetic(node->op))
 	{
-		CtError::raise(
-			CtError::ErrorType::TypeError, 
-			std::format(
-				"Binary operation '{}' not supported for bool types. {} & {}", 
-				int(node->op), node->left->expr_type->name, node->right->expr_type->name
-			)
-		);
+
+		if (node->left->expr_type != node->right->expr_type)
+		{
+			CtError::raise(
+				CtError::ErrorType::TypeError, 
+				std::format(
+					"Binary operation '{}' not supported for types {} and {}.", 
+					int(node->op), node->left->expr_type->name, node->right->expr_type->name
+				)
+			);
+		}
+
+		node->expr_type = node->left->expr_type;
+		return;
 	}
 
-	if (node->left->expr_type != node->right->expr_type)
+	
+	if (CtSpec::isComparison(node->op))
 	{
-		CtError::raise(
-			CtError::ErrorType::TypeError, 
-			std::format(
-				"Binary operation '{}' not supported for types {} and {}.", 
-				int(node->op), node->left->expr_type->name, node->right->expr_type->name
-			)
-		);
+		if (node->left->expr_type != node->right->expr_type)
+		{
+			CtError::raise(
+				CtError::ErrorType::TypeError, 
+				std::format(
+					"Binary operation '{}' not supported for types {} and {}.", 
+					int(node->op), node->left->expr_type->name, node->right->expr_type->name
+				)
+			);
+		}
+
+		node->expr_type = primitiveTypes.at("bool");
+		return;
 	}
 
-	node->expr_type = node->left->expr_type;
+
+	if (CtSpec::isLogical(node->op))
+	{
+		if (node->left->expr_type != node->right->expr_type && node->left->expr_type != primitiveTypes.at("bool"))
+		{
+			CtError::raise(
+				CtError::ErrorType::TypeError, 
+				std::format(
+					"Logical operation '{}' not supported for types {} and {}. Both must be booleans.", 
+					int(node->op), node->left->expr_type->name, node->right->expr_type->name
+				)
+			);
+		}
+
+		node->expr_type = primitiveTypes.at("bool");
+		return;
+	}
+
+
+	if (CtSpec::isBitwise(node->op))
+	{
+		auto int_type = primitiveTypes.at("int");
+		// uint not added for simplicity, for now.
+		if (node->right->expr_type != int_type || node->right->expr_type != node->left->expr_type)
+		{
+			CtError::raise(
+				CtError::ErrorType::TypeError, 
+				std::format(
+					"Bitwise operation '{}' not supported for types {} and {}.", 
+					int(node->op), node->left->expr_type->name, node->right->expr_type->name
+				)
+			);
+		}
+
+		node->expr_type = node->left->expr_type;
+	}
+	
 }
 
 
@@ -232,7 +282,7 @@ void CtTypeChecker::handleTypeCast(CtNode::TypeCast *node)
 			std::format("Unknown type specified for type casting: {}", node->to_type)
 		);
 	}
-	node->expr_type = primitiveTypes[node->to_type];
+	node->expr_type = primitiveTypes.at(node->to_type);
 	this->walk(node->expr);
 }
 

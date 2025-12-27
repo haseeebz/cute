@@ -10,7 +10,8 @@ static inline std::map<CtSpec::PrimitiveT, CtCodeGen::OpType> op_type_map =
 {
     {CtSpec::PrimitiveT::Int,   CtCodeGen::OpType::Int},
     {CtSpec::PrimitiveT::UInt,  CtCodeGen::OpType::UInt},
-    {CtSpec::PrimitiveT::Float, CtCodeGen::OpType::Float}
+    {CtSpec::PrimitiveT::Float, CtCodeGen::OpType::Float},
+	{CtSpec::PrimitiveT::Bool, CtCodeGen::OpType::Int}
 };
 
 
@@ -73,16 +74,51 @@ void CtEmitter::handleBinaryOp(CtNode::BinaryOp *node)
 
 	CtCodeGen::Unit* op;
 
+	using Bin = CtSpec::BinaryOpType;
 	switch (node->op)
 	{
-		case CtSpec::BinaryOpType::Add:       op = new CtCodeGen::AddOp(op_type_map[node->expr_type->primitive]); break;
-		case CtSpec::BinaryOpType::Sub:       op = new CtCodeGen::SubOp(op_type_map[node->expr_type->primitive]); break;
-		case CtSpec::BinaryOpType::Mul:       op = new CtCodeGen::MulOp(op_type_map[node->expr_type->primitive]); break;
-		case CtSpec::BinaryOpType::Div:       op = new CtCodeGen::DivOp(op_type_map[node->expr_type->primitive]); break;
-		case CtSpec::BinaryOpType::Mod:       op = new CtCodeGen::ModOp(op_type_map[node->expr_type->primitive]); break;
+		case Bin::Add:       
+			op = new CtCodeGen::AddOp(op_type_map[node->expr_type->primitive]); break;
+		case Bin::Sub:       
+			op = new CtCodeGen::SubOp(op_type_map[node->expr_type->primitive]); break;
+		case Bin::Mul:      
+			op = new CtCodeGen::MulOp(op_type_map[node->expr_type->primitive]); break;
+		case Bin::Div:      
+			op = new CtCodeGen::DivOp(op_type_map[node->expr_type->primitive]); break;
+		case Bin::Mod:       
+			op = new CtCodeGen::ModOp(op_type_map[node->expr_type->primitive]); break;
+		case Bin::Equal:     
+			op = new CtCodeGen::CmpOp(op_type_map[node->expr_type->primitive], CtCodeGen::CmpType::Eq); break;
+		case Bin::NotEqual:  
+			op = new CtCodeGen::CmpOp(op_type_map[node->expr_type->primitive], CtCodeGen::CmpType::Ue); break;
+		case Bin::Lesser:
+			op = new CtCodeGen::CmpOp(op_type_map[node->expr_type->primitive], CtCodeGen::CmpType::Lt); break;
+		case Bin::LesserEqual:
+			op = new CtCodeGen::CmpOp(op_type_map[node->expr_type->primitive], CtCodeGen::CmpType::Le); break;
+		case Bin::Greater:
+			op = new CtCodeGen::CmpOp(op_type_map[node->expr_type->primitive], CtCodeGen::CmpType::Gt); break;
+		case Bin::GreaterEqual:
+			op = new CtCodeGen::CmpOp(op_type_map[node->expr_type->primitive], CtCodeGen::CmpType::Ge); break;	
+		case Bin::BitShiftLeft: 
+			op = new CtCodeGen::BitWiseOp(CtCodeGen::BitwiseOpType::LShift); break;
+		case Bin::BitShiftRight:
+			op = new CtCodeGen::BitWiseOp((op_type_map[node->expr_type->primitive] == CtCodeGen::OpType::Int ) ? CtCodeGen::BitwiseOpType::RaShift : CtCodeGen::BitwiseOpType::RShift); break; // ts is frying me
+		case Bin::BitAnd:
+			op = new CtCodeGen::BitWiseOp(CtCodeGen::BitwiseOpType::And); break;
+		case Bin::BitOr:
+			op = new CtCodeGen::BitWiseOp(CtCodeGen::BitwiseOpType::Or); break;
+		case Bin::BitXor:
+			op = new CtCodeGen::BitWiseOp(CtCodeGen::BitwiseOpType::Xor); break;
+		case Bin::LogicAnd:
+			op = new CtCodeGen::LogicOp(CtCodeGen::LogicOpType::And); break;
+		case Bin::LogicOr:
+			op = new CtCodeGen::LogicOp(CtCodeGen::LogicOpType::Or); break;
+		case Bin::MemberAccess:
+		case Bin::NamespaceAccesss:
+		break;
 	}
 
-	this->current_function->units.push_back(op);
+    this->current_function->units.push_back(op);
 }
 
 

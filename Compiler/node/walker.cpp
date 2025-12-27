@@ -306,16 +306,7 @@ void CtNodePrinter::handleBinaryOp(CtNode::BinaryOp *node)
 	this->indent++;
 
 	this->printIndent();
-	switch (node->op)
-	{
-        case CtSpec::BinaryOpType::Add:  std::cout << "+\n"; break;
-        case CtSpec::BinaryOpType::Sub:  std::cout << "-\n"; break;
-        case CtSpec::BinaryOpType::Mul:  std::cout << "*\n"; break;
-        case CtSpec::BinaryOpType::Div:  std::cout << "/\n"; break;
-		case CtSpec::BinaryOpType::Mod:  std::cout << "%\n"; break;
-		default:					std::cout << "u\n"; break;
-    }
-	
+	std::cout << "op= " << (int)node->op << "\n";
 	this->walk(node->left);
 	this->walk(node->right);
 

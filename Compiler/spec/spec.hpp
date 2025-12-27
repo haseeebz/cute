@@ -94,6 +94,10 @@ namespace CtSpec
 		NamespaceAccesss
 	};
 
+	bool isArithmetic(BinaryOpType op);
+	bool isComparison(BinaryOpType op);
+	bool isLogical(BinaryOpType op);
+	bool isBitwise(BinaryOpType op);
 
 	inline std::map<BinaryOpType, uint> binaryOpPrecedence =
 	{

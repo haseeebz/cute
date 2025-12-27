@@ -8,13 +8,15 @@
 #pragma once
 
 
-static inline std::map<std::string, CtSpec::TypeInfo*> primitiveTypes =
+inline const std::map<std::string, CtSpec::TypeInfo*> primitiveTypes =
 {
 	{"int",    new CtSpec::TypeInfo("int",   CtSpec::PrimitiveT::Int)},
 	{"uint",   new CtSpec::TypeInfo("uint",  CtSpec::PrimitiveT::UInt)},
 	{"float",  new CtSpec::TypeInfo("float", CtSpec::PrimitiveT::Float)},
 	{"bool",   new CtSpec::TypeInfo("bool",  CtSpec::PrimitiveT::Bool)},
 };
+
+
 
 
 class CtTypeChecker: public CtNodeWalker
