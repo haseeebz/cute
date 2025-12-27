@@ -20,7 +20,9 @@ class CuteCompiler
 
 	public:
 
+	void invokeComponent(std::string filepath, std::string comp);
 	void compile(std::string filepath, std::string outfile);
+
 };
 
 

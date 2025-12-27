@@ -67,6 +67,7 @@ void help()
 {
 	std::cout << "Cute " << CUTE_VERSION << "\n\n";
 	std::cout << " -c filepath : Invoke the compiler with a file.\n";
+	std::cout << " -f comp     : Invoke the compiler a specific function for the file.\n";
 	std::cout << " -o filepath : Specify the outfile for the compiler..\n";
 	std::cout << " -r filepath : Invoke the engine with a file.\n";
 	std::cout << " -h          : Show help.\n";
@@ -91,6 +92,14 @@ int main(int argc, char *argv[])
 	if (filepath != "")
 	{
 		CuteCompiler compiler;
+
+		std::string func = args.get_option("f");
+
+		if (func != "")
+		{
+			compiler.invokeComponent(filepath, func);
+			return 0;
+		}
 
 		std::string outfile = args.get_option("o", std::string(filepath).append(".out"));
 

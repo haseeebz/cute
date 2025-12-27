@@ -339,7 +339,6 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
-	std::cout << this->tokens->toString() << std::endl;
 	this->source = new CtNode::Source();
 	this->startParsingFile();
 	return this->source;
@@ -350,9 +349,6 @@ CtNode::RootProgram* CtParser::parse(std::string filepath)
 {
 	auto* root = new CtNode::RootProgram();
 	root->src = this->parseFile(filepath);
-
-	CtNodePrinter p;
-	p.print(root);
 	return root;
 }
 
