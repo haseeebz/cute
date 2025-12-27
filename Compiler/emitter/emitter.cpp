@@ -198,9 +198,9 @@ void CtEmitter::handleFor(CtNode::For *node)
 
 	auto exiting_station = new CtCodeGen::StationOp(this->current_function->station_count++);
 	this->current_function->units.push_back(new CtCodeGen::JumpOp(exiting_station->id, CtCodeGen::JumpOpType::False));
-
-	this->walk(node->step);
+	
 	this->walk(node->block);
+	this->walk(node->step);
 
 	this->current_function->units.push_back(new CtCodeGen::JumpOp(loop_station->id, CtCodeGen::JumpOpType::Norm));
 	this->current_function->units.push_back(exiting_station);
