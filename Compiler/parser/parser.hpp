@@ -5,13 +5,36 @@
 
 #pragma once
 
+using Sym = CtLang::Symbol;
+using Bin = CtSpec::BinaryOpType;
+using Un  = CtSpec::UnaryOpType;
 
-static inline std::map<CtLang::Symbol, CtSpec::BinaryOpType> symToBinaryOp =
-{
-	{CtLang::Symbol::Plus,  CtSpec::BinaryOpType::Add},
-	{CtLang::Symbol::Minus, CtSpec::BinaryOpType::Sub},
-	{CtLang::Symbol::Star,  CtSpec::BinaryOpType::Mul},
-	{CtLang::Symbol::Slash, CtSpec::BinaryOpType::Div},
+inline const std::map<Sym, Bin> symToBinaryOp {
+    { Sym::Plus,          Bin::Add },
+    { Sym::Minus,         Bin::Sub },
+    { Sym::Star,          Bin::Mul },
+    { Sym::Slash,         Bin::Div },
+    { Sym::Percentage,    Bin::Mod },
+
+    { Sym::DoubleEqual,   Bin::Equal },
+    { Sym::NotEqual,      Bin::NotEqual },
+    { Sym::Greater,       Bin::Greater },
+    { Sym::GreaterEqual,  Bin::GreaterEqual },
+    { Sym::Lesser,        Bin::Lesser },
+    { Sym::LesserEqual,   Bin::LesserEqual },
+
+    { Sym::DoubleGreater, Bin::BitShiftRight },
+    { Sym::DoubleLesser,  Bin::BitShiftLeft },
+
+    { Sym::SingleBar,     Bin::BitOr },
+    { Sym::SingleAnd,     Bin::BitAnd },
+    { Sym::Exponent,      Bin::BitXor }
+};
+
+inline const std::map<Sym, Un> symToUnaryOp {
+    { Sym::Exclamation, Un::LogicNot },
+    { Sym::Tilde,       Un::BitNot },  
+    { Sym::Minus,       Un::Negation }
 };
 
 

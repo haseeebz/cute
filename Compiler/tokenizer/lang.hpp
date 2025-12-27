@@ -66,6 +66,7 @@ namespace CtLang
 
 		Equal,
 		DoubleEqual,
+		NotEqual,
 
 		Greater,
 		GreaterEqual,
@@ -75,6 +76,11 @@ namespace CtLang
 		LesserEqual,
 		DoubleLesser,
 
+		SingleBar,
+		SingleAnd,
+
+		Exponent,
+		Tilde,
 		Hashtag,
 		Exclamation,
 		Colon,
@@ -104,6 +110,7 @@ namespace CtLang
 
 		{ "=",  Symbol::Equal },
 		{ "==", Symbol::DoubleEqual },
+		{ "!=", Symbol::NotEqual },
 
 		{ ">",  Symbol::Greater },
 		{ ">=", Symbol::GreaterEqual },
@@ -112,6 +119,11 @@ namespace CtLang
 		{ "<",  Symbol::Lesser },
 		{ "<=", Symbol::LesserEqual },
 		{ "<<", Symbol::DoubleLesser },
+
+		{ "|", Symbol::SingleBar },
+		{ "&", Symbol::SingleAnd },
+		{ "^", Symbol::Exponent },
+		{ "~", Symbol::Tilde },
 
 		{ "#",  Symbol::Hashtag },
 		{ "!",  Symbol::Exclamation },

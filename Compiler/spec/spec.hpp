@@ -9,24 +9,6 @@
 
 namespace CtSpec
 {
-	enum class BinaryOpType
-	{
-		Add,
-		Sub,
-		Mul,
-		Div,
-		Mod
-	};
-
-	inline std::map<BinaryOpType, uint> binaryOpPrecedence =
-	{
-		{BinaryOpType::Add, 1},
-		{BinaryOpType::Sub, 1},
-		{BinaryOpType::Mul, 2},
-		{BinaryOpType::Div, 2},
-		{BinaryOpType::Mod, 3},
-	};
-
 
 	struct TypeInfo;
 	enum class TypeKind {Primitive, Container, Function};
@@ -84,7 +66,71 @@ namespace CtSpec
 	};
 
 
+	enum class BinaryOpType
+	{
+		Add,
+		Sub,
+		Mul,
+		Div,
+		Mod,
 
+		Equal,
+		NotEqual,
+		Lesser,
+		LesserEqual,
+		Greater,
+		GreaterEqual,
+
+		BitShiftLeft,
+		BitShiftRight,
+		BitAnd,
+		BitOr,
+		BitXor,
+
+		LogicAnd,
+		LogicOr,
+
+		MemberAccess,
+		NamespaceAccesss
+	};
+
+
+	inline std::map<BinaryOpType, uint> binaryOpPrecedence =
+	{
+		{BinaryOpType::LogicOr, 1},
+		{BinaryOpType::LogicAnd,2},
+		{BinaryOpType::BitOr, 3},
+		{BinaryOpType::BitXor, 4},
+		{BinaryOpType::BitAnd, 5},
+		{BinaryOpType::Equal, 6},
+		{BinaryOpType::NotEqual, 7},
+		{BinaryOpType::Greater, 8},
+		{BinaryOpType::GreaterEqual, 8},
+		{BinaryOpType::Lesser, 8},
+		{BinaryOpType::LesserEqual, 8},
+		{BinaryOpType::BitShiftLeft, 9},
+		{BinaryOpType::BitShiftRight, 9},
+
+		{BinaryOpType::Add, 10},
+		{BinaryOpType::Sub, 10},
+		{BinaryOpType::Mul, 11},
+		{BinaryOpType::Div, 11},
+		{BinaryOpType::Mod, 11},
+
+		{BinaryOpType::MemberAccess, 12},
+		{BinaryOpType::NamespaceAccesss, 12},
+	};
+
+	
+
+	enum class UnaryOpType
+	{
+		LogicNot,
+		BitNot,
+		Negation,
+		Increment,
+		Decrement
+	};
 
 	bool strToInt(std::string& str, int64_t& i);
 	bool strToUInt(std::string& str, uint64_t& i);
