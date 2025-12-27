@@ -335,7 +335,7 @@ void CuteEngine_exec(ctContext *ctx)
 
         case instrCmp2BoolLe:
 			a1 = ctx_popExeAtom(ctx);
-			if (a1.i64 <= 0) {a1.i64 = 1;} else {a1.i64 = 0;}
+			if (a1.i64 != 1) {a1.i64 = 1;} else {a1.i64 = 0;}
 			ctx_pushExeAtom(ctx, a1);
 			break;
 
@@ -347,7 +347,7 @@ void CuteEngine_exec(ctContext *ctx)
 
         case instrCmp2BoolGe:
 			a1 = ctx_popExeAtom(ctx);
-			if (a1.i64 >= 0) {a1.i64 = 1;} else {a1.i64 = 0;}
+			if (a1.i64 != -1) {a1.i64 = 1;} else {a1.i64 = 0;}
 			ctx_pushExeAtom(ctx, a1);
 			break;
 
