@@ -161,7 +161,7 @@ CtNode::For* CtParser::parseFor()
 	loop->condition = this->parseExpression();
 	this->tokens->expectType(CtTokenType::EndOfLine, nullptr); // duct tape
 	loop->step = this->parseExpression();
-	this->tokens->expectType(CtTokenType::EndOfLine, nullptr);
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::RightParan);
 
 	this->tokens->getSymbolSpecific(CtLang::Symbol::RightParan); 
 
@@ -201,7 +201,7 @@ CtNode::If* CtParser::parseIf()
 }
 
 
-CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
+CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 {
 	CtNode::Expression *lhs;
 
@@ -228,7 +228,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 		if (tok.val.sym == CtLang::Symbol::LeftParan)
 		{
-			lhs = this->parseExpression(0);
+			lhs = this->parseExpression(0, depth + 1);
 		}
 		else if (tok.val.sym == CtLang::Symbol::Minus)
 		{
@@ -265,6 +265,13 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 
 		if (this->tokens->getTypes({CtTokenType::EndOfLine, CtTokenType::EndOfFile}, nullptr))
 		{
+			if (depth != 0)
+			{
+				CtError::raise(
+					CtError::ErrorType::SyntaxError,
+					"Unclosed expression."
+				);
+			}
 			this->tokens->backtrack(); // so EOL propagates
 			return lhs;
 		}
@@ -273,6 +280,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence)
 		
 		if (sym == CtLang::Symbol::RightParan)
 		{
+			if (depth == 0) {this->tokens->backtrack();}
 			return lhs;
 		}
 
