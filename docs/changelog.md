@@ -123,3 +123,20 @@ Each version needs three sections:
 
 ### Tooling
 + Nope
+
+## v0.0.6
+
+### Language
++ Added loop statements: `while` and `for`.
+
+### Stdlib
++ NAH
+
+### Compiler 
++ No new changes.
+
+### Engine
++ No changes.
+
+### Tooling
++ Nope
