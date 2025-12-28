@@ -1,8 +1,6 @@
 #include <iostream>
 #include <ostream>
 
-
-#include "../spec/spec.hpp"
 #include "node.hpp"
 
 
@@ -111,9 +109,10 @@ void CtNodePrinter::printIndent()
 {
 	for (int i = 0; i < this->indent; i++)
 	{
-		std::cout << "  ";
+		std::cout << "   ";
 	}
 }
+
 
 void CtNodePrinter::handleRoot(CtNode::RootProgram *node)
 {
@@ -121,6 +120,7 @@ void CtNodePrinter::handleRoot(CtNode::RootProgram *node)
 
 	this->walk(node->src);
 }
+
 
 void CtNodePrinter::handleSource(CtNode::Source *node)
 {
@@ -148,9 +148,7 @@ void CtNodePrinter::handleFunction(CtNode::Function *node)
 
 	std::cout << "\nStatements:\n\n";
 	this->indent++;
-
 	this->walk(node->block);
-
 	this->indent--;
 }
 
@@ -158,7 +156,6 @@ void CtNodePrinter::handleStmtBlock(CtNode::StmtBlock *node)
 {
 	for (auto stmt: node->stmts)
 	{
-		this->printIndent();
 		this->walk(stmt);
 		std::cout << "\n";
 	}
@@ -168,14 +165,25 @@ void CtNodePrinter::handleStmtBlock(CtNode::StmtBlock *node)
 void CtNodePrinter::handleDeclaration(CtNode::Declaration *node)
 {
 	this->printIndent();
-	std::cout << "(Declaration name= " << node->name << " type= " << node->type << "\n";
-	if (!node->assignment) {return;}
+	std::cout << "(Declaration\n";
 
 	this->printIndent();
-	this->indent++;
-	std::cout << "assignment=\n";
-	this->walk(node->assignment);
-	this->indent--;
+	std::cout << "id = " << node->name << "\n";
+
+	this->printIndent();
+	std::cout << "typeid = " << node->type_id << "\n";
+
+	if (node->assignment)
+	{
+		this->printIndent();
+		std::cout << "value = \n";
+
+		this->indent++;
+		this->walk(node->assignment);
+		this->indent--;
+	}
+	
+
 	this->printIndent();
 	std::cout<< ")\n";
 }
@@ -184,10 +192,15 @@ void CtNodePrinter::handleDeclaration(CtNode::Declaration *node)
 void CtNodePrinter::handleOut(CtNode::Out *node)
 {
 	this->printIndent();
-	std::cout << "(Out expr=\n";
+	std::cout << "(Out\n";
+
+	this->printIndent();
+	std::cout << "expr = \n";
+
 	this->indent++;
 	this->walk(node->expr);
 	this->indent--;
+
 	this->printIndent();
 	std::cout << ")\n";
 }
@@ -196,10 +209,15 @@ void CtNodePrinter::handleOut(CtNode::Out *node)
 void CtNodePrinter::handleLoop(CtNode::Loop *node)
 {
 	this->printIndent();
-	std::cout << "(Loop statements=\n";
+	std::cout << "(Loop\n";
+
+	this->printIndent();
+	std::cout << "block = \n";
+
 	this->indent++;
 	this->walk(node->block);
 	this->indent--;
+
 	this->printIndent();
 	std::cout << ")\n";
 }
@@ -208,36 +226,53 @@ void CtNodePrinter::handleWhile(CtNode::While *node)
 {
 	this->printIndent();
 	std::cout << "(While\n";
-	this->indent++;
+
 	this->printIndent();
 	std::cout << "condition = \n";
+	this->indent++;
 	this->walk(node->condition);
+	this->indent--;
+
 	this->printIndent();
 	std::cout << "statements = \n";
+	this->indent++;
 	this->walk(node->block);
 	this->indent--;
+
 	this->printIndent();
 	std::cout << ")\n";
 }
+
 
 void CtNodePrinter::handleFor(CtNode::For *node)
 {
 	this->printIndent();
 	std::cout << "(For\n";
-	this->indent++;
+
 	this->printIndent();
 	std::cout << "init = \n";
+	this->indent++;
 	this->walk(node->init);
+	this->indent--;
+
 	this->printIndent();
 	std::cout << "condition = \n";
+	this->indent++;
 	this->walk(node->condition);
+	this->indent--;
+
 	this->printIndent();
 	std::cout << "step = \n";
+	this->indent++;
 	this->walk(node->step);
+	this->indent--;
+
 	this->printIndent();
 	std::cout << "statements = \n";
+	this->indent++;
 	this->walk(node->block);
 	this->indent--;
+
 	this->printIndent();
 	std::cout << ")\n";
 }
@@ -246,33 +281,41 @@ void CtNodePrinter::handleFor(CtNode::For *node)
 void CtNodePrinter::handleIf(CtNode::If *node)
 {
 	this->printIndent();
-	std::cout << "(If condition=\n";
+	std::cout << "(If\n";
+
+	this->printIndent();
+	std::cout << "condition =\n";
 	this->indent++;
 	this->walk(node->condition);
+	this->indent--;
+
 	this->printIndent();
-	std::cout << "then=\n";
+	std::cout << "then =\n";
+	this->indent++;
 	this->walk(node->then_block);
+	this->indent--;
+
 	this->printIndent();
-	std::cout << "else=\n";
+	std::cout << "else = \n";
+	this->indent++;
 	if (node->else_stmt) {this->walk(node->else_stmt);}
 	this->indent--;
+
 	this->printIndent();
 	std::cout << ")\n";
 };
+
 
 void CtNodePrinter::handleAssignment(CtNode::Assignment *node)
 {
 	this->printIndent();
 	std::cout << "(Assignement \n";
 
-	this->indent++;
-
 	this->printIndent();
 	std::cout <<  " variable= " << node->name->val;
-	std::cout <<  " value=\n";
-
+	std::cout <<  " value = \n";
+	this->indent++;
 	this->walk(node->value);
-
 	this->indent--;
 
 	this->printIndent();
@@ -286,11 +329,13 @@ void CtNodePrinter::handleInt(CtNode::Int *node)
 	std::cout << "(Int " << node->raw << ")\n";
 }
 
+
 void CtNodePrinter::handleFloat(CtNode::Float *node)
 {
 	this->printIndent();
 	std::cout << "(Float " << node->raw << ")\n";
 }
+
 
 void CtNodePrinter::handleBool(CtNode::Bool *node)
 {
@@ -302,7 +347,6 @@ void CtNodePrinter::handleBinaryOp(CtNode::BinaryOp *node)
 {
 	this->printIndent();
 	std::cout << "(BinaryOp \n";
-
 	this->indent++;
 
 	this->printIndent();
@@ -311,7 +355,6 @@ void CtNodePrinter::handleBinaryOp(CtNode::BinaryOp *node)
 	this->walk(node->right);
 
 	this->indent--;
-
 	this->printIndent();
 	std::cout << ")\n";
 }
@@ -327,8 +370,14 @@ void CtNodePrinter::handleIdentifier(CtNode::Identifier *node)
 void CtNodePrinter::handleFunctionCall(CtNode::FunctionCall *node)
 {
 	this->printIndent();
-	std::cout << "(FunctionCall name:" << node->name << " args:\n";
-	this->indent++; 
+	std::cout << "(FunctionCall\n";
+
+	this->printIndent();
+	std::cout << "name = " << node->name << "\n";
+	
+	this->printIndent();
+	std::cout << "args = \n";
+	this->indent++;
 	for (auto args: node->args) {this->walk(args);}
 	this->indent--;
 
@@ -340,8 +389,14 @@ void CtNodePrinter::handleFunctionCall(CtNode::FunctionCall *node)
 void CtNodePrinter::handleTypeCast(CtNode::TypeCast *node)
 {
 	this->printIndent();
-	std::cout << "(TypeCast type:" << node->to_type << " expr:\n";
-	this->indent++; 
+	std::cout << "(TypeCast\n";
+
+	this->printIndent();
+	std::cout << "type = " << node->to_type << "\n";
+
+	this->printIndent();
+	std::cout << "expr = \n";
+	this->indent++;
 	this->walk(node->expr);
 	this->indent--;
 
