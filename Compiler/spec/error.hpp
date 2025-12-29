@@ -43,7 +43,6 @@ namespace CtError
 		// this is temporary, will add proper error raising instead.
 
 		std::cout << "[ " << error.name << " ] " << error.message << std::endl;
-		throw std::exception();
 		exit(1);
 	}
 

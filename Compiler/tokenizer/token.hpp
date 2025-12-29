@@ -23,7 +23,9 @@ enum CtTokenType
 struct CtToken
 {
 	CtTokenType type;
-	
+
+	uint line;
+
 	union
 	{
 		CtLang::KeyWord keyword;
@@ -38,7 +40,8 @@ struct CtToken
 
 	CtToken() = default;
 	CtToken(CtTokenType t) : type(t) {}
-	CtToken(CtTokenType t, uint s, uint e) : type(t) {view.start = s; view.end = e;};
+	CtToken(CtTokenType t, uint s, uint e) : type(t), line(0) {view.start = s; view.end = e;};
+	CtToken(CtTokenType t, uint s, uint e, uint line) : type(t), line(line) {view.start = s; view.end = e;};
 };
 
 
@@ -48,12 +51,16 @@ class CtTokenStream
 	uint curr_token;
 	std::string srcStr;
 
+	
+
 	public:
 
 
 	CtTokenStream() {};
 	CtTokenStream(std::string src);
 
+	void raiseError(CtToken* token, std::string msg);
+	
 	// Gives the source string the stream points to.
 	const std::string* source();
 
@@ -106,7 +113,7 @@ class CtTokenStream
 	void expectSymbol(CtLang::Symbol *sym);
 	void expectKeywordSpecific(CtLang::KeyWord key);
 	void expectSymbolSpecific(CtLang::Symbol sym);
-	
+
 };
 
 
@@ -116,6 +123,7 @@ class CtTokenizer
 
 	const std::string *currSrc;
 	uint currIndex;
+	uint currLine;
 
 	void tokenizeNumber();
 	void tokenizeSymbol();

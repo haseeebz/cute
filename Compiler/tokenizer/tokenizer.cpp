@@ -19,14 +19,23 @@ CtTokenStream CtTokenizer::tokenize(std::string input_file)
 	this->currSrc = this->currStream.source();
 	
 	char c;
-	
+
+	currLine = 0;
+
 	for (this->currIndex = 0; this->currIndex < this->currSrc->length(); this->currIndex++)
 	{
 		c = this->currSrc->at(currIndex);
 
 		if (c == ' ' || c == '\t') {continue;}
 
-		if (c == '\n' || c == CtLang::EOL)
+		if (c == '\n')
+		{
+			this->currStream.add(CtToken(CtTokenType::EndOfLine, 0, 0, currLine));
+			currLine++;
+			continue;
+		}
+
+		if (c == CtLang::EOL)
 		{
 			this->currStream.add(CtToken(CtTokenType::EndOfLine, 0, 0));
 			continue;
@@ -85,7 +94,7 @@ void CtTokenizer::tokenizeNumber()
 
 	CtTokenType type = is_float ? CtTokenType::Float : CtTokenType::Int;
 	
-	this->currStream.add(CtToken(type, start, end));
+	this->currStream.add(CtToken(type, start, end, currLine));
 }
 
 
@@ -120,7 +129,7 @@ void CtTokenizer::tokenizeSymbol()
 	}
 
 	
-	CtToken token(CtTokenType::Symbol, start, end);
+	CtToken token(CtTokenType::Symbol, start, end, currLine);
 	token.val.sym = CtLang::symbolMap[sym];
 	this->currStream.add(token);
 }
@@ -160,6 +169,7 @@ void CtTokenizer::tokenizeWord()
 		token.view.start = start;
 		token.view.end = end;
 		token.val.keyword = CtLang::keywordMap[str];
+		token.line = currLine;
 		this->currStream.add(token);
 	}
 	else 
@@ -167,6 +177,7 @@ void CtTokenizer::tokenizeWord()
 		token.type = CtTokenType::Word;
 		token.view.start = start;
 		token.view.end = end;
+		token.line = currLine;
 		this->currStream.add(token);
 	}
 	

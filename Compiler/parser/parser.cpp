@@ -75,8 +75,8 @@ CtNode::Statement* CtParser::parseStatement()
 			case CtLang::KeyWord::While:  stmt = this->parseWhile(); break;
 			case CtLang::KeyWord::For:    stmt = this->parseFor(); break;
 			case CtLang::KeyWord::If:     stmt = this->parseIf(); break;
-			default: CtError::raise(
-				CtError::ErrorType::SyntaxError, 
+			default: this->tokens->raiseError(
+				&token, 
 				std::format("Unimplemented Keyword: {}", this->tokens->viewToken(&token))
 			);
 		}
@@ -250,11 +250,10 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 	else 
 	{
 		tok = this->tokens->peek();
-		std::cout << this->tokens->currentIndex() << "\n";
-		CtError::raise(
-			CtError::ErrorType::SyntaxError,
+		this->tokens->raiseError(
+			&tok,
 			std::format("Invalid syntax. Did not expect '{}'", this->tokens->viewToken(&tok))
-		);
+		);		
 	}
 
 	
@@ -267,10 +266,12 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 		{
 			if (depth != 0)
 			{
-				CtError::raise(
-					CtError::ErrorType::SyntaxError,
-					"Unclosed expression."
-				);
+				this->tokens->backtrack();
+				auto tok = this->tokens->next();
+				this->tokens->raiseError(
+					&tok,
+					std::format("Unclosed expression.", this->tokens->viewToken(&tok))
+				);	
 			}
 			this->tokens->backtrack(); // so EOL propagates
 			return lhs;

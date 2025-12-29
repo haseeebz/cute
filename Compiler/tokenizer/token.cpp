@@ -1,10 +1,12 @@
 #include <format>
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include "token.hpp"
 
 #include "../spec/error.hpp"
+#include "lang.hpp"
 
 
 CtTokenStream::CtTokenStream(std::string src)
@@ -12,6 +14,74 @@ CtTokenStream::CtTokenStream(std::string src)
 	this->srcStr = src;
 	this->curr_token = 0;
 }
+
+
+static inline std::string key_to_str(CtLang::KeyWord keyword)
+{
+	for (auto key: CtLang::keywordMap)
+	{
+		if (key.second == keyword) {return key.first;}
+	}
+	return "keyword";
+}
+
+
+static inline std::string sym_to_str(CtLang::Symbol symbol)
+{
+	for (auto sym: CtLang::symbolMap)
+	{
+		if (sym.second == symbol) {return sym.first;}
+	}
+	return "symbol";
+}
+
+
+static inline std::string token_to_string(CtTokenType token)
+{
+	switch (token)
+	{
+        case Int:
+			return "int";
+        case Float:
+			return "float";
+        case Word:
+			return "word";
+        case Symbol:
+			return "symbol";
+        case Keyword:
+			return "keyword";
+        case EndOfLine:
+			return "EOL";
+        case EndOfFile:
+			return "EOF";
+        case Invalid:
+			return "";
+        break;
+	}
+}
+
+
+void CtTokenStream::raiseError(CtToken* token, std::string msg)
+{
+	std::istringstream stream(this->srcStr);
+    std::string line;
+
+    for (std::size_t i = 0; i <= token->line; ++i)
+	{
+        if (!std::getline(stream, line))
+		{
+			line = std::format("Line {} not found! Critical Issue!", token->line);
+		}
+    }
+	
+	msg = std::format("{}\nline: {}\n{}", msg, token->line, line);
+	CtError::raise(
+		CtError::ErrorType::SyntaxError, 
+		msg
+	);
+}
+
+
 
 const std::string* CtTokenStream::source()
 {
@@ -273,12 +343,10 @@ void CtTokenStream::expectType(CtTokenType t, CtToken *token)
 		if (token != nullptr) {*token = tok;}
 		return;
 	}
-
-	this->backtrack();
 	
-	CtError::raise(
-		CtError::ErrorType::SyntaxError, 
-		"Unexpected Token"
+	this->raiseError(
+		&tok,
+		std::format("Expected {} but got {}", token_to_string(t), token_to_string(tok.type))
 	);
 }
 
@@ -295,12 +363,19 @@ void CtTokenStream::expectTypes(std::vector<CtTokenType> t, CtToken *token)
 			return;
 		}
 	}
-
-	this->backtrack();
 	
-	CtError::raise(
-		CtError::ErrorType::SyntaxError, 
-		"Unexpected Token"
+	std::string tokens;
+	for (auto tok: t)
+	{
+		tokens.append(token_to_string(tok));
+		tokens.append(", ");
+	}
+	tokens.pop_back();
+	tokens.pop_back();
+
+	this->raiseError(
+		&tok,
+		std::format("Expected {} but got {}", tokens, token_to_string(tok.type))
 	);
 }
 
@@ -315,11 +390,10 @@ void CtTokenStream::expectWord(std::string *str)
 		return;
 	}
 
-	this->backtrack();
 
-	CtError::raise(
-		CtError::ErrorType::SyntaxError, 
-		"Unexpected token."
+	this->raiseError(
+		&tok,
+		std::format("Expected word/identifier but got {}", token_to_string(tok.type))
 	);
 }
 
@@ -334,11 +408,10 @@ void CtTokenStream::expectInt(std::string *d)
 		return;
 	}
 
-	this->backtrack();
 
-	CtError::raise(
-		CtError::ErrorType::SyntaxError, 
-		"Unexpected Token Int"
+	this->raiseError(
+		&tok,
+		std::format("Expected int but got {}", token_to_string(tok.type))
 	);
 }
 
@@ -353,11 +426,10 @@ void CtTokenStream::expectFloat(std::string *f)
 		return;
 	}
 
-	this->backtrack();
 
-	CtError::raise(
-		CtError::ErrorType::SyntaxError, 
-		"Unexpected Token Float"
+	this->raiseError(
+		&tok,
+		std::format("Expected float but got {}", token_to_string(tok.type))
 	);
 }
 
@@ -372,11 +444,10 @@ void CtTokenStream::expectKeyword(CtLang::KeyWord *key)
 		return;
 	}
 
-	this->backtrack();
 
-	CtError::raise(
-		CtError::ErrorType::SyntaxError, 
-		"Unexpected Token Keyword"
+	this->raiseError(
+		&tok,
+		std::format("Expected keyword but got {}", token_to_string(tok.type))
 	);
 }
 
@@ -391,11 +462,10 @@ void CtTokenStream::expectSymbol(CtLang::Symbol *sym)
 		return;
 	}
 
-	this->backtrack();
 
-	CtError::raise(
-		CtError::ErrorType::SyntaxError, 
-		"Unexpected Token Symbol"
+	this->raiseError(
+		&tok,
+		std::format("Expected symbol but got {}", token_to_string(tok.type))
 	);
 }
 
@@ -412,11 +482,10 @@ void CtTokenStream::expectKeywordSpecific(CtLang::KeyWord key)
 		}
 	}
 
-	this->backtrack();
 
-	CtError::raise(
-		CtError::ErrorType::SyntaxError, 
-		"Unexpected Token Specific keyword"
+	this->raiseError(
+		&tok,
+		std::format("Expected {} but got {}", key_to_str(key), token_to_string(tok.type))
 	);
 }
 
@@ -433,10 +502,8 @@ void CtTokenStream::expectSymbolSpecific(CtLang::Symbol sym)
 		}
 	}
 
-	this->backtrack();
-
-	CtError::raise(
-		CtError::ErrorType::SyntaxError, 
-		"Unexpected Token Symbol specific"
+	this->raiseError(
+		&tok,
+		std::format("Expected {} but got {}", sym_to_str(sym), token_to_string(tok.type))
 	);
 }
