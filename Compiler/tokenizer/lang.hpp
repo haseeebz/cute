@@ -22,7 +22,11 @@ namespace CtLang
 		Func,
 
 		True,
-		False
+		False,
+
+		And,
+		Or,
+		Not
 	};
 
 
@@ -43,6 +47,10 @@ namespace CtLang
 
 		{"true",     KeyWord::True},
 		{"false",    KeyWord::False},
+
+		{"and",     KeyWord::And},
+		{"or",      KeyWord::Or},
+		{"not",     KeyWord::Not},
 	};
 
 
@@ -77,7 +85,9 @@ namespace CtLang
 		DoubleLesser,
 
 		SingleBar,
+		DoubleBar,
 		SingleAnd,
+		DoubleAnd,
 
 		Exponent,
 		Tilde,
@@ -120,10 +130,12 @@ namespace CtLang
 		{ "<=", Symbol::LesserEqual },
 		{ "<<", Symbol::DoubleLesser },
 
-		{ "|", Symbol::SingleBar },
-		{ "&", Symbol::SingleAnd },
-		{ "^", Symbol::Exponent },
-		{ "~", Symbol::Tilde },
+		{ "|",  Symbol::SingleBar },
+		{ "&",  Symbol::SingleAnd },
+		{ "||", Symbol::DoubleBar },
+		{ "&&", Symbol::DoubleAnd },
+		{ "^",  Symbol::Exponent },
+		{ "~",  Symbol::Tilde },
 
 		{ "#",  Symbol::Hashtag },
 		{ "!",  Symbol::Exclamation },

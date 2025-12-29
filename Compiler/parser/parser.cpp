@@ -276,7 +276,18 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 			return lhs;
 		}
 
-		this->tokens->expectSymbol(&sym);
+		if (this->tokens->getKeywordSpecific(CtLang::KeyWord::And))
+		{
+			sym = CtLang::Symbol::DoubleAnd;
+		}
+		else if (this->tokens->getKeywordSpecific(CtLang::KeyWord::Or))
+		{
+			sym = CtLang::Symbol::DoubleBar;
+		}
+		else  
+		{
+			this->tokens->expectSymbol(&sym);
+		}
 		
 		if (sym == CtLang::Symbol::RightParan)
 		{

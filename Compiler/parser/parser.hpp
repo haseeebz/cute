@@ -28,7 +28,10 @@ inline const std::map<Sym, Bin> symToBinaryOp {
 
     { Sym::SingleBar,     Bin::BitOr },
     { Sym::SingleAnd,     Bin::BitAnd },
-    { Sym::Exponent,      Bin::BitXor }
+    { Sym::Exponent,      Bin::BitXor },
+
+	{ Sym::DoubleBar,     Bin::LogicOr },
+    { Sym::DoubleAnd,     Bin::LogicAnd },
 };
 
 inline const std::map<Sym, Un> symToUnaryOp {
