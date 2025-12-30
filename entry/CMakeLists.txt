@@ -6,8 +6,6 @@ add_executable (
 )
 
 target_link_libraries(cute PRIVATE CuteCompiler)
-target_link_libraries(cute PRIVATE CuteEngine)
-target_link_libraries(cute PRIVATE CuteBytecode)
 
 target_compile_options (
     cute

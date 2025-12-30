@@ -5,9 +5,6 @@ file(GLOB PARSER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/parser/*.cpp")
 file(GLOB TOKENIZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tokenizer/*.cpp")
 
 file(GLOB ANALYZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/analyzer/*.cpp")
-file(GLOB EMITTER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/emitter/*.cpp")
-
-file(GLOB WRITER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/bytecode/*.cpp")
 
 
 add_library (
@@ -19,13 +16,10 @@ add_library (
 	${PARSER_SRC}
 	${TOKENIZER_SRC}
 	${ANALYZER_SRC}
-	${EMITTER_SRC}
-	${WRITER_SRC}
     compiler.cpp 
 
 )
 
-target_link_libraries(CuteCompiler PRIVATE CuteBytecode)
 
 target_compile_options (
     CuteCompiler

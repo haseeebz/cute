@@ -24,14 +24,9 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 
 	root = this->analyzer.analyze(root);
 	
-	auto* program = this->emitter.emit(root);
-
-	this->writer.write(program, outfile);
-
-	std::cout << "Program image written to: " << outfile << "\n";
-
+	CtNodePrinter printer;
+	printer.print(root);
 	delete root;
-	delete program;
 }
 
 

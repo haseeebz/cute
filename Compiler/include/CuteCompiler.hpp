@@ -3,20 +3,17 @@
 #include "../tokenizer/token.hpp"
 #include "../parser/parser.hpp"
 #include "../analyzer/analyzer.hpp"
-#include "../emitter/emitter.hpp"
-#include "../bytecode/gen.hpp"
 
 
 #pragma once
 
+#define CUTE_VERSION "v0.0.7"
 
 class CuteCompiler
 {
 	CtTokenizer tokenizer;
 	CtParser parser;
 	CtAnalyzer analyzer;
-	CtEmitter emitter;
-	CtBytecodeWriter writer;
 
 	public:
 

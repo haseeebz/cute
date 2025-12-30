@@ -1,4 +1,3 @@
-#include "CuteEngine.h"
 #include "CuteCompiler.hpp"
 #include <iostream>
 
@@ -107,14 +106,6 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	filepath = args.get_option("r");
-
-	if (filepath != "")
-	{
-		CuteEngine_init();
-		CuteEngine_loadImage(filepath.data());
-		CuteEngine_run();
-		return 0;
-	}
-
+	std::cout << "Invalid option!\n";
+	return 1;
 };
