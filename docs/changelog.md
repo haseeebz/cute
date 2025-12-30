@@ -140,3 +140,25 @@ Each version needs three sections:
 
 ### Tooling
 + Nope
+
+
+## v0.0.7
+
+### Language
++ Added almost all used binary operations. Includes `==`, `!=`, `<`, `>`, `<=`, `>=`, `&&`, `||`, `&`, `|`, `<<`, `>>`.
++ Added `and` as an alias for `&&` and `or` as an alias for `||`. (Not real aliases.)
++ Added scopes!
+
+### Stdlib
++ meh
+
+### Compiler 
++ Added support for scopes.
++ Added tons of binary operations.
++ Planning on compiling to some other compiler language such as C instead of my bytecode.
+
+### Engine
++ Might be removed soon.
+
+### Tooling
++ Nope
