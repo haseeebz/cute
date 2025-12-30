@@ -75,9 +75,9 @@ void CtTranspiler::handleDeclaration(CtNode::Declaration *node)
 {
 	std::map<CtSpec::PrimitiveT, std::string> type_map = 
 	{
-		{CtSpec::PrimitiveT::Int,   "I32"},
-		{CtSpec::PrimitiveT::UInt,  "U32"},
-		{CtSpec::PrimitiveT::Float, "F32"},
+		{CtSpec::PrimitiveT::Int,   "I64"},
+		{CtSpec::PrimitiveT::UInt,  "U64"},
+		{CtSpec::PrimitiveT::Float, "F64"},
 		{CtSpec::PrimitiveT::Bool,  "Bool"},
 	};
 
@@ -180,9 +180,9 @@ void CtTranspiler::handleTypeCast(CtNode::TypeCast *node)
 {
 	static std::map<CtSpec::PrimitiveT, std::string> type_map = 
 	{
-		{CtSpec::PrimitiveT::Int,   "I32"},
-		{CtSpec::PrimitiveT::UInt,  "U32"},
-		{CtSpec::PrimitiveT::Float, "F32"},
+		{CtSpec::PrimitiveT::Int,   "I64"},
+		{CtSpec::PrimitiveT::UInt,  "U64"},
+		{CtSpec::PrimitiveT::Float, "F64"},
 		{CtSpec::PrimitiveT::Bool,  "Bool"},
 	};
 
