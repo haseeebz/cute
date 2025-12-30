@@ -1,5 +1,5 @@
 #include "../node/node.hpp"
-#include "../spec/scope.hpp"
+#include "../node/scope.hpp"
 #include "../spec/error.hpp"
 
 #include <format>
@@ -33,17 +33,19 @@ void CtTypeChecker::handleFunction(CtNode::Function *node)
 
 void CtTypeChecker::handleStmtBlock(CtNode::StmtBlock *node)
 {
+	this->current_scope = node->scope;
 	for (auto stmt: node->stmts)
 	{
 		this->walk(stmt);
 	}
+	this->current_scope = node->scope->parent;
 }
 
 
 void CtTypeChecker::handleDeclaration(CtNode::Declaration *node)
 {	
 	// assuming the name resolver did its job
-	auto& var = this->current_scope->variables.at(node->name);
+	auto& var = this->current_scope->definitions.at(node->name);
 	
 	if (!primitiveTypes.contains(var.type_id))
 	{
@@ -53,7 +55,7 @@ void CtTypeChecker::handleDeclaration(CtNode::Declaration *node)
 		);
 	}
 
-	var.type = primitiveTypes.at(var.type_id);
+	var.type_info = primitiveTypes.at(var.type_id);
 
 	if (node->assignment) {this->walk(node->assignment);}
 }
@@ -122,14 +124,23 @@ void CtTypeChecker::handleIf(CtNode::If *node)
 
 void CtTypeChecker::handleAssignment(CtNode::Assignment *node)
 {
-	auto var = this->current_scope->variables[node->name->val];
+	CtScope::Defintion def;
+
+	if (!this->current_scope->search(node->name->val, def))
+	{
+		CtError::raise(
+			CtError::ErrorType::CompilerError, 
+			std::format("Undefined variable: {}. Should have been resolved by name resolver. Caught in type checker.", node->name->val)
+		);
+	};
+
 	this->walk(node->value);
 
-	if (*var.type != *node->value->expr_type)
+	if (*def.type_info != *node->value->expr_type)
 	{
 		CtError::raise(
 			CtError::ErrorType::TypeError, 
-			std::format("Expression of type {} can not be assigned to variable of type {}", node->value->expr_type->name, var.type->name)
+			std::format("Expression of type {} can not be assigned to variable of type {}", node->value->expr_type->name, def.type_info->name)
 		);
 	}
 
@@ -262,8 +273,17 @@ void CtTypeChecker::handleBinaryOp(CtNode::BinaryOp *node)
 
 void CtTypeChecker::handleIdentifier(CtNode::Identifier *node)
 {
-	auto var = this->current_scope->variables[node->val];
-	node->expr_type = var.type;
+	CtScope::Defintion def;
+
+	if (!this->current_scope->search(node->val, def))
+	{
+		CtError::raise(
+			CtError::ErrorType::CompilerError, 
+			std::format("Undefined variable: {}. Should have been resolved by name resolver. Caught in type checker.", node->val)
+		);
+	};
+
+	node->expr_type = def.type_info;
 }
 
 

@@ -1,5 +1,5 @@
 #include "../node/node.hpp"
-#include "../spec/scope.hpp"
+#include "../node/scope.hpp"
 
 #pragma once
 
@@ -8,7 +8,7 @@ class CtNameResolver: public CtNodeWalker
 {	
 	CtNode::RootProgram* root;
 
-	CtScope::Scope* current_scope;
+	CtScope* current_scope;
 
 	void handleRoot(CtNode::RootProgram *node);
 	void handleSource(CtNode::Source *node);

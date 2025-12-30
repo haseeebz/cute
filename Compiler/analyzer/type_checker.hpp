@@ -1,5 +1,5 @@
 #include "../node/node.hpp"
-#include "../spec/scope.hpp"
+#include "../node/scope.hpp"
 #include "../spec/spec.hpp"
 
 #include "map"
@@ -23,7 +23,7 @@ class CtTypeChecker: public CtNodeWalker
 {	
 	CtNode::RootProgram* root;
 
-	CtScope::Scope* current_scope;
+	CtScope* current_scope;
 
 	void handleRoot(CtNode::RootProgram *node);
 	void handleSource(CtNode::Source *node);

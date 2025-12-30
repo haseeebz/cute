@@ -17,30 +17,17 @@ namespace CtSpec
 	enum class PrimitiveT {Int, UInt, Float, Bool};
 
 
-	struct ContainerT
-	{
-		std::string id;
-		uint field_count;
-		std::map<uint, TypeInfo*> field_types;
-
-		ContainerT() = default;
-		ContainerT(std::string id): id(id) {};
-		~ContainerT() = default;
-	};
-
-
 	struct TypeInfo
 	{
 		TypeKind kind;
 		std::string name;
+
 		union
 		{
 			PrimitiveT primitive;
-			ContainerT container;
 		};
 
 		TypeInfo(std::string name, PrimitiveT primitive): kind(TypeKind::Primitive), name(name), primitive(primitive) {};
-		TypeInfo(std::string name, ContainerT container): kind(TypeKind::Container), name(name), container(container) {};
 		~TypeInfo();
 
 		inline bool operator==(const TypeInfo& rhs) 

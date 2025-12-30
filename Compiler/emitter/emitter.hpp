@@ -5,12 +5,16 @@
 
 #pragma once
 
+using VariableMap = std::map<std::string, uint>;
+
 class CtEmitter : CtNodeWalker
 {
 	CtCodeGen::Program* program;
 	CtCodeGen::Function* current_function;
 	
-	std::map<std::string, uint> variables;
+	std::vector<VariableMap> variables;
+	uint global_var_count = 0;
+	CtScope* current_scope;
 
 	void handleRoot(CtNode::RootProgram *node);
 	void handleSource(CtNode::Source *node);

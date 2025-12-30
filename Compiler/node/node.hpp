@@ -1,5 +1,4 @@
 #include "../spec/spec.hpp"
-#include "../spec/scope.hpp"
 
 #include <cstdint>
 #include <map>
@@ -8,6 +7,7 @@
 
 #pragma once
 
+struct CtScope;
 
 enum class CtNodeType
 {
@@ -73,8 +73,6 @@ namespace CtNode
 	struct TypeCast;
 
 
-	// Defintions
-
 
 	struct Base
 	{
@@ -89,6 +87,7 @@ namespace CtNode
 	struct RootProgram : Object
 	{
 		Source* src;
+		CtScope* scope;
 		RootProgram() {{nt = CtNodeType::RootProgram;}};
 		~RootProgram();
 	};
@@ -96,19 +95,18 @@ namespace CtNode
 	struct Source : Object
 	{
 		std::map<std::string, Function*> functions;
+		CtScope* scope;
 
 		Source() {{nt = CtNodeType::Source;}};
 		~Source();
 	};
-
 
 	struct Function : Object
 	{
 		std::string name;
 		std::vector<Declaration*> parameters;
 		StmtBlock* block;
-
-		CtScope::Scope* scope;
+		CtScope* scope;
 
 		Function() {{nt = CtNodeType::Function;}};
 		~Function();
@@ -121,6 +119,7 @@ namespace CtNode
 	struct StmtBlock : Statement
 	{
 		std::vector<Statement*> stmts;
+		CtScope* scope;
 
 		StmtBlock() {nt = CtNodeType::StmtBlock;};
 		~StmtBlock();

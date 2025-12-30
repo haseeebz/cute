@@ -2,7 +2,7 @@
 
 #include "../node/node.hpp"
 
-#include "../spec/scope.hpp"
+#include "../node/scope.hpp"
 #include "../spec/error.hpp"
 #include "name_resolver.hpp"
 
@@ -24,7 +24,7 @@ void CtNameResolver::handleSource(CtNode::Source *node)
 
 void CtNameResolver::handleFunction(CtNode::Function *node)
 {
-	node->scope = new CtScope::Scope(this->current_scope);
+	node->scope = new CtScope(this->current_scope);
 	this->current_scope = node->scope;
 	this->walk(node->block);
 }
@@ -32,17 +32,22 @@ void CtNameResolver::handleFunction(CtNode::Function *node)
 
 void CtNameResolver::handleStmtBlock(CtNode::StmtBlock *node)
 {
-	// need to start a new scope here!
+	node->scope = new CtScope(this->current_scope);
+	this->current_scope = node->scope;
+
 	for (auto stmt: node->stmts)
 	{
 		this->walk(stmt);
 	}
+
+	this->current_scope = node->scope->parent;
 }
 
 
 void CtNameResolver::handleDeclaration(CtNode::Declaration *node)
 {	
-	if (this->current_scope->variables.contains(node->name))
+	CtScope::Defintion def;
+	if (this->current_scope->has(node->name, def))
 	{
 		CtError::raise(
 			CtError::ErrorType::NameError, 
@@ -50,7 +55,7 @@ void CtNameResolver::handleDeclaration(CtNode::Declaration *node)
 		);
 	};
 
-	this->current_scope->variables[node->name] = CtScope::Variable(CtScope::VarKind::Local, node->name, node->type_id);
+	this->current_scope->definitions[node->name] = CtScope::Defintion(CtScope::DefKind::Variable, node->name, node->type_id);
 
 	if (node->assignment) {this->walk(node->assignment);}
 }
@@ -94,7 +99,8 @@ void CtNameResolver::handleIf(CtNode::If *node)
 
 void CtNameResolver::handleAssignment(CtNode::Assignment *node)
 {
-	if (!this->current_scope->variables.contains(node->name->val))
+	CtScope::Defintion def;
+	if (!this->current_scope->search(node->name->val, def))
 	{
 		CtError::raise(
 			CtError::ErrorType::NameError, 
@@ -128,7 +134,9 @@ void CtNameResolver::handleBinaryOp(CtNode::BinaryOp *node)
 
 void CtNameResolver::handleIdentifier(CtNode::Identifier *node)
 {
-	if (!this->current_scope->variables.contains(node->val))
+	CtScope::Defintion def;
+
+	if (!this->current_scope->search(node->val, def))
 	{
 		CtError::raise(
 			CtError::ErrorType::NameError, 

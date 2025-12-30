@@ -1,4 +1,5 @@
 #include "../node/node.hpp"
+#include "../node/scope.hpp"
 
 #include <iostream>
 
@@ -37,6 +38,9 @@ void CtEmitter::handleSource(CtNode::Source *node)
 
 void CtEmitter::handleFunction(CtNode::Function *node)
 {
+	this->current_scope = node->scope;
+	this->variables.push_back(VariableMap());
+
 	auto* func = new CtCodeGen::Function();
 	this->current_function = func;
 	this->program->functions[0] = func;
@@ -44,8 +48,10 @@ void CtEmitter::handleFunction(CtNode::Function *node)
 	this->walk(node->block);
 
 	func->id = 0;
-	func->locals_count = this->variables.size();
+	func->locals_count = this->global_var_count;
 	func->arg_count = 0;
+
+	this->current_scope = node->scope->parent;
 }
 
 
@@ -124,17 +130,21 @@ void CtEmitter::handleBinaryOp(CtNode::BinaryOp *node)
 
 void CtEmitter::handleStmtBlock(CtNode::StmtBlock *node)
 {
+	this->current_scope = node->scope;
+	this->variables.push_back(VariableMap());
 	for (auto stmt: node->stmts)
 	{
 		this->walk(stmt);
-	}
+	}	
+	this->variables.pop_back();
+	this->current_scope = node->scope->parent;
 }
 
 
 void CtEmitter::handleDeclaration(CtNode::Declaration *node)
 {
-	this->variables[node->name] = this->variables.size();
-
+	this->variables.back()[node->name] = this->global_var_count++;
+	
 	if (node->assignment)
 	{
 		this->walk(node->assignment);
@@ -227,17 +237,43 @@ void CtEmitter::handleIf(CtNode::If* node)
 
 void CtEmitter::handleAssignment(CtNode::Assignment *node)
 {
+	uint id;
+	for (uint i = 0; i < this->variables.size(); i++)
+	{
+		auto mapping = this->variables[this->variables.size()-i-1];
+		
+		if (mapping.contains(node->name->val))
+		{
+			id = mapping[node->name->val];
+			break;
+		}
+	}
+
 	this->walk(node->value);
 	this->current_function->units.push_back(
-		new CtCodeGen::StoreOp(op_type_map[node->expr_type->primitive], this->variables[node->name->val])
+		new CtCodeGen::StoreOp(op_type_map[node->expr_type->primitive], id)
 	);
 }
 
 
 void CtEmitter::handleIdentifier(CtNode::Identifier *node)
 {
+	uint id;
+	for (uint i = 0; i < this->variables.size(); i++)
+	{
+		auto mapping = this->variables[this->variables.size()-i-1];
+		
+		if (mapping.contains(node->val))
+		{
+			id = mapping[node->val];
+			break;
+		}
+	}
+	
+
+
 	this->current_function->units.push_back(
-		new CtCodeGen::LoadOp(op_type_map[node->expr_type->primitive], this->variables[node->val])
+		new CtCodeGen::LoadOp(op_type_map[node->expr_type->primitive], id)
 	);
 }
 
