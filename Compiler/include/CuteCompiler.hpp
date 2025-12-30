@@ -3,7 +3,7 @@
 #include "../tokenizer/token.hpp"
 #include "../parser/parser.hpp"
 #include "../analyzer/analyzer.hpp"
-
+#include "../transpiler/transpiler.hpp"
 
 #pragma once
 
@@ -14,6 +14,7 @@ class CuteCompiler
 	CtTokenizer tokenizer;
 	CtParser parser;
 	CtAnalyzer analyzer;
+	CtTranspiler transpiler;
 
 	public:
 

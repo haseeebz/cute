@@ -1,12 +1,15 @@
 #include "CuteCompiler.hpp"
 
+#include <cstdlib>
 #include <filesystem>
 #include <format>
+#include <fstream>
 #include <iostream>
 #include <string>
 
 #include "node/node.hpp"
 #include "spec/error.hpp"
+#include "fstream"
 
 
 
@@ -26,6 +29,15 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 	
 	CtNodePrinter printer;
 	printer.print(root);
+
+	std::string code = transpiler.transpile(root);
+
+	std::ofstream stream(outfile);
+	stream << code;
+	stream.close();
+
+	std::string str = std::format("gcc {} -o program", outfile);
+	std::system(str.data());
 	delete root;
 }
 

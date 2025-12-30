@@ -6,6 +6,7 @@ file(GLOB TOKENIZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tokenizer/*.cpp")
 
 file(GLOB ANALYZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/analyzer/*.cpp")
 
+file(GLOB TRANSPILER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/transpiler/*.cpp")
 
 add_library (
 	CuteCompiler
@@ -16,6 +17,7 @@ add_library (
 	${PARSER_SRC}
 	${TOKENIZER_SRC}
 	${ANALYZER_SRC}
+	${TRANSPILER_SRC}
     compiler.cpp 
 
 )
