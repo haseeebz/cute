@@ -244,11 +244,17 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 			cast->expr = this->parseExpression(CtSpec::binaryOpPrecedence.size()); // grabs the next literal
 			lhs = cast;
 		}
-
+		else
+		{
+			this->tokens->backtrack();
+			goto error;
+		}
+		
 	}
 
 	else 
 	{
+		error:
 		tok = this->tokens->peek();
 		this->tokens->raiseError(
 			&tok,
