@@ -88,7 +88,7 @@ void CtTranspiler::handleDeclaration(CtNode::Declaration *node)
 	if (node->assignment)
 	{
 		code.append(" = ");
-		this->walk(node->assignment);
+		this->walk(node->assignment->value);
 	}
 }
 
