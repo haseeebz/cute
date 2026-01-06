@@ -30,6 +30,10 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 	CtNodePrinter printer;
 	printer.print(root);
 
+	delete root;
+
+	/*
+
 	std::string code = transpiler.transpile(root);
 
 	std::ofstream stream(outfile);
@@ -39,6 +43,8 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 	std::string str = std::format("gcc {} -o program", outfile);
 	std::system(str.data());
 	delete root;
+
+	*/
 }
 
 
