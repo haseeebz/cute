@@ -1,4 +1,4 @@
-#include "../spec/spec.hpp"
+#include "../spec/lang.hpp"
 
 #include <cstdint>
 #include <map>
@@ -8,6 +8,7 @@
 #pragma once
 
 struct CtScope;
+
 
 enum class CtNodeType
 {
@@ -48,7 +49,6 @@ namespace CtNode
 	struct RootProgram;
 	struct Source;
 	struct Function;
-
 	
 	// Statement Nodes
 	struct StmtBlock;
@@ -81,7 +81,7 @@ namespace CtNode
 
 	struct Object     : Base{};
 	struct Statement  : Base{};
-	struct Expression : Base{CtSpec::TypeInfo* expr_type;};
+	struct Expression : Base{};
 
 
 	struct RootProgram : Object
@@ -95,7 +95,6 @@ namespace CtNode
 	struct Source : Object
 	{
 		std::map<std::string, Function*> functions;
-		CtScope* scope;
 
 		Source() {{nt = CtNodeType::Source;}};
 		~Source();
@@ -112,7 +111,6 @@ namespace CtNode
 		~Function();
 	};
 
-	
 	// Statement Nodes
 
 
@@ -131,7 +129,6 @@ namespace CtNode
 		std::string type_id;
 		std::string name;
 		Assignment* assignment = nullptr;
-		CtSpec::TypeInfo* type;
 
 		Declaration() {nt = CtNodeType::Declaration;};
 		~Declaration();
@@ -239,21 +236,21 @@ namespace CtNode
 
 	struct BinaryOp : Expression
 	{
-		CtSpec::BinaryOpType op;
+		CtLang::BinaryOpType op;
 		Expression* left;
 		Expression* right;
 		BinaryOp() {nt = CtNodeType::BinaryOp;};
-		BinaryOp(CtSpec::BinaryOpType op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
+		BinaryOp(CtLang::BinaryOpType op, Expression* left, Expression* right): op(op), left(left), right(right) {nt = CtNodeType::BinaryOp;};
 		~BinaryOp();
 	};
 
 
 	struct UnaryOp : Expression
 	{
-		CtSpec::UnaryOpType op;
+		CtLang::UnaryOpType op;
 		Expression* operand;
 		UnaryOp() {nt = CtNodeType::UnaryOp;};
-		UnaryOp(CtSpec::UnaryOpType op, Expression* oper): op(op), operand(oper) {nt = CtNodeType::UnaryOp;};
+		UnaryOp(CtLang::UnaryOpType op, Expression* oper): op(op), operand(oper) {nt = CtNodeType::UnaryOp;};
 		~UnaryOp();
 	};
 

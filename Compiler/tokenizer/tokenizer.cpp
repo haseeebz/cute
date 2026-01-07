@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-#include "lang.hpp"
+#include "../spec/lang.hpp"
 #include "token.hpp"
 
 
@@ -130,7 +130,7 @@ void CtTokenizer::tokenizeSymbol()
 
 	
 	CtToken token(CtTokenType::Symbol, start, end, currLine);
-	token.val.sym = CtLang::symbolMap[sym];
+	token.val.sym = CtLang::symbolMap.at(sym);
 	this->currStream.add(token);
 }
 
@@ -168,7 +168,7 @@ void CtTokenizer::tokenizeWord()
 		token.type = CtTokenType::Keyword;
 		token.view.start = start;
 		token.view.end = end;
-		token.val.keyword = CtLang::keywordMap[str];
+		token.val.keyword = CtLang::keywordMap.at(str);
 		token.line = currLine;
 		this->currStream.add(token);
 	}

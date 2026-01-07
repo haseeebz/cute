@@ -6,7 +6,7 @@
 #include "token.hpp"
 
 #include "../spec/error.hpp"
-#include "lang.hpp"
+#include "../spec/lang.hpp"
 
 
 CtTokenStream::CtTokenStream(std::string src)

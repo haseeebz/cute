@@ -1,13 +1,9 @@
-#include "../tokenizer/lang.hpp"
+#include "../spec/lang.hpp"
 
 #include "../node/node.hpp"
 
 #include "../tokenizer/token.hpp"
 #include "../spec/error.hpp"
-
-#include "../spec/spec.hpp"
-
-#include <iostream>
 
 #include "parser.hpp"
 #include "format"
@@ -232,8 +228,8 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 		}
 		else if (tok.val.sym == CtLang::Symbol::Minus)
 		{
-			lhs = this->parseExpression(CtSpec::binaryOpPrecedence.size());
-			lhs = new CtNode::BinaryOp(CtSpec::BinaryOpType::Sub, new CtNode::Int("0"), lhs); // works, meh
+			lhs = this->parseExpression(CtLang::binaryOpPrecedence.size());
+			lhs = new CtNode::BinaryOp(CtLang::BinaryOpType::Sub, new CtNode::Int("0"), lhs); // works, meh
 		}
 		else if (tok.val.sym == CtLang::Symbol::LeftBraces)
 		{
@@ -241,7 +237,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 			this->tokens->expectSymbolSpecific(CtLang::Symbol::RightBraces);
 			auto cast = new CtNode::TypeCast();
 			cast->to_type = str;
-			cast->expr = this->parseExpression(CtSpec::binaryOpPrecedence.size()); // grabs the next literal
+			cast->expr = this->parseExpression(CtLang::binaryOpPrecedence.size()); // grabs the next literal
 			lhs = cast;
 		}
 		else
@@ -313,7 +309,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 		auto* binary = new CtNode::BinaryOp();
 
 		binary->op = symToBinaryOp.at(sym);
-		uint prec = CtSpec::binaryOpPrecedence[binary->op];
+		uint prec = CtLang::binaryOpPrecedence.at(binary->op);
 
 		if (prec < prev_precedence)
 		{

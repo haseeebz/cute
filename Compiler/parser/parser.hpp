@@ -6,10 +6,11 @@
 #pragma once
 
 using Sym = CtLang::Symbol;
-using Bin = CtSpec::BinaryOpType;
-using Un  = CtSpec::UnaryOpType;
+using Bin = CtLang::BinaryOpType;
+using Un  = CtLang::UnaryOpType;
 
-inline const std::map<Sym, Bin> symToBinaryOp {
+inline const std::map<Sym, Bin> symToBinaryOp 
+{
     { Sym::Plus,          Bin::Add },
     { Sym::Minus,         Bin::Sub },
     { Sym::Star,          Bin::Mul },
@@ -34,7 +35,8 @@ inline const std::map<Sym, Bin> symToBinaryOp {
     { Sym::DoubleAnd,     Bin::LogicAnd },
 };
 
-inline const std::map<Sym, Un> symToUnaryOp {
+inline const std::map<Sym, Un> symToUnaryOp 
+{
     { Sym::Exclamation, Un::LogicNot },
     { Sym::Tilde,       Un::BitNot },  
     { Sym::Minus,       Un::Negation }

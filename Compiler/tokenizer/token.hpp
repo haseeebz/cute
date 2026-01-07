@@ -2,7 +2,7 @@
 #include <sys/types.h>
 #include <vector>
 
-#include "lang.hpp"
+#include "../spec/lang.hpp"
 
 #pragma once 
 

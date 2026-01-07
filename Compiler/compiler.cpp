@@ -24,8 +24,6 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 	}
 	
 	auto* root = this->parser.parse(filepath);
-
-	root = this->analyzer.analyze(root);
 	
 	CtNodePrinter printer;
 	printer.print(root);
@@ -74,7 +72,6 @@ void CuteCompiler::invokeComponent(std::string filepath, std::string comp)
 	else if (comp == "analyze")
 	{
 		auto* root = this->parser.parse(filepath);
-		this->analyzer.analyze(root);
 		printer.print(root);
 	}
 	else if (comp == "emit")

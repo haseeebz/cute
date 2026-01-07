@@ -12,11 +12,11 @@ add_library (
 	CuteCompiler
 	STATIC
 
-	${SPEC_SRC}
+	#${SPEC_SRC}
 	${NODE_SRC}
 	${PARSER_SRC}
 	${TOKENIZER_SRC}
-	${ANALYZER_SRC}
+	#${ANALYZER_SRC}
 	# ${TRANSPILER_SRC}
     compiler.cpp 
 

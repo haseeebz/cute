@@ -30,7 +30,7 @@ namespace CtLang
 	};
 
 
-	inline std::map<std::string, KeyWord> keywordMap =
+	inline const std::map<std::string, KeyWord> keywordMap =
 	{
 		{"let",      KeyWord::Let},
 		{"out",      KeyWord::Out},
@@ -101,9 +101,9 @@ namespace CtLang
 	};
 
 
-	inline char EOL = ';';
+	inline const char EOL = ';';
 
-	inline std::map<std::string, Symbol> symbolMap =
+	inline const std::map<std::string, Symbol> symbolMap =
 	{
 		{ "+",  Symbol::Plus },
 		{ "-",  Symbol::Minus },
@@ -146,4 +146,73 @@ namespace CtLang
 		{ "\"", Symbol::DoubleQuote }
 	};
 
+
+	enum class BinaryOpType
+	{
+		Add,
+		Sub,
+		Mul,
+		Div,
+		Mod,
+
+		Equal,
+		NotEqual,
+		Lesser,
+		LesserEqual,
+		Greater,
+		GreaterEqual,
+
+		BitShiftLeft,
+		BitShiftRight,
+		BitAnd,
+		BitOr,
+		BitXor,
+
+		LogicAnd,
+		LogicOr,
+
+		MemberAccess,
+		NamespaceAccesss
+	};
+
+	bool isArithmetic(BinaryOpType op);
+	bool isComparison(BinaryOpType op);
+	bool isLogical(BinaryOpType op);
+	bool isBitwise(BinaryOpType op);
+
+	inline const std::map<BinaryOpType, uint> binaryOpPrecedence =
+	{
+		{BinaryOpType::LogicOr, 1},
+		{BinaryOpType::LogicAnd,2},
+		{BinaryOpType::BitOr, 3},
+		{BinaryOpType::BitXor, 4},
+		{BinaryOpType::BitAnd, 5},
+		{BinaryOpType::Equal, 6},
+		{BinaryOpType::NotEqual, 7},
+		{BinaryOpType::Greater, 8},
+		{BinaryOpType::GreaterEqual, 8},
+		{BinaryOpType::Lesser, 8},
+		{BinaryOpType::LesserEqual, 8},
+		{BinaryOpType::BitShiftLeft, 9},
+		{BinaryOpType::BitShiftRight, 9},
+
+		{BinaryOpType::Add, 10},
+		{BinaryOpType::Sub, 10},
+		{BinaryOpType::Mul, 11},
+		{BinaryOpType::Div, 11},
+		{BinaryOpType::Mod, 11},
+
+		{BinaryOpType::MemberAccess, 12},
+		{BinaryOpType::NamespaceAccesss, 12},
+	};
+
+	
+	enum class UnaryOpType
+	{
+		LogicNot,
+		BitNot,
+		Negation,
+		Increment,
+		Decrement
+	};
 }
