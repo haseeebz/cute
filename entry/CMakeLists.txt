@@ -2,10 +2,11 @@
 
 add_executable (
 	cute
-	main.c
+	main.cpp
 )
 
 target_link_libraries(cute PRIVATE CuteLib)
+target_link_libraries(cute PRIVATE CuteCompiler)
 
 target_compile_options (
     cute

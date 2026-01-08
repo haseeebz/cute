@@ -7,6 +7,8 @@
 
 #define CUTE_VERSION "v0.0.7"
 
+void exec_test();
+
 class CuteCompiler
 {
 	CtTokenizer tokenizer;

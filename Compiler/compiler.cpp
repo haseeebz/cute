@@ -81,6 +81,10 @@ void CuteCompiler::invokeComponent(std::string filepath, std::string comp)
 		auto* root = this->parser.parse(filepath);
 		printer.print(root);
 	}
+	else if (comp == "test")
+	{
+		exec_test();
+	}
 	else
 	{
 		CtError::raise(

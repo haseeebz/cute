@@ -8,6 +8,8 @@ file(GLOB ANALYZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/analyzer/*.cpp")
 
 file(GLOB TRANSPILER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/transpiler/*.cpp")
 
+file(GLOB CODEGEN_SRC "${CMAKE_CURRENT_SOURCE_DIR}/codegen/*.cpp")
+
 add_library (
 	CuteCompiler
 	STATIC
@@ -18,7 +20,9 @@ add_library (
 	${TOKENIZER_SRC}
 	#${ANALYZER_SRC}
 	# ${TRANSPILER_SRC}
+	${CODEGEN_SRC}
     compiler.cpp 
+	test.cpp
 
 )
 
