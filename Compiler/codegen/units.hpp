@@ -9,22 +9,29 @@ namespace Codegen
 	struct Unit;
 
 	struct RootUnit;
-	struct ExprUnit;
+
 	struct StmtUnit;
 	struct BlockUnit;
 
-	struct FuncDeclUnit;
-	struct FuncDefUnit;
+	struct ExprUnit;
 
 	struct DeclUnit;
 	struct AssignUnit;
 
 	struct LiteralUnit;
 	struct IdentifierUnit;
-	struct KeywordUnit;
-
 	struct BinaryOpUnit;
 	struct UnaryOpUnit;
+
+	struct CallUnit;
+
+	struct FuncDeclUnit;
+	struct FuncDefUnit;
+
+	struct StructDeclUnit;
+	struct StructDefUnit;
+
+	struct DirectiveUnit;
 
 
 	class Accumulator
@@ -51,13 +58,14 @@ namespace Codegen
 	{
 		std::vector<Unit*> units;
 
-		RootUnit(std::vector<Unit*> units_)
-			: units(units_) {}
+		RootUnit(std::vector<Unit*>&& units_) : units(units_) {}
 
 		~RootUnit()
 		{
 			for (auto u : units)
+			{
 				delete u;
+			}		
 		}
 
 		void accept(Accumulator* acc) override
@@ -65,35 +73,11 @@ namespace Codegen
 			for (auto& u : units)
 			{
 				u->accept(acc);
+				acc->writeback("\n");
 			}	
 		}
 	};
 
-	struct ExprUnit : Unit
-	{
-		ExprUnit() = default;
-	};
-
-	struct StmtUnit : Unit
-	{
-		Unit* unit;
-
-		StmtUnit(Unit* unit_)
-		: unit(unit_)
-		{
-		}
-
-		~StmtUnit()
-		{
-			delete unit;
-		}
-
-		void accept(Accumulator* acc) override
-		{
-			unit->accept(acc);
-			acc->writeback(";");
-		}
-	};
 
 	struct BlockUnit : Unit
 	{
@@ -114,20 +98,24 @@ namespace Codegen
 			for (auto& u : units)
 			{
 				u->accept(acc);
+				acc->writeback(";");
 			}
 			acc->writeback("}");
 		}
 	};
+
+	struct ExprUnit : Unit
+	{
+		ExprUnit() = default;
+	};
+
 
 	struct DeclUnit : Unit
 	{
 		std::string type;
 		std::string name;
 
-		DeclUnit(std::string type_, std::string name_)
-		: type(std::move(type_)), name(std::move(name_))
-		{
-		}
+		DeclUnit(std::string type_, std::string name_): type(std::move(type_)), name(std::move(name_)) {}
 
 		void accept(Accumulator* acc) override
 		{
@@ -137,30 +125,13 @@ namespace Codegen
 		}
 	};
 
-	struct KeywordUnit : Unit
-	{
-		std::string val;
-
-		KeywordUnit(std::string val_)
-		: val(std::move(val_))
-		{
-		}
-
-		void accept(Accumulator* acc) override
-		{
-			acc->writeback(val);
-		}
-	};
 
 	struct AssignUnit : Unit
 	{
 		ExprUnit* lhs;
 		ExprUnit* val;
 
-		AssignUnit(ExprUnit* lhs_, ExprUnit* val_)
-		: lhs(lhs_), val(val_)
-		{
-		}
+		AssignUnit(ExprUnit* lhs_, ExprUnit* val_): lhs(lhs_), val(val_){}
 
 		~AssignUnit()
 		{
@@ -176,35 +147,32 @@ namespace Codegen
 		}
 	};
 
+
 	struct LiteralUnit : ExprUnit
 	{
 		std::string val;
 
-		LiteralUnit(std::string val_)
-		: val(std::move(val_))
-		{
-		}
+		LiteralUnit(std::string val_): val(std::move(val_)){}
 
 		void accept(Accumulator* acc) override
 		{
 			acc->writeback(val);
 		}
 	};
+
 
 	struct IdentifierUnit : ExprUnit
 	{
 		std::string val;
 
-		IdentifierUnit(std::string val_)
-		: val(std::move(val_))
-		{
-		}
+		IdentifierUnit(std::string val_): val(std::move(val_)){}
 
 		void accept(Accumulator* acc) override
 		{
 			acc->writeback(val);
 		}
 	};
+
 
 	struct BinaryOpUnit : ExprUnit
 	{
@@ -212,12 +180,7 @@ namespace Codegen
 		ExprUnit* lhs;
 		ExprUnit* rhs;
 
-		BinaryOpUnit(std::string op_, ExprUnit* lhs_, ExprUnit* rhs_)
-		: op(std::move(op_)),
-		lhs(lhs_),
-		rhs(rhs_)
-		{
-		}
+		BinaryOpUnit(std::string op_, ExprUnit* lhs_, ExprUnit* rhs_): op(std::move(op_)), lhs(lhs_), rhs(rhs_){}
 
 		~BinaryOpUnit()
 		{
@@ -235,18 +198,14 @@ namespace Codegen
 		}
 	};
 
+
 	struct UnaryOpUnit : ExprUnit
 	{
 		std::string op;
 		ExprUnit* expr;
 		bool prefix;
 
-		UnaryOpUnit(std::string op_, ExprUnit* expr_, bool prefix_)
-		: op(std::move(op_)),
-		expr(expr_),
-		prefix(prefix_)
-		{
-		}
+		UnaryOpUnit(std::string op_, ExprUnit* expr_, bool prefix_): op(std::move(op_)), expr(expr_), prefix(prefix_){}
 
 		~UnaryOpUnit()
 		{
@@ -263,23 +222,59 @@ namespace Codegen
 		}
 	};
 
-	struct FuncDeclUnit : Unit
+
+	struct CallUnit : ExprUnit
+	{
+		std::string callee;
+		std::vector<ExprUnit*> args;
+
+		CallUnit(std::string callee_, std::vector<ExprUnit*>&& args_): callee(callee_), args(args_) {} 
+
+		~CallUnit()
+		{
+			for (auto& a: args)
+			{
+				delete a;
+			}
+		}
+
+		void accept(Accumulator* acc) override
+		{
+			acc->writeback(callee);
+			acc->writeback("(");
+			for (size_t i = 0; i < args.size(); i++)
+			{
+				args[i]->accept(acc);
+				if (i + 1 < args.size())
+				{
+					acc->writeback(",");
+				}
+					
+			}
+			acc->writeback(")");
+		}
+	};
+
+
+		struct FuncDeclUnit : Unit
 	{
 		std::string return_type;
 		std::string name;
 		std::vector<DeclUnit*> parameters;
+		bool semicolon = true;
 
-		FuncDeclUnit(std::string return_type_, std::string name_, std::vector<DeclUnit*> params_)
-		: return_type(std::move(return_type_)),
-		name(std::move(name_)),
-		parameters(params_)
-		{
-		}
+		FuncDeclUnit(std::string return_type_, std::string name_, std::vector<DeclUnit*> params_): 
+			return_type(std::move(return_type_)),
+			name(std::move(name_)),
+			parameters(params_)
+		{}
 
 		~FuncDeclUnit()
 		{
 			for (auto p : parameters)
+			{
 				delete p;
+			}
 		}
 
 		void accept(Accumulator* acc)
@@ -295,7 +290,10 @@ namespace Codegen
 					acc->writeback(",");
 			}
 			acc->writeback(")");
+
+			if (semicolon) {acc->writeback(";");}
 		}
+
 	};
 
 	struct FuncDefUnit : Unit
@@ -303,8 +301,8 @@ namespace Codegen
 		FuncDeclUnit* decl;
 		BlockUnit* code;
 
-		FuncDefUnit(FuncDeclUnit* decl_, BlockUnit* code_)
-		: decl(std::move(decl_)),
+		FuncDefUnit(FuncDeclUnit* decl_, BlockUnit* code_): 
+		decl(std::move(decl_)),
 		code(code_)
 		{
 		}
@@ -317,8 +315,30 @@ namespace Codegen
 
 		void accept(Accumulator* acc)
 		{
+			decl->semicolon = false;
 			decl->accept(acc);
 			code->accept(acc);
+		}
+	};
+
+	struct StructDeclUnit;
+	struct StructDefUnit;
+
+	struct DirectiveUnit
+	{
+		std::string name;
+		std::string body;
+
+		DirectiveUnit(std::string name_, std::string body_): name(name_), body(body_) {}
+
+		~DirectiveUnit() = default;
+
+		void accept(Accumulator* acc)
+		{
+			acc->writeback(name);
+			acc->writeback(" ");
+			acc->writeback(body);
+			acc->writeback("\n");
 		}
 	};
 
