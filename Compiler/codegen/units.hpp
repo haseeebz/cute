@@ -324,7 +324,7 @@ namespace Codegen
 	struct StructDeclUnit;
 	struct StructDefUnit;
 
-	struct DirectiveUnit
+	struct DirectiveUnit : Unit
 	{
 		std::string name;
 		std::string body;
@@ -335,6 +335,7 @@ namespace Codegen
 
 		void accept(Accumulator* acc)
 		{
+			acc->writeback("#");
 			acc->writeback(name);
 			acc->writeback(" ");
 			acc->writeback(body);
