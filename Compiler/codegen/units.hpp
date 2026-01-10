@@ -10,20 +10,21 @@ namespace Codegen
 
 	struct RootUnit;
 
-	struct StmtUnit;
 	struct BlockUnit;
 
 	struct ExprUnit;
-
 	struct DeclUnit;
 	struct AssignUnit;
-
 	struct LiteralUnit;
 	struct IdentifierUnit;
 	struct BinaryOpUnit;
 	struct UnaryOpUnit;
 
 	struct CallUnit;
+
+	struct WhileUnit;
+	struct IfUnit;
+	struct ForUnit;
 
 	struct FuncDeclUnit;
 	struct FuncDefUnit;
@@ -114,14 +115,21 @@ namespace Codegen
 	{
 		std::string type;
 		std::string name;
+		ExprUnit* val;
 
-		DeclUnit(std::string type_, std::string name_): type(std::move(type_)), name(std::move(name_)) {}
+		DeclUnit(std::string type_, std::string name_, ExprUnit* val_ = nullptr): type(type_), name(name_), val(val_) {}
 
 		void accept(Accumulator* acc) override
 		{
 			acc->writeback(type);
 			acc->writeback(" ");
 			acc->writeback(name);
+
+			if (val)
+			{
+				acc->writeback(" = ");
+				val->accept(acc);
+			}
 		}
 	};
 
@@ -205,7 +213,7 @@ namespace Codegen
 		ExprUnit* expr;
 		bool prefix;
 
-		UnaryOpUnit(std::string op_, ExprUnit* expr_, bool prefix_): op(std::move(op_)), expr(expr_), prefix(prefix_){}
+		UnaryOpUnit(std::string op_, ExprUnit* expr_, bool prefix_ = true): op(std::move(op_)), expr(expr_), prefix(prefix_){}
 
 		~UnaryOpUnit()
 		{
@@ -256,7 +264,99 @@ namespace Codegen
 	};
 
 
-		struct FuncDeclUnit : Unit
+	struct WhileUnit : Unit
+	{
+		ExprUnit* condition;
+		BlockUnit* body;
+
+		WhileUnit(ExprUnit* cond_, BlockUnit* body_): condition(cond_), body(body_) {} 
+
+		~WhileUnit()
+		{
+			delete condition;
+			delete body;
+		}
+
+		void accept(Accumulator* acc) override
+		{
+			acc->writeback("while ");
+			acc->writeback("(");
+			condition->accept(acc);
+			acc->writeback(")");
+			body->accept(acc);
+		}
+	};
+
+	struct IfUnit : Unit
+	{
+		ExprUnit* condition;
+		BlockUnit* body;
+		Unit* else_block;
+
+		IfUnit(ExprUnit* cond_, BlockUnit* body_, BlockUnit* else_ = nullptr): condition(cond_), body(body_), else_block(else_) {} 
+		IfUnit(ExprUnit* cond_, BlockUnit* body_, IfUnit* else_ = nullptr): condition(cond_), body(body_), else_block(else_) {} 
+
+		~IfUnit()
+		{
+			delete condition;
+			delete body;
+			if (else_block) {delete else_block;}
+		}
+
+		void accept(Accumulator* acc) override
+		{
+			acc->writeback("if ");
+			acc->writeback("(");
+			condition->accept(acc);
+			acc->writeback(")");
+			body->accept(acc);
+
+			if (else_block)
+			{
+				acc->writeback("else ");
+				else_block->accept(acc);
+			}
+		}
+	};
+
+
+	struct ForUnit : Unit
+	{
+		Unit* init;
+		ExprUnit* condition;
+		ExprUnit* step;
+		BlockUnit* body;
+
+		ForUnit(DeclUnit* init_, ExprUnit* cond_, ExprUnit* step_, BlockUnit* body_): 
+		init(init_), condition(cond_), step(step_), body(body_) {} 
+		
+		ForUnit(AssignUnit* init_, ExprUnit* cond_, ExprUnit* step_, BlockUnit* body_): 
+		init(init_), condition(cond_), step(step_), body(body_) {}
+
+		~ForUnit()
+		{
+			delete init;
+			delete condition;
+			delete step;
+			delete body;
+		}
+
+		void accept(Accumulator* acc) override
+		{
+			acc->writeback("for ");
+			acc->writeback("(");
+			init->accept(acc);
+			acc->writeback(";");
+			condition->accept(acc);
+			acc->writeback(";");
+			step->accept(acc);
+			acc->writeback(")");
+			body->accept(acc);
+		}
+	};
+
+
+	struct FuncDeclUnit : Unit
 	{
 		std::string return_type;
 		std::string name;
