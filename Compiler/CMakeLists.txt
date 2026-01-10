@@ -19,7 +19,7 @@ add_library (
 	${PARSER_SRC}
 	${TOKENIZER_SRC}
 	#${ANALYZER_SRC}
-	# ${TRANSPILER_SRC}
+	${TRANSPILER_SRC}
 	${CODEGEN_SRC}
     compiler.cpp 
 	test.cpp
