@@ -74,7 +74,6 @@ namespace CtNode
 	struct TypeCast;
 
 
-
 	struct Base
 	{
 		CtNodeType nt;
@@ -129,7 +128,7 @@ namespace CtNode
 	{	
 		std::string type_id;
 		std::string name;
-		Assignment* assignment = nullptr;
+		Expression* val;
 
 		Declaration() {nt = CtNodeType::Declaration;};
 		~Declaration();
@@ -288,38 +287,127 @@ namespace CtNode
 
 
 
-
+template<typename returnT>
 class CtNodeWalker
 {
-	virtual void handleRoot(CtNode::RootProgram *node) = 0;
-	virtual void handleSource(CtNode::Source *node) = 0;
+	virtual returnT handleRoot(CtNode::RootProgram *node) = 0;
+	virtual returnT handleSource(CtNode::Source *node) = 0;
 
-	virtual void handleFunction(CtNode::Function *node) = 0;
+	virtual returnT handleFunction(CtNode::Function *node) = 0;
 
-	virtual void handleStmtBlock(CtNode::StmtBlock *node) = 0;
-	virtual void handleDeclaration(CtNode::Declaration *node) = 0;
-	virtual void handleIf(CtNode::If *node) = 0;
-	virtual void handleLoop(CtNode::Loop *node) = 0;
-	virtual void handleWhile(CtNode::While *node) = 0;
-	virtual void handleFor(CtNode::For *node) = 0;
-	virtual void handleOut(CtNode::Out *node) = 0;
+	virtual returnT handleStmtBlock(CtNode::StmtBlock *node) = 0;
+	virtual returnT handleDeclaration(CtNode::Declaration *node) = 0;
+	virtual returnT handleIf(CtNode::If *node) = 0;
+	virtual returnT handleLoop(CtNode::Loop *node) = 0;
+	virtual returnT handleWhile(CtNode::While *node) = 0;
+	virtual returnT handleFor(CtNode::For *node) = 0;
+	virtual returnT handleOut(CtNode::Out *node) = 0;
 
-	virtual void handleInt(CtNode::Int *node) = 0;
-	virtual void handleFloat(CtNode::Float *node) = 0;
-	virtual void handleBool(CtNode::Bool *node) = 0;
-	virtual void handleBinaryOp(CtNode::BinaryOp *node) = 0;
-	virtual void handleIdentifier(CtNode::Identifier *node) = 0;
-	virtual void handleFunctionCall(CtNode::FunctionCall *node) = 0;
-	virtual void handleAssignment(CtNode::Assignment *node) = 0;
-	virtual void handleTypeCast(CtNode::TypeCast *node) = 0;
+	virtual returnT handleInt(CtNode::Int *node) = 0;
+	virtual returnT handleFloat(CtNode::Float *node) = 0;
+	virtual returnT handleBool(CtNode::Bool *node) = 0;
+	virtual returnT handleBinaryOp(CtNode::BinaryOp *node) = 0;
+	virtual returnT handleIdentifier(CtNode::Identifier *node) = 0;
+	virtual returnT handleFunctionCall(CtNode::FunctionCall *node) = 0;
+	virtual returnT handleAssignment(CtNode::Assignment *node) = 0;
+	virtual returnT handleTypeCast(CtNode::TypeCast *node) = 0;
 
 	public:
 	
-	void walk(CtNode::Base* node);
+	returnT walk(CtNode::Base* node)
+	{
+		if (!node) {
+		std::cout << "(Null Node)" << std::endl;
+		}
+
+		switch (node->nt) {
+
+		case CtNodeType::RootProgram:
+		return handleRoot(static_cast<CtNode::RootProgram *>(node));
+		break;
+
+		case CtNodeType::Source:
+		return handleSource(static_cast<CtNode::Source *>(node));
+		break;
+
+		case CtNodeType::Function:
+		return handleFunction(static_cast<CtNode::Function *>(node));
+		break;
+
+		case CtNodeType::StmtBlock:
+		return handleStmtBlock(static_cast<CtNode::StmtBlock *>(node));
+		break;
+
+		case CtNodeType::Declaration:
+		return handleDeclaration(static_cast<CtNode::Declaration *>(node));
+		break;
+
+		case CtNodeType::Out:
+		return handleOut(static_cast<CtNode::Out *>(node));
+		break;
+
+		case CtNodeType::ExprStatement:
+		return walk(static_cast<CtNode::ExprStatment *>(node)->expr);
+		break;
+
+		case CtNodeType::Loop:
+		return handleLoop(static_cast<CtNode::Loop *>(node));
+		break;
+
+		case CtNodeType::While:
+		return handleWhile(static_cast<CtNode::While *>(node));
+		break;
+
+		case CtNodeType::For:
+		return handleFor(static_cast<CtNode::For *>(node));
+		break;
+
+		case CtNodeType::If:
+		return handleIf(static_cast<CtNode::If *>(node));
+		break;
+
+		case CtNodeType::Int:
+		return handleInt(static_cast<CtNode::Int *>(node));
+		break;
+
+		case CtNodeType::Float:
+		return handleFloat(static_cast<CtNode::Float *>(node));
+		break;
+
+		case CtNodeType::Bool:
+		return handleBool(static_cast<CtNode::Bool *>(node));
+		break;
+
+		case CtNodeType::Identifier:
+		return handleIdentifier(static_cast<CtNode::Identifier *>(node));
+		break;
+
+		case CtNodeType::BinaryOp:
+		return handleBinaryOp(static_cast<CtNode::BinaryOp *>(node));
+		break;
+
+		case CtNodeType::FunctionCall:
+		return handleFunctionCall(static_cast<CtNode::FunctionCall *>(node));
+		break;
+
+		case CtNodeType::Assignment:
+		return handleAssignment(static_cast<CtNode::Assignment *>(node));
+		break;
+
+		case CtNodeType::TypeCast:
+		return handleTypeCast(static_cast<CtNode::TypeCast *>(node));
+		break;
+
+		default:
+		std::cout << "(Undefined Node)" << std::endl;
+		return returnT();
+		break;
+		}
+	}
 };
 
 
-class CtNodePrinter: public CtNodeWalker
+class CtNodePrinter: public CtNodeWalker<void>
 {
 	int indent = 0;
 

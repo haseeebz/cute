@@ -4,98 +4,6 @@
 #include "node.hpp"
 
 
-void CtNodeWalker::walk(CtNode::Base *node) {
-
-	if (!node) {
-	std::cout << "(Null Node)" << std::endl;
-	return;
-	}
-
-	switch (node->nt) {
-
-	case CtNodeType::RootProgram:
-	handleRoot(static_cast<CtNode::RootProgram *>(node));
-	break;
-
-	case CtNodeType::Source:
-	handleSource(static_cast<CtNode::Source *>(node));
-	break;
-
-	case CtNodeType::Function:
-	handleFunction(static_cast<CtNode::Function *>(node));
-	break;
-
-	case CtNodeType::StmtBlock:
-	handleStmtBlock(static_cast<CtNode::StmtBlock *>(node));
-	break;
-
-	case CtNodeType::Declaration:
-	handleDeclaration(static_cast<CtNode::Declaration *>(node));
-	break;
-
-	case CtNodeType::Out:
-	handleOut(static_cast<CtNode::Out *>(node));
-	break;
-
-	case CtNodeType::ExprStatement:
-	walk(static_cast<CtNode::ExprStatment *>(node)->expr);
-	break;
-
-	case CtNodeType::Loop:
-	handleLoop(static_cast<CtNode::Loop *>(node));
-	break;
-
-	case CtNodeType::While:
-	handleWhile(static_cast<CtNode::While *>(node));
-	break;
-
-	case CtNodeType::For:
-	handleFor(static_cast<CtNode::For *>(node));
-	break;
-
-	case CtNodeType::If:
-	handleIf(static_cast<CtNode::If *>(node));
-	break;
-
-	case CtNodeType::Int:
-	handleInt(static_cast<CtNode::Int *>(node));
-	break;
-
-	case CtNodeType::Float:
-	handleFloat(static_cast<CtNode::Float *>(node));
-	break;
-
-	case CtNodeType::Bool:
-	handleBool(static_cast<CtNode::Bool *>(node));
-	break;
-
-	case CtNodeType::Identifier:
-	handleIdentifier(static_cast<CtNode::Identifier *>(node));
-	break;
-
-	case CtNodeType::BinaryOp:
-	handleBinaryOp(static_cast<CtNode::BinaryOp *>(node));
-	break;
-
-	case CtNodeType::FunctionCall:
-	handleFunctionCall(static_cast<CtNode::FunctionCall *>(node));
-	break;
-
-	case CtNodeType::Assignment:
-	handleAssignment(static_cast<CtNode::Assignment *>(node));
-	break;
-
-	case CtNodeType::TypeCast:
-	handleTypeCast(static_cast<CtNode::TypeCast *>(node));
-	break;
-
-	default:
-	std::cout << "(Undefined Node)" << std::endl;
-	break;
-	}
-}
-
-
 // Printer Implementation. Mainly used for debugging.
 
 void CtNodePrinter::print(CtNode::Base *node)
@@ -173,13 +81,13 @@ void CtNodePrinter::handleDeclaration(CtNode::Declaration *node)
 	this->printIndent();
 	std::cout << "typeid = " << node->type_id << "\n";
 
-	if (node->assignment)
+	if (node->val)
 	{
 		this->printIndent();
 		std::cout << "value = \n";
 
 		this->indent++;
-		this->walk(node->assignment);
+		this->walk(node->val);
 		this->indent--;
 	}
 	
