@@ -14,8 +14,8 @@ void Codegen::Accumulator::writeback(const std::string&& str)
 	std::cout << code << "\n";
 }
 
-const std::string& Codegen::Accumulator::accumulate(RootUnit& unit)
+const std::string& Codegen::Accumulator::accumulate(Unit* unit)
 {
-	unit.accept(this);
+	unit->accept(this);
 	return this->code;
 }

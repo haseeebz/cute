@@ -39,7 +39,7 @@ CtNode::Out::~Out()
 
 CtNode::Declaration::~Declaration()
 {
-	delete this->assignment;
+	delete this->val;
 }
 
 CtNode::Loop::~Loop()

@@ -44,7 +44,7 @@ namespace Codegen
 		void writeback(const std::string& str);
 		void writeback(const std::string&& str);
 
-		const std::string& accumulate(RootUnit& unit);
+		const std::string& accumulate(Unit* unit);
 	};
 
 
@@ -59,7 +59,7 @@ namespace Codegen
 	{
 		std::vector<Unit*> units;
 
-		RootUnit(std::vector<Unit*>&& units_) : units(units_) {}
+		RootUnit(std::vector<Unit*>&& units_) : units(std::move(units_)) {}
 
 		~RootUnit()
 		{
