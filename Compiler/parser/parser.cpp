@@ -105,11 +105,7 @@ CtNode::Declaration* CtParser::parseDeclaration()
 
 	if (this->tokens->getSymbolSpecific(CtLang::Symbol::Equal))
 	{
-		auto* assign = new CtNode::Assignment();
-		assign->name = new CtNode::Identifier(dec->name);
-		assign->value = this->parseExpression(0);
-		
-		dec->assignment = assign;
+		dec->val = this->parseExpression(0);
 	}
 
 	this->tokens->expectType(CtTokenType::EndOfLine, nullptr);
