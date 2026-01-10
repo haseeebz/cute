@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 
 #pragma once
 
@@ -36,13 +37,7 @@ typedef uint8_t  cute_Bool;
 typedef char     cute_Char;
 
 
-struct cute_Core
-{
-	void (*main)();
-};
-
-void cute_Core_run(void (*main)());
-
-void cute_Core_init();
-void cute_Core_end();
-
+#include "CuteCore.h"
+#include "CuteContainer.h"
+#include "CuteArray.h"
+#include "CuteDyArray.h"

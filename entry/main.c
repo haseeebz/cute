@@ -1,25 +1,30 @@
 #include "CuteLib.h"
-#include "CuteArray.h"
-#include <stdio.h>
 
-CUTE_ARRAY_DEF(ArrayInt32, int, 20)
-CUTE_ARRAY_DEF(STRING, int, 20)
+CUTE_DYARRAY_DEF(ArrayInt, int)
 
 void program_main()
 {
-	ArrayInt32 array;
-	ArrayInt32_item item = 10;
+	ArrayInt array;
+	ArrayInt_init(&array, 3);
 
-	if (ArrayInt32_set(&array, 10, &item))
-	{
-		printf("Function ran successfully!\n");
-	}
-	else
-	{
-		printf("Offbounds error\n");
-	}
+	ArrayInt_push(&array, 1);
+	ArrayInt_push(&array, 2);
+	ArrayInt_push(&array, 3);
+	ArrayInt_push(&array, 4);
+	ArrayInt_push(&array, 3);
+	ArrayInt_push(&array, 4);
+	ArrayInt_push(&array, 3);
+	ArrayInt_push(&array, 4);
+	ArrayInt_push(&array, 3);
+	ArrayInt_push(&array, 4);
+	ArrayInt_push(&array, 3);
+	ArrayInt_push(&array, 1000);
 
-	printf("hello!\n");
+	for (size_t i = 0; i < array.size; i++) {printf("%d\n", array.items[i]);} printf("\n");
+
+	ArrayInt_set(&array, 1, 10);
+
+	for (size_t i = 0; i < array.size; i++) {printf("%d\n", array.items[i]);} printf("\n");
 }
 
 int main()

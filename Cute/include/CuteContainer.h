@@ -1,13 +1,22 @@
+
+#pragma once 
+
 #include "CuteLib.h"
 #include "stdlib.h"
 
+
 typedef struct 
 {
-	cute_U32 refcount;
+	size_t refcount;
 	void (*destructor)();
 }
 cute_Container;
 
+typedef struct
+{
+	cute_Container* containers[10];
+}
+cute_ContainerBucket;
 
 typedef struct
 {

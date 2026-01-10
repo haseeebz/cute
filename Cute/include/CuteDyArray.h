@@ -1,4 +1,5 @@
 
+#pragma once 
 
 /*
 Template file for standard implementation of CuteArray
