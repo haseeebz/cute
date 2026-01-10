@@ -1,13 +1,25 @@
 #include "CuteLib.h"
-#include "CuteContainer.h"
+#include "CuteArray.h"
 #include <stdio.h>
 
+CUTE_ARRAY_DEF(ArrayInt32, int, 20)
+CUTE_ARRAY_DEF(STRING, int, 20)
 
 void program_main()
 {
-	cute_Container* con = cute_ContainerManager_new(sizeof(cute_Container));
+	ArrayInt32 array;
+	ArrayInt32_item item = 10;
+
+	if (ArrayInt32_set(&array, 10, &item))
+	{
+		printf("Function ran successfully!\n");
+	}
+	else
+	{
+		printf("Offbounds error\n");
+	}
+
 	printf("hello!\n");
-	con->refcount = 0;
 }
 
 int main()

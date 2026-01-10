@@ -1,7 +1,29 @@
-#include <stdlib.h>
 #include <stdint.h>
 
 #pragma once
+
+#define CUTE_C_ADD   +
+#define CUTE_C_SUB   -
+#define CUTE_C_MUL   *
+#define CUTE_C_DIV   /
+#define CUTE_C_MOD   %
+
+#define CUTE_C_EQ    ==
+#define CUTE_C_NE    !=
+#define CUTE_C_LT    <
+#define CUTE_C_LE    <=
+#define CUTE_C_GT    >
+#define CUTE_C_GE    >=
+
+#define CUTE_C_SHL   <<
+#define CUTE_C_SHR   >>
+#define CUTE_C_BAND  &
+#define CUTE_C_BOR   |
+#define CUTE_C_BXOR  ^
+
+#define CUTE_C_LAND  &&
+#define CUTE_C_LOR   ||
+
 
 typedef int32_t  cute_I32;
 typedef int64_t  cute_I64;
