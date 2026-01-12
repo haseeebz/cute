@@ -6,6 +6,7 @@ Template file for standard implementation of CuteArray
 */
 
 #include <stdlib.h>
+
 #include "CuteContainer.h"
 
 
@@ -14,25 +15,27 @@ Template file for standard implementation of CuteArray
 typedef TYPE NAME##_item;                                                   \
                                                                             \
 typedef struct {                                                            \
-    cute_Container* header;                                                 \
+    cute_Container header;                                                  \
     TYPE* items;                                                            \
     size_t size;                                                            \
     size_t capacity;                                                        \
 } NAME;                                                                     \
                                                                             \
-void NAME##_init(NAME* self, size_t cap) {                                  \
-    self->items = malloc(sizeof(TYPE) * cap);                               \
-    self->capacity = cap;                                                   \
-    self->size = 0;                                                         \
-}                                                                           \
-                                                                            \
-void NAME##_del(NAME* self) {                                               \
+void NAME##_del(cute_Container* con) {                                      \
+	NAME* self = (NAME*) con;												\
     if (self->items) {                                                      \
         free(self->items);                                                  \
     }                                                                       \
     self->items = NULL;                                                     \
     self->capacity = 0;                                                     \
     self->size = 0;                                                         \
+}  																			\
+																			\
+void NAME##_init(NAME* self, size_t cap) {                                  \
+    self->items = malloc(sizeof(TYPE) * cap);                               \
+    self->capacity = cap;                                                   \
+    self->size = 0;                                                         \
+	self->header.destructor = NAME##_del;  									\
 }                                                                           \
                                                                             \
 int NAME##_resize(NAME* self, size_t new_cap) {                             \

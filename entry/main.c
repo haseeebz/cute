@@ -8,21 +8,11 @@ void program_main()
 {
 	cute_ContainerManager_newBucket();
 
-	cute_Container* container = NULL;
-	cute_ContainerManager_assign(cute_ContainerManager_new(sizeof(cute_Container)), &container);
+	ArrayInt* array = NULL;
 
-	if (1)
-	{
-		cute_ContainerManager_newBucket();
-
-		cute_Container* container2 = NULL;
-		
-		cute_ContainerManager_assign(cute_ContainerManager_new(sizeof(cute_Container)), &container2);
-
-		cute_ContainerManager_assign(container2, &container);
-
-		cute_ContainerManager_throwBucket();
-	}
+	cute_ContainerManager_assign(cute_ContainerManager_new(sizeof(ArrayInt)), (cute_Container**)&array);
+	ArrayInt_init(array, 10);
+	ArrayInt_push(array, 10);
 
 	cute_ContainerManager_throwBucket();
 }

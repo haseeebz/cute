@@ -11,6 +11,7 @@ Template file for standard implementation of CuteArray
 typedef TYPE NAME##_item;                                                  \
                                                                            \
 typedef struct {                                                           \
+	cute_Container header												   \
     TYPE items[SIZE];                                                      \
 } NAME;                                                                    \
                                                                            \
