@@ -18,8 +18,6 @@ void program_main()
 
 		cute_ContainerManager_throwBucket();
 	}
-	
-	printf("points to: %ld\n", container->refcount);
 
 	cute_ContainerManager_throwBucket();
 }

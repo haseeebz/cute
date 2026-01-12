@@ -18,6 +18,7 @@ struct _cute_ContainerBucket
     struct _cute_Container** containers;  
     size_t size;
     size_t capacity;
+	size_t id;
 };
 
 
@@ -28,8 +29,9 @@ typedef struct _cute_ContainerBucket cute_ContainerBucket;
 typedef struct
 {
     cute_ContainerBucket** buckets;
-    size_t size;
-    size_t capacity;
+    size_t buckets_size;
+    size_t buckets_capacity;
+	size_t global_bucket_count;
 } cute_ContainerManager;
 
 

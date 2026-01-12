@@ -8,20 +8,35 @@
 
 static cute_ContainerManager Manager;
 
+void
+cute_ContainerManager_init()
+{
+	Manager.global_bucket_count = 0;
+}
+
+void
+cute_ContainerManager_end()
+{ 
+	for (size_t i = Manager.buckets_size; i > 0; i--) 
+	{ 
+		cute_ContainerManager_throwBucket(); 
+	} 
+}
+
+
+
 inline static cute_ContainerBucket* 
 cute_Bucket_new() 
 {
     cute_ContainerBucket* self = malloc(sizeof(cute_ContainerBucket));
     self->size = 0;
     self->capacity = 0;
-    printf("[Bucket New] Bucket %p created\n", (void*)self);
     return self;
 }
 
 inline static void 
 cute_Bucket_del(cute_ContainerBucket* self) 
 {
-    printf("[Bucket Delete] Bucket %p deleted\n", (void*)self);
     free(self->containers);
     self->containers = NULL;
     self->size = self->capacity = 0;
@@ -40,7 +55,6 @@ cute_Bucket_push(cute_ContainerBucket* self, cute_Container* c)
     }
 
     self->containers[self->size++] = c;
-    printf("[Bucket Push] Object %p added to Bucket %p\n", (void*)c, (void*)self);
     return 1;
 }
 
@@ -49,66 +63,60 @@ cute_Bucket_pop(cute_ContainerBucket* self)
 {
     if (self->size == 0) return NULL;
     cute_Container* c = self->containers[--self->size];
-    printf("[Bucket Pop] Object %p removed from Bucket %p\n", (void*)c, (void*)self);
     return c;
 }
 
-void
-cute_ContainerManager_init()
-{
-
-}
-
-void
-cute_ContainerManager_end()
-{ 
-	for (size_t i = Manager.size; i > 0; i--) 
-	{ 
-		cute_ContainerManager_throwBucket(); 
-	} 
-}
 
 void
 cute_ContainerManager_newBucket()
 {
-    if (Manager.size >= Manager.capacity) 
+    if (Manager.buckets_size >= Manager.buckets_capacity) 
     {
-        size_t new_cap = Manager.capacity ? Manager.capacity * 2 : 4;
+        size_t new_cap = Manager.buckets_capacity ? Manager.buckets_capacity * 2 : 4;
         cute_ContainerBucket** tmp = realloc(Manager.buckets, sizeof(cute_ContainerBucket*) * new_cap);
         Manager.buckets = tmp;
-        Manager.capacity = new_cap;
+        Manager.buckets_capacity = new_cap;
     }
     cute_ContainerBucket* bucket = cute_Bucket_new();
-    Manager.buckets[Manager.size++] = bucket;
-    printf("[Manager] New bucket %p added. Manager now has %zu buckets\n", (void*)bucket, Manager.size);
+	bucket->id = Manager.global_bucket_count++;
+
+    Manager.buckets[Manager.buckets_size++] = bucket;
+
+	logs_logMessage(
+		"containers",
+		logs_level_info,
+		"New bucket allocated [%p] (id:%zu)", bucket, bucket->id
+	);
 }
 
 
 cute_Container* 
 cute_ContainerManager_new(size_t size)
 {
-    cute_ContainerBucket* bucket = Manager.buckets[Manager.size-1];
+    cute_ContainerBucket* bucket = Manager.buckets[Manager.buckets_size-1];
     cute_Container* container = malloc(size);
     container->refcount = 1;
     container->destructor = NULL;
     container->bucket = bucket;
 
-    cute_Bucket_push(bucket, container);
 	logs_logMessage(
 		"containers",
 		logs_level_info,
-		"New object %p added to Bucket %p\n", (void*)container, (void*)bucket
+		"New container [%p] allocated. Added to bucket [%p] (id:%zu)", container, bucket, bucket->id
 	);
+
+    cute_Bucket_push(bucket, container);
+
     return container;
 }
 
 void
 cute_ContainerManager_throwBucket()
 {
-    if (Manager.size == 0) {return;}
+    if (Manager.buckets_size == 0) {return;}
 
-    cute_ContainerBucket* bucket = Manager.buckets[--Manager.size];
-    printf("[Manager] Throwing Bucket %p\n", (void*)bucket);
+    cute_ContainerBucket* bucket = Manager.buckets[--Manager.buckets_size];
+
 
     for (size_t i = 0; i < bucket->size; i++)
     {
@@ -117,7 +125,11 @@ cute_ContainerManager_throwBucket()
         if (container->refcount > 1)
         {
             container->refcount--;
-            printf("[Manager] Object %p NOT removed, refcount now %zu\n", (void*)container, container->refcount);
+			logs_logMessage(
+				"containers",
+				logs_level_debug,
+				"Container's [%p] refcount decreased. (now:%zu)", container, container->refcount
+			);
         }
         else
         {
@@ -125,10 +137,23 @@ cute_ContainerManager_throwBucket()
             {
                 container->destructor(container);
             }
-            printf("[Manager] Object %p removed from Bucket %p\n", (void*)container, (void*)bucket);
+
+            logs_logMessage(
+				"containers",
+				logs_level_info,
+				"Container [%p] deallocated upon refcount reaching zero.", container
+			);
+
             free(container);
         }
     }
+
+	
+	logs_logMessage(
+		"containers",
+		logs_level_info,
+		"Throwing bucket [%p] (id:%zu)", bucket, bucket->id
+	);
 
     cute_Bucket_del(bucket);
 }
@@ -137,6 +162,7 @@ cute_ContainerManager_throwBucket()
 void
 cute_ContainerManager_assign(cute_Container* src, cute_Container** dest)
 {
+	
 	if (*dest != NULL)
 	{
 		// if dest was already assigned
@@ -149,9 +175,20 @@ cute_ContainerManager_assign(cute_Container* src, cute_Container** dest)
 			container->refcount--;
 		}
 		
+		logs_logMessage(
+			"containers",
+			logs_level_debug,
+			"Container's [%p] refcount was decreased due to assigning. (now:%zu)", *dest, (*dest)->refcount
+		);
 	}
 
 	src->refcount++;
-	printf("%p refcount %ld\n", src, src->refcount);
 	*dest = src;
+
+	logs_logMessage(
+		"containers",
+		logs_level_info,
+		"Container [%p] was assigned. (refcount:%zu)", src, src->refcount
+	);
+
 }
