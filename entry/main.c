@@ -1,4 +1,5 @@
 #include "CuteContainer.h"
+#include "CuteIO.h"
 #include "CuteLib.h"
 
 CUTE_DYARRAY_DEF(ArrayInt, int)
@@ -13,8 +14,12 @@ void program_main()
 	if (1)
 	{
 		cute_ContainerManager_newBucket();
+
+		cute_Container* container2 = NULL;
 		
-		cute_ContainerManager_assign(cute_ContainerManager_new(sizeof(cute_Container)), &container);
+		cute_ContainerManager_assign(cute_ContainerManager_new(sizeof(cute_Container)), &container2);
+
+		cute_ContainerManager_assign(container2, &container);
 
 		cute_ContainerManager_throwBucket();
 	}

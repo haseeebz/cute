@@ -19,6 +19,7 @@ struct _cute_ContainerBucket
     size_t size;
     size_t capacity;
 	size_t id;
+	size_t rank;
 };
 
 
@@ -50,8 +51,9 @@ cute_ContainerManager_throwBucket();
 cute_Container* 
 cute_ContainerManager_new(size_t size);
 
+void 
+cute_ContainerManager_del(cute_Container* container);
+
 void
 cute_ContainerManager_assign(cute_Container* src, cute_Container** dest);
 
-void 
-cute_ContainerManager_del(cute_Container* container);

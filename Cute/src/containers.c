@@ -12,7 +12,10 @@ void
 cute_ContainerManager_init()
 {
 	Manager.global_bucket_count = 0;
+	Manager.buckets_size = 0;
+	Manager.buckets_capacity = 0;
 }
+
 
 void
 cute_ContainerManager_end()
@@ -24,7 +27,6 @@ cute_ContainerManager_end()
 }
 
 
-
 inline static cute_ContainerBucket* 
 cute_Bucket_new() 
 {
@@ -34,6 +36,7 @@ cute_Bucket_new()
     return self;
 }
 
+
 inline static void 
 cute_Bucket_del(cute_ContainerBucket* self) 
 {
@@ -42,13 +45,14 @@ cute_Bucket_del(cute_ContainerBucket* self)
     self->size = self->capacity = 0;
 }
 
+
 inline static int 
 cute_Bucket_push(cute_ContainerBucket* self, cute_Container* c) 
 {
     if (self->size >= self->capacity) 
     {
         size_t new_cap = self->capacity ? self->capacity * 2 : 4;
-        cute_Container** tmp = (cute_Container**)realloc(self->containers, sizeof(cute_Container*) * new_cap);
+        cute_Container** tmp = realloc(self->containers, sizeof(cute_Container*) * new_cap);
         if (!tmp) return 0;
         self->containers = tmp;
         self->capacity = new_cap;
@@ -56,14 +60,6 @@ cute_Bucket_push(cute_ContainerBucket* self, cute_Container* c)
 
     self->containers[self->size++] = c;
     return 1;
-}
-
-inline static cute_Container* 
-cute_Bucket_pop(cute_ContainerBucket* self)
-{
-    if (self->size == 0) return NULL;
-    cute_Container* c = self->containers[--self->size];
-    return c;
 }
 
 
@@ -79,36 +75,18 @@ cute_ContainerManager_newBucket()
     }
     cute_ContainerBucket* bucket = cute_Bucket_new();
 	bucket->id = Manager.global_bucket_count++;
-
+	
     Manager.buckets[Manager.buckets_size++] = bucket;
+	bucket->rank = Manager.buckets_size;
 
 	logs_logMessage(
 		"containers",
 		logs_level_info,
-		"New bucket allocated [%p] (id:%zu)", bucket, bucket->id
+		"New bucket allocated %p (id:%zu). Rank: %zu. Total bucket count: %zu", 
+		bucket, bucket->id, bucket->rank, Manager.buckets_size
 	);
 }
 
-
-cute_Container* 
-cute_ContainerManager_new(size_t size)
-{
-    cute_ContainerBucket* bucket = Manager.buckets[Manager.buckets_size-1];
-    cute_Container* container = malloc(size);
-    container->refcount = 1;
-    container->destructor = NULL;
-    container->bucket = bucket;
-
-	logs_logMessage(
-		"containers",
-		logs_level_info,
-		"New container [%p] allocated. Added to bucket [%p] (id:%zu)", container, bucket, bucket->id
-	);
-
-    cute_Bucket_push(bucket, container);
-
-    return container;
-}
 
 void
 cute_ContainerManager_throwBucket()
@@ -117,45 +95,87 @@ cute_ContainerManager_throwBucket()
 
     cute_ContainerBucket* bucket = Manager.buckets[--Manager.buckets_size];
 
+	logs_logMessage(
+		"containers",
+		logs_level_info,
+		"Throwing bucket %p (id:%zu)", bucket, bucket->id
+	);
 
     for (size_t i = 0; i < bucket->size; i++)
     {
         cute_Container* container = bucket->containers[i];
 
-        if (container->refcount > 1)
+		container->refcount--;
+
+        if (container->refcount > 0)
         {
-            container->refcount--;
 			logs_logMessage(
 				"containers",
 				logs_level_debug,
-				"Container's [%p] refcount decreased. (now:%zu)", container, container->refcount
+				"Container's %p refcount decreased. (now:%zu)", container, container->refcount
 			);
         }
         else
         {
-            if (container->destructor)
-            {
-                container->destructor(container);
-            }
-
+			cute_ContainerManager_del(container);
             logs_logMessage(
 				"containers",
 				logs_level_info,
-				"Container [%p] deallocated upon refcount reaching zero.", container
+				"Container %p deallocated upon refcount reaching zero.", container
 			);
-
-            free(container);
         }
     }
 
-	
+
 	logs_logMessage(
 		"containers",
 		logs_level_info,
-		"Throwing bucket [%p] (id:%zu)", bucket, bucket->id
+		"Successfully threw bucket %p (id:%zu)", bucket, bucket->id
 	);
 
     cute_Bucket_del(bucket);
+}
+
+
+cute_Container* 
+cute_ContainerManager_new(size_t size)
+{
+    cute_ContainerBucket* bucket = Manager.buckets[Manager.buckets_size-1];
+    cute_Container* container = malloc(size);
+    container->refcount = 0;
+    container->destructor = NULL;
+    container->bucket = bucket;
+
+	logs_logMessage(
+		"containers",
+		logs_level_info,
+		"New container %p allocated. Added to bucket %p (id:%zu)", container, bucket, bucket->id
+	);
+
+    cute_Bucket_push(bucket, container);
+
+    return container;
+}
+
+
+void 
+cute_ContainerManager_del(cute_Container* container)
+{
+	if (container->refcount > 0)
+	{
+		logs_logMessage(
+		"containers",
+		logs_level_warning,
+		"Container %p was deleted despite having %zu references.", container, container->refcount
+		);
+	}
+
+	if (container->destructor)
+	{
+		container->destructor(container);
+	}
+
+	free(container);
 }
 
 
@@ -167,19 +187,36 @@ cute_ContainerManager_assign(cute_Container* src, cute_Container** dest)
 	{
 		// if dest was already assigned
 
-		cute_Container* container = *dest;
-		cute_Bucket_push(container->bucket, src);
+		cute_Container* dest_con = *dest;
 
-		if (container->refcount > 1)
+		cute_Bucket_push(dest_con->bucket, src);
+
+		if (dest_con->refcount > 1)
 		{
-			container->refcount--;
+			dest_con->refcount--;
 		}
 		
 		logs_logMessage(
 			"containers",
 			logs_level_debug,
-			"Container's [%p] refcount was decreased due to assigning. (now:%zu)", *dest, (*dest)->refcount
+			"Container's %p refcount was decreased due to assigning. (now:%zu)", *dest, (*dest)->refcount
 		);
+
+		// 1 has a higher rank than 2
+		if (dest_con->bucket->rank < src->bucket->rank)
+		{
+			logs_logMessage(
+				"containers",
+				logs_level_debug,
+				"Container %p was moved from bucket %p to bucket %p due to higher rank.", 
+				src, src->bucket, dest_con->bucket
+			);
+			src->bucket = dest_con->bucket;
+		}
+	}
+	else
+	{
+		// if dest is null, we assume the assigning is happening within the same bucket as the declaration
 	}
 
 	src->refcount++;
@@ -188,7 +225,7 @@ cute_ContainerManager_assign(cute_Container* src, cute_Container** dest)
 	logs_logMessage(
 		"containers",
 		logs_level_info,
-		"Container [%p] was assigned. (refcount:%zu)", src, src->refcount
+		"Container %p was assigned successfully. (refcount:%zu)", src, src->refcount
 	);
 
 }
