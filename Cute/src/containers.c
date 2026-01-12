@@ -31,6 +31,7 @@ inline static cute_ContainerBucket*
 cute_Bucket_new() 
 {
     cute_ContainerBucket* self = malloc(sizeof(cute_ContainerBucket));
+	self->containers = NULL;
     self->size = 0;
     self->capacity = 0;
     return self;
@@ -97,7 +98,7 @@ cute_ContainerManager_throwBucket()
 
 	logs_logMessage(
 		"containers",
-		logs_level_info,
+		logs_level_debug,
 		"Throwing bucket %p (id:%zu)", bucket, bucket->id
 	);
 
@@ -191,7 +192,7 @@ cute_ContainerManager_assign(cute_Container* src, cute_Container** dest)
 
 		cute_Bucket_push(dest_con->bucket, src);
 
-		if (dest_con->refcount > 1)
+		if (dest_con->refcount >= 1)
 		{
 			dest_con->refcount--;
 		}
@@ -207,11 +208,22 @@ cute_ContainerManager_assign(cute_Container* src, cute_Container** dest)
 		{
 			logs_logMessage(
 				"containers",
-				logs_level_debug,
+				logs_level_info,
 				"Container %p was moved from bucket %p to bucket %p due to higher rank.", 
 				src, src->bucket, dest_con->bucket
 			);
 			src->bucket = dest_con->bucket;
+		}
+
+
+		if (dest_con->refcount == 0)
+		{
+			logs_logMessage(
+				"containers",
+				logs_level_info,
+				"Container %p deallocated upon refcount reaching zero due to assignment.", dest_con
+			);
+			cute_ContainerManager_del(dest_con);
 		}
 	}
 	else
@@ -224,7 +236,7 @@ cute_ContainerManager_assign(cute_Container* src, cute_Container** dest)
 
 	logs_logMessage(
 		"containers",
-		logs_level_info,
+		logs_level_debug,
 		"Container %p was assigned successfully. (refcount:%zu)", src, src->refcount
 	);
 
