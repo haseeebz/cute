@@ -1,6 +1,9 @@
+#include <stdio.h>
+
 #include "CuteLib.h"
 #include "CuteContainer.h"
-#include <stdio.h>
+
+#include "../internal/logs.h"
 
 
 static cute_ContainerManager Manager;
@@ -91,7 +94,11 @@ cute_ContainerManager_new(size_t size)
     container->bucket = bucket;
 
     cute_Bucket_push(bucket, container);
-    printf("[Manager] New object %p added to Bucket %p\n", (void*)container, (void*)bucket);
+	logs_logMessage(
+		"containers",
+		logs_level_info,
+		"New object %p added to Bucket %p\n", (void*)container, (void*)bucket
+	);
     return container;
 }
 
