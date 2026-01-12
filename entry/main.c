@@ -1,4 +1,5 @@
 #include "CuteContainer.h"
+#include "CuteCore.h"
 #include "CuteIO.h"
 #include "CuteLib.h"
 
@@ -15,6 +16,7 @@ void program_main()
 	{
 		cute_ContainerManager_assign(cute_ContainerManager_new(sizeof(ArrayInt)), (cute_Container**)&array);
 		ArrayInt_init(array, 10);
+		cute_Core_exit(cute_ExitCode_failure);
 	}
 	cute_ContainerManager_throwBucket();
 }
