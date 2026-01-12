@@ -49,8 +49,7 @@ cute_Container*
 cute_ContainerManager_new(size_t size);
 
 void
-cute_ContainerManager_copy(cute_Container* src, cute_Container** dest);
-
+cute_ContainerManager_assign(cute_Container* src, cute_Container** dest);
 
 void 
 cute_ContainerManager_del(cute_Container* container);

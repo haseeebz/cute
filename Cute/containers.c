@@ -86,7 +86,7 @@ cute_ContainerManager_new(size_t size)
 {
     cute_ContainerBucket* bucket = Manager.buckets[Manager.size-1];
     cute_Container* container = malloc(size);
-    container->refcount = 0;
+    container->refcount = 1;
     container->destructor = NULL;
     container->bucket = bucket;
 
@@ -124,4 +124,27 @@ cute_ContainerManager_throwBucket()
     }
 
     cute_Bucket_del(bucket);
+}
+
+
+void
+cute_ContainerManager_assign(cute_Container* src, cute_Container** dest)
+{
+	if (*dest != NULL)
+	{
+		// if dest was already assigned
+
+		cute_Container* container = *dest;
+		cute_Bucket_push(container->bucket, src);
+
+		if (container->refcount > 1)
+		{
+			container->refcount--;
+		}
+		
+	}
+
+	src->refcount++;
+	printf("%p refcount %ld\n", src, src->refcount);
+	*dest = src;
 }

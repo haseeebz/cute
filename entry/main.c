@@ -7,17 +7,20 @@ void program_main()
 {
 	cute_ContainerManager_newBucket();
 
-	cute_Container* container = cute_ContainerManager_new(sizeof(cute_Container));
+	cute_Container* container = NULL;
+	cute_ContainerManager_assign(cute_ContainerManager_new(sizeof(cute_Container)), &container);
 
 	if (1)
 	{
 		cute_ContainerManager_newBucket();
 		
-		container = cute_ContainerManager_new(sizeof(cute_Container));
+		cute_ContainerManager_assign(cute_ContainerManager_new(sizeof(cute_Container)), &container);
 
 		cute_ContainerManager_throwBucket();
 	}
 	
+	printf("points to: %ld\n", container->refcount);
+
 	cute_ContainerManager_throwBucket();
 }
 
