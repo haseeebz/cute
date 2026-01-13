@@ -135,6 +135,11 @@ void CtNodePrinter::handleSource(CtNode::Source *node)
 	{
 		this->walk(func.second);
 	}
+
+	for (auto con: node->containers)
+	{
+		this->walk(con.second);
+	}
 }
 
 
@@ -146,7 +151,7 @@ void CtNodePrinter::handleFunction(CtNode::Function *node)
 	
 	for (uint i = 0; i < node->parameters.size(); i++)
 	{
-		std::cout << i << ": ";
+		std::cout << "(" << i << ")\n";
 		this->walk(node->parameters[i]);
 	}
 
