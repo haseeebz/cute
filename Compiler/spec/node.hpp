@@ -100,6 +100,7 @@ namespace CtNode
 	struct Source : Object
 	{
 		std::map<std::string, Function*> functions;
+		std::map<std::string, Container*> containers;
 		CtScope* scope;
 
 		Source() {{nt = CtNodeType::Source;}};
@@ -149,7 +150,7 @@ namespace CtNode
 	{	
 		std::string type_id;
 		std::string name;
-		Expression* val;
+		Expression* val = nullptr;
 
 		Declaration() {nt = CtNodeType::Declaration;};
 		~Declaration();
@@ -327,6 +328,7 @@ class CtNodeWalker
 	virtual returnT handleSource(CtNode::Source *node) = 0;
 
 	virtual returnT handleFunction(CtNode::Function *node) = 0;
+	virtual returnT handleContainer(CtNode::Container *node) = 0;
 
 	virtual returnT handleStmtBlock(CtNode::StmtBlock *node) = 0;
 	virtual returnT handleDeclaration(CtNode::Declaration *node) = 0;
@@ -366,6 +368,10 @@ class CtNodeWalker
 
 		case CtNodeType::Function:
 		return handleFunction(static_cast<CtNode::Function *>(node));
+		break;
+
+		case CtNodeType::Container:
+		return handleContainer(static_cast<CtNode::Container *>(node));
 		break;
 
 		case CtNodeType::StmtBlock:
@@ -455,6 +461,7 @@ class CtNodePrinter: public CtNodeWalker<void>
 	void handleSource(CtNode::Source *node);
 
 	void handleFunction(CtNode::Function *node);
+	void handleContainer(CtNode::Container *node);
 
 	void handleStmtBlock(CtNode::StmtBlock *node);
 	void handleDeclaration(CtNode::Declaration *node);

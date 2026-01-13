@@ -156,6 +156,28 @@ void CtNodePrinter::handleFunction(CtNode::Function *node)
 	this->indent--;
 }
 
+
+void CtNodePrinter::handleContainer(CtNode::Container *node)
+{
+	std::cout << "(Container Node)\n";
+	std::cout << "Id: " << node->name << "\n";
+	std::cout << "Fields: \n";
+	
+	for (uint i = 0; i < node->fields.size(); i++)
+	{
+		std::cout << "(" << i << ")\n";
+		this->walk(node->fields[i]);
+	}
+
+	std::cout << "Methods: \n";
+	for (uint i = 0; i < node->methods.size(); i++)
+	{
+		std::cout << "(" << i << ") Method of '" << node->name <<  "'\n";
+		this->walk(node->methods[i]);
+	}
+}
+
+
 void CtNodePrinter::handleStmtBlock(CtNode::StmtBlock *node)
 {
 	for (auto stmt: node->stmts)

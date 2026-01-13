@@ -11,25 +11,132 @@
 
 
 
-void CtParser::startParsingFile()
+void 
+CtParser::startParsingFile()
 {
-	auto *func = this->parseFunction();
-	source->functions[func->name] = func;
+	CtToken token;
+
+	while (true)
+	{
+		this->tokens->consumeEOL();
+
+		if (this->tokens->getType(CtTokenType::EndOfFile, nullptr)) {break;}
+
+		this->tokens->expectType(CtTokenType::Keyword, &token);
+
+		CtLang::KeyWord key = token.val.keyword;
+
+		if (key == CtLang::KeyWord::Func)
+		{
+			auto* func = this->parseFunction();
+			source->functions[func->name] = func;
+			continue;
+		}
+		else if (key == CtLang::KeyWord::Container)
+		{
+			auto* con = this->parseContainer();
+			source->containers[con->name] = con;
+			continue;
+		}
+
+		this->tokens->raiseError(
+			&token, 
+			std::format("Unexpected Keyword: {}", this->tokens->viewToken(&token))
+		);
+	}
+
+	
 }
 
 
-CtNode::Function* CtParser::parseFunction()
+CtNode::Container* 
+CtParser::parseContainer()
+{
+	auto* container = new CtNode::Container();
+
+	this->tokens->expectWord(&container->name);
+
+	this->tokens->consumeEOL();
+
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftBracket);
+
+	this->tokens->consumeEOL();
+
+	CtNode::Declaration* field;
+	CtNode::Function* method;
+
+	while (true)
+	{
+		this->tokens->consumeEOL();
+		
+		if (this->tokens->getSymbolSpecific(CtLang::Symbol::RightBracket)) {break;}
+
+		if (this->tokens->getKeywordSpecific(CtLang::KeyWord::Let))
+		{
+			field = this->parseDeclaration();
+			container->fields.push_back(field);
+		}
+		else if (this->tokens->getKeywordSpecific(CtLang::KeyWord::Func))
+		{
+			method = this->parseFunction();
+			container->methods.push_back(method);
+		}
+
+	}
+
+	return container;
+};
+
+
+CtNode::Function* 
+CtParser::parseFunction()
 {
 	auto* func = new CtNode::Function();
-	func->name = "main";
+
+	this->tokens->expectWord(&func->name);
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftParan);
+
+	while (!this->tokens->getSymbolSpecific(CtLang::Symbol::RightParan)) 
+	{
+		func->parameters.push_back(this->parseParameter());
+	}
+
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::Arrow);
+	this->tokens->expectWord(&func->return_type);
 
 	func->block = this->parseBlock();
 
 	return func;
 }
 
+CtNode::Declaration* 
+CtParser::parseParameter()
+{
+	CtNode::Declaration* dec = new CtNode::Declaration();
 
-CtNode::StmtBlock* CtParser::parseBlock()
+	this->tokens->expectWord(&dec->name);
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::Colon);
+	this->tokens->expectWord(&dec->type_id);
+
+	if (this->tokens->getSymbolSpecific(CtLang::Symbol::Equal))
+	{
+		dec->val = this->parseExpression(0, 0, CtLang::Symbol::Comma);
+	}
+
+	if (this->tokens->getSymbolSpecific(CtLang::Symbol::RightParan))
+	{
+		this->tokens->backtrack();
+		return dec;
+	}
+
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::Comma);
+
+	return dec;
+}
+
+
+CtNode::StmtBlock* 
+CtParser::parseBlock()
 {
 	auto* block = new CtNode::StmtBlock();
 
@@ -52,7 +159,8 @@ CtNode::StmtBlock* CtParser::parseBlock()
 }
 
 
-CtNode::Statement* CtParser::parseStatement()
+CtNode::Statement* 
+CtParser::parseStatement()
 {
 	CtNode::Statement* stmt = nullptr;
 	CtToken token;
@@ -90,7 +198,8 @@ CtNode::Statement* CtParser::parseStatement()
 }
 
 
-CtNode::Declaration* CtParser::parseDeclaration()
+CtNode::Declaration* 
+CtParser::parseDeclaration()
 {
 	CtNode::Declaration* dec = new CtNode::Declaration();
 
@@ -116,7 +225,8 @@ CtNode::Declaration* CtParser::parseDeclaration()
 
 
 
-CtNode::Loop* CtParser::parseLoop()
+CtNode::Loop* 
+CtParser::parseLoop()
 {
 	auto loop = new CtNode::Loop();
 
@@ -128,7 +238,8 @@ CtNode::Loop* CtParser::parseLoop()
 }
 
 
-CtNode::While* CtParser::parseWhile()
+CtNode::While* 
+CtParser::parseWhile()
 {
 	auto* loop = new CtNode::While();
 
@@ -144,7 +255,8 @@ CtNode::While* CtParser::parseWhile()
 }
 
 
-CtNode::For* CtParser::parseFor()
+CtNode::For* 
+CtParser::parseFor()
 {
 	auto* loop = new CtNode::For();
 
@@ -164,7 +276,8 @@ CtNode::For* CtParser::parseFor()
 }
 
 
-CtNode::If* CtParser::parseIf()
+CtNode::If* 
+CtParser::parseIf()
 {
 	auto if_node = new CtNode::If();
 
@@ -194,7 +307,8 @@ CtNode::If* CtParser::parseIf()
 }
 
 
-CtNode::Escape* CtParser::parseEscape()
+CtNode::Escape* 
+CtParser::parseEscape()
 {
 	auto* escape_node = new CtNode::Escape();
 
@@ -231,7 +345,8 @@ CtNode::Escape* CtParser::parseEscape()
 }
 
 
-CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
+CtNode::Expression* 
+CtParser::parseExpression(uint prev_precedence, uint depth, CtLang::Symbol delimiter)
 {
 	CtNode::Expression *lhs;
 
@@ -298,7 +413,10 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 	{
 		CtLang::Symbol sym;
 
-		if (this->tokens->getTypes({CtTokenType::EndOfLine, CtTokenType::EndOfFile}, nullptr))
+		if (
+			this->tokens->getTypes({CtTokenType::EndOfLine, CtTokenType::EndOfFile}, nullptr) ||
+			this->tokens->getSymbolSpecific(delimiter)
+		)
 		{
 			if (depth != 0)
 			{
@@ -312,6 +430,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 			this->tokens->backtrack(); // so EOL propagates
 			return lhs;
 		}
+
 
 		if (this->tokens->getKeywordSpecific(CtLang::KeyWord::And))
 		{
@@ -363,7 +482,8 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 }
 
 
-CtNode::Expression* CtParser::getLeafExpression(CtToken& token)
+CtNode::Expression* 
+CtParser::getLeafExpression(CtToken& token)
 {
 	CtNode::Expression* leaf = nullptr;
 
@@ -391,7 +511,8 @@ CtNode::Expression* CtParser::getLeafExpression(CtToken& token)
 };
 
 
-CtNode::Source* CtParser::parseFile(std::string filepath)
+CtNode::Source* 
+CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
@@ -402,7 +523,8 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 }
 
 
-CtNode::RootProgram* CtParser::parse(std::string filepath)
+CtNode::RootProgram* 
+CtParser::parse(std::string filepath)
 {
 	auto* root = new CtNode::RootProgram();
 	root->src = this->parseFile(filepath);
