@@ -114,6 +114,9 @@ class CtTokenStream
 	void expectKeywordSpecific(CtLang::KeyWord key);
 	void expectSymbolSpecific(CtLang::Symbol sym);
 
+
+	void consumeEOL();
+
 };
 
 

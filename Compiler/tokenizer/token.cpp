@@ -55,7 +55,7 @@ static inline std::string token_to_string(CtTokenType token)
         case EndOfFile:
 			return "EOF";
         case Invalid:
-			return "";
+			return "INVALID";
         break;
 	}
 }
@@ -506,4 +506,9 @@ void CtTokenStream::expectSymbolSpecific(CtLang::Symbol sym)
 		&tok,
 		std::format("Expected {} but got {}", sym_to_str(sym), token_to_string(tok.type))
 	);
+}
+
+void CtTokenStream::consumeEOL()
+{
+	while (this->getType(CtTokenType::EndOfLine, nullptr)) {continue;};
 }
