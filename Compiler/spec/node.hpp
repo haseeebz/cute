@@ -1,4 +1,6 @@
-#include "../spec/lang.hpp"
+#include "lang.hpp"
+#include "types.hpp"
+#include "scope.hpp"
 
 #include <cstdint>
 #include <iostream>
@@ -16,6 +18,7 @@ enum class CtNodeType
 	RootProgram,
 	Source,
 	Function,
+	Container,
 
 	StmtBlock,
 	Declaration,
@@ -50,6 +53,7 @@ namespace CtNode
 	struct RootProgram;
 	struct Source;
 	struct Function;
+	struct Container;
 	
 	// Statement Nodes
 	struct StmtBlock;
@@ -87,7 +91,6 @@ namespace CtNode
 	struct RootProgram : Object
 	{
 		Source* src;
-		CtScope* scope;
 		RootProgram() {{nt = CtNodeType::RootProgram;}};
 		~RootProgram();
 	};
@@ -95,6 +98,7 @@ namespace CtNode
 	struct Source : Object
 	{
 		std::map<std::string, Function*> functions;
+		CtScope* scope;
 
 		Source() {{nt = CtNodeType::Source;}};
 		~Source();
@@ -103,14 +107,29 @@ namespace CtNode
 	struct Function : Object
 	{
 		std::string name;
+		std::string return_type;
 		std::vector<Declaration*> parameters;
 		StmtBlock* block;
-		CtScope* scope;
 
-		Function() {{nt = CtNodeType::Function;}};
+		CtScope* scope;
+		CtTypes::FunctionInfo* info;
+
+		Function() {nt = CtNodeType::Function;};
 		~Function();
 	};
 
+	struct Container : Object
+	{
+		std::string name;
+		std::vector<Declaration*> fields;
+		std::vector<Function*> methods;
+
+		CtScope* scope;
+		CtTypes::FunctionInfo* info;
+
+		Container() {nt = CtNodeType::Container;};
+		~Container();
+	};
 	// Statement Nodes
 
 
@@ -142,6 +161,7 @@ namespace CtNode
 		~Out();
 	};
 
+
 	struct ExprStatment : Statement
 	{
 		Expression* expr;
@@ -149,6 +169,7 @@ namespace CtNode
 		ExprStatment(Expression* expr): expr(expr) {{nt = CtNodeType::ExprStatement;}};
 		~ExprStatment();
 	};
+
 
 	struct If : Statement
 	{
@@ -159,6 +180,7 @@ namespace CtNode
 		If() {nt = CtNodeType::If;}
 		~If();
 	};
+
 
 	struct Loop : Statement
 	{
@@ -177,6 +199,7 @@ namespace CtNode
 		While() {{nt = CtNodeType::While;}};
 		~While();
 	};
+
 
 	struct For : Statement
 	{
@@ -233,6 +256,7 @@ namespace CtNode
 
 		Identifier(std::string val): val(val) {{nt = CtNodeType::Identifier;}};
 	};
+
 
 	struct BinaryOp : Expression
 	{

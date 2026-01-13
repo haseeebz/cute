@@ -19,6 +19,16 @@ CtNode::Function::~Function()
 {
 	for (auto para: this->parameters) {delete para;}
 	delete this->block;
+	delete this->scope;
+	delete this->info;
+}
+
+CtNode::Container::~Container()
+{
+	for (auto m: this->methods) {delete m;}
+	for (auto f: this->fields) {delete f;}
+	delete this->scope;
+	delete this->info;
 }
 
 
@@ -397,3 +407,4 @@ void CtNodePrinter::handleTypeCast(CtNode::TypeCast *node)
 	this->printIndent();
 	std::cout << ")\n";
 }
+
