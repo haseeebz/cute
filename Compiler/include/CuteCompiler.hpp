@@ -2,7 +2,6 @@
 
 #include "../tokenizer/token.hpp"
 #include "../parser/parser.hpp"
-#include "../transpiler/transpiler.hpp"
 
 #pragma once
 
@@ -14,7 +13,6 @@ class CuteCompiler
 {
 	CtTokenizer tokenizer;
 	CtParser parser;
-	CtTranspiler transpiler;
 
 	public:
 

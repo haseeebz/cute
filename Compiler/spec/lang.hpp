@@ -10,6 +10,7 @@ namespace CtLang
 	{
 		Let,
 		Out,
+		Escape,
 
 		If,
 		Else,
@@ -34,6 +35,7 @@ namespace CtLang
 	{
 		{"let",      KeyWord::Let},
 		{"out",      KeyWord::Out},
+		{"escape",   KeyWord::Escape},
 
 		{"if",       KeyWord::If},
 		{"else",     KeyWord::Else},
@@ -94,14 +96,13 @@ namespace CtLang
 		Hashtag,
 		Exclamation,
 		Colon,
+		SemiColon,
 		Dot,
 
 		SingleQuote,
 		DoubleQuote,
 	};
 
-
-	inline const char EOL = ';';
 
 	inline const std::map<std::string, Symbol> symbolMap =
 	{
@@ -140,6 +141,7 @@ namespace CtLang
 		{ "#",  Symbol::Hashtag },
 		{ "!",  Symbol::Exclamation },
 		{ ":",  Symbol::Colon },
+		{ ";",  Symbol::SemiColon },
 		{ ".",  Symbol::Dot },
 
 		{ "'",  Symbol::SingleQuote },

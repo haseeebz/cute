@@ -35,12 +35,6 @@ CtTokenStream CtTokenizer::tokenize(std::string input_file)
 			continue;
 		}
 
-		if (c == CtLang::EOL)
-		{
-			this->currStream.add(CtToken(CtTokenType::EndOfLine, 0, 0));
-			continue;
-		}
-
 		if (std::isdigit(c))
 		{
 			this->tokenizeNumber();
@@ -148,13 +142,12 @@ void CtTokenizer::tokenizeWord()
 		if (this->currIndex >= this->currSrc->length()) {break;}
 		c = this->currSrc->at(currIndex);
 
-		if (std::isalpha(c) || std::isdigit(c))
+		if (std::isalpha(c) || std::isdigit(c) || c == '_')
 		{
 			str.push_back(c);
 			this->currIndex++;
 			continue;
 		}
-
 		break;
 	}
 

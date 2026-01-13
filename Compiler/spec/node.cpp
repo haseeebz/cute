@@ -309,6 +309,16 @@ void CtNodePrinter::handleIf(CtNode::If *node)
 	std::cout << ")\n";
 };
 
+void CtNodePrinter::handleEscape(CtNode::Escape *node)
+{
+	this->printIndent();
+	std::cout << "(Escape\n";
+	this->indent++;
+	std::cout << node->code << std::endl;
+	this->indent--;
+	this->printIndent();
+	std::cout << ")\n";
+}
 
 void CtNodePrinter::handleAssignment(CtNode::Assignment *node)
 {

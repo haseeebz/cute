@@ -2,14 +2,14 @@
 
 #include <cstdlib>
 #include <filesystem>
-#include <format>
+#include "format"
 #include <fstream>
 #include <iostream>
 #include <string>
 
-#include "node/node.hpp"
+#include "spec/node.hpp"
 #include "spec/error.hpp"
-#include "fstream"
+
 
 
 
@@ -27,9 +27,6 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 	
 	CtNodePrinter printer;
 	printer.print(root);
-
-	transpiler.transpile(root, outfile);
-
 	delete root;
 }
 
@@ -71,7 +68,7 @@ void CuteCompiler::invokeComponent(std::string filepath, std::string comp)
 	}
 	else if (comp == "test")
 	{
-		exec_test();
+		
 	}
 	else
 	{

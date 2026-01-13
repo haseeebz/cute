@@ -1,6 +1,6 @@
 #include "../spec/lang.hpp"
 
-#include "../node/node.hpp"
+#include "../spec/node.hpp"
 
 #include "../tokenizer/token.hpp"
 #include "../spec/error.hpp"
@@ -65,12 +65,13 @@ CtNode::Statement* CtParser::parseStatement()
 	{
 		switch (token.val.keyword)
 		{
-			case CtLang::KeyWord::Let:    stmt = this->parseDeclaration(); break;
-			case CtLang::KeyWord::Out:    stmt = new CtNode::Out(this->parseExpression(0)); break;
-			case CtLang::KeyWord::Loop:   stmt = this->parseLoop(); break;
-			case CtLang::KeyWord::While:  stmt = this->parseWhile(); break;
-			case CtLang::KeyWord::For:    stmt = this->parseFor(); break;
-			case CtLang::KeyWord::If:     stmt = this->parseIf(); break;
+			case CtLang::KeyWord::Let:     stmt = this->parseDeclaration(); break;
+			case CtLang::KeyWord::Out:     stmt = new CtNode::Out(this->parseExpression(0)); break;
+			case CtLang::KeyWord::Loop:    stmt = this->parseLoop(); break;
+			case CtLang::KeyWord::While:   stmt = this->parseWhile(); break;
+			case CtLang::KeyWord::For:     stmt = this->parseFor(); break;
+			case CtLang::KeyWord::If:      stmt = this->parseIf(); break;
+			case CtLang::KeyWord::Escape:  stmt = this->parseEscape(); break;
 			default: this->tokens->raiseError(
 				&token, 
 				std::format("Unimplemented Keyword: {}", this->tokens->viewToken(&token))
@@ -193,6 +194,43 @@ CtNode::If* CtParser::parseIf()
 }
 
 
+CtNode::Escape* CtParser::parseEscape()
+{
+	auto* escape_node = new CtNode::Escape();
+
+	uint depth = 0;
+
+	this->tokens->expectSymbolSpecific(CtLang::Symbol::LeftBracket);
+	depth++;
+
+	while (true)
+	{
+		if (this->tokens->getSymbolSpecific(CtLang::Symbol::LeftBracket))
+		{
+			depth++;
+			escape_node->code.append("[");
+			continue;
+		}
+		else if (this->tokens->getSymbolSpecific(CtLang::Symbol::RightBracket))
+		{
+			depth--;
+			if (depth == 0) {break;}
+			escape_node->code.append("]");
+			continue;
+		}
+
+		if (this->tokens->getType(CtTokenType::EndOfLine, nullptr)) {continue;}
+
+		CtToken token = this->tokens->next();
+		escape_node->code.append(" ");
+		escape_node->code.append(this->tokens->viewToken(&token));
+		
+	};
+
+	return escape_node;
+}
+
+
 CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 {
 	CtNode::Expression *lhs;
@@ -304,7 +342,7 @@ CtNode::Expression* CtParser::parseExpression(uint prev_precedence, uint depth)
 
 		auto* binary = new CtNode::BinaryOp();
 
-		binary->op = symToBinaryOp.at(sym);
+		binary->op = CtLang::symToBinaryOp.at(sym);
 		uint prec = CtLang::binaryOpPrecedence.at(binary->op);
 
 		if (prec < prev_precedence)
@@ -357,6 +395,7 @@ CtNode::Source* CtParser::parseFile(std::string filepath)
 {
 	auto tokens = tokenizer.tokenize(filepath);
 	this->tokens = &tokens;
+	std::cout << tokens.toString() << std::endl;
 	this->source = new CtNode::Source();
 	this->startParsingFile();
 	return this->source;

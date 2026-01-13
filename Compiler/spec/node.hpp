@@ -28,6 +28,7 @@ enum class CtNodeType
 	Loop,
 	While,
 	For,
+	Escape,
 
 	Int,
 	Float,
@@ -64,6 +65,7 @@ namespace CtNode
 	struct Loop;
 	struct While;
 	struct For;
+	struct Escape;
 	
 	// Expression Nodes
 	struct Int;
@@ -208,10 +210,17 @@ namespace CtNode
 		Expression* step;
 		StmtBlock* block;
 
-		For() {{nt = CtNodeType::For;}};
+		For() {nt = CtNodeType::For;};
 		~For();
 	};
 	
+
+	struct Escape : Statement
+	{
+		std::string code;
+		Escape() {nt = CtNodeType::Escape;}
+		~Escape() = default;
+	};
 	
 	
 	// Expression Nodes
@@ -326,6 +335,7 @@ class CtNodeWalker
 	virtual returnT handleWhile(CtNode::While *node) = 0;
 	virtual returnT handleFor(CtNode::For *node) = 0;
 	virtual returnT handleOut(CtNode::Out *node) = 0;
+	virtual returnT handleEscape(CtNode::Escape *node) = 0;
 
 	virtual returnT handleInt(CtNode::Int *node) = 0;
 	virtual returnT handleFloat(CtNode::Float *node) = 0;
@@ -368,6 +378,10 @@ class CtNodeWalker
 
 		case CtNodeType::Out:
 		return handleOut(static_cast<CtNode::Out *>(node));
+		break;
+
+		case CtNodeType::Escape:
+		return handleEscape(static_cast<CtNode::Escape *>(node));
 		break;
 
 		case CtNodeType::ExprStatement:
@@ -449,6 +463,7 @@ class CtNodePrinter: public CtNodeWalker<void>
 	void handleWhile(CtNode::While *node);
 	void handleFor(CtNode::For *node);
 	void handleOut(CtNode::Out *node);
+	void handleEscape(CtNode::Escape *node);
 
 	void handleInt(CtNode::Int *node);
 	void handleFloat(CtNode::Float *node);
