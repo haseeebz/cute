@@ -21,6 +21,7 @@ namespace CtLang
 		Continue,
 
 		Func,
+		Container,
 
 		True,
 		False,
@@ -33,26 +34,27 @@ namespace CtLang
 
 	inline const std::map<std::string, KeyWord> keywordMap =
 	{
-		{"let",      KeyWord::Let},
-		{"out",      KeyWord::Out},
-		{"escape",   KeyWord::Escape},
+		{"let",       KeyWord::Let},
+		{"out",       KeyWord::Out},
+		{"escape",    KeyWord::Escape},
 
-		{"if",       KeyWord::If},
-		{"else",     KeyWord::Else},
-		{"while",    KeyWord::While},
-		{"for",      KeyWord::For},
-		{"loop",     KeyWord::Loop},
-		{"break",    KeyWord::Break},
-		{"continue", KeyWord::Continue},
+		{"if",        KeyWord::If},
+		{"else",      KeyWord::Else},
+		{"while",     KeyWord::While},
+		{"for",       KeyWord::For},
+		{"loop",      KeyWord::Loop},
+		{"break",     KeyWord::Break},
+		{"continue",  KeyWord::Continue},
 
-		{"func",     KeyWord::Func},
+		{"func",      KeyWord::Func},
+		{"container", KeyWord::Container},
 
-		{"true",     KeyWord::True},
-		{"false",    KeyWord::False},
+		{"true",      KeyWord::True},
+		{"false",     KeyWord::False},
 
-		{"and",     KeyWord::And},
-		{"or",      KeyWord::Or},
-		{"not",     KeyWord::Not},
+		{"and",       KeyWord::And},
+		{"or",        KeyWord::Or},
+		{"not",       KeyWord::Not},
 	};
 
 
@@ -98,6 +100,8 @@ namespace CtLang
 		Colon,
 		SemiColon,
 		Dot,
+		Comma,
+		Arrow,
 
 		SingleQuote,
 		DoubleQuote,
@@ -143,6 +147,8 @@ namespace CtLang
 		{ ":",  Symbol::Colon },
 		{ ";",  Symbol::SemiColon },
 		{ ".",  Symbol::Dot },
+		{ ",",  Symbol::Comma},
+		{ "->", Symbol::Arrow},
 
 		{ "'",  Symbol::SingleQuote },
 		{ "\"", Symbol::DoubleQuote }
