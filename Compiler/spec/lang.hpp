@@ -175,11 +175,7 @@ namespace CtLang
 		NamespaceAccesss
 	};
 
-	bool isArithmetic(BinaryOpType op);
-	bool isComparison(BinaryOpType op);
-	bool isLogical(BinaryOpType op);
-	bool isBitwise(BinaryOpType op);
-
+	
 	inline const std::map<BinaryOpType, uint> binaryOpPrecedence =
 	{
 		{BinaryOpType::LogicOr, 1},
@@ -206,7 +202,7 @@ namespace CtLang
 		{BinaryOpType::NamespaceAccesss, 12},
 	};
 
-	
+
 	enum class UnaryOpType
 	{
 		LogicNot,
@@ -215,4 +211,40 @@ namespace CtLang
 		Increment,
 		Decrement
 	};
+
+	
+	inline const std::map<Symbol, BinaryOpType> symToBinaryOp 
+	{
+		{ Symbol::Plus,          BinaryOpType::Add },
+		{ Symbol::Minus,         BinaryOpType::Sub },
+		{ Symbol::Star,          BinaryOpType::Mul },
+		{ Symbol::Slash,         BinaryOpType::Div },
+		{ Symbol::Percentage,    BinaryOpType::Mod },
+
+		{ Symbol::DoubleEqual,   BinaryOpType::Equal },
+		{ Symbol::NotEqual,      BinaryOpType::NotEqual },
+		{ Symbol::Greater,       BinaryOpType::Greater },
+		{ Symbol::GreaterEqual,  BinaryOpType::GreaterEqual },
+		{ Symbol::Lesser,        BinaryOpType::Lesser },
+		{ Symbol::LesserEqual,   BinaryOpType::LesserEqual },
+
+		{ Symbol::DoubleGreater, BinaryOpType::BitShiftRight },
+		{ Symbol::DoubleLesser,  BinaryOpType::BitShiftLeft },
+
+		{ Symbol::SingleBar,     BinaryOpType::BitOr },
+		{ Symbol::SingleAnd,     BinaryOpType::BitAnd },
+		{ Symbol::Exponent,      BinaryOpType::BitXor },
+
+		{ Symbol::DoubleBar,     BinaryOpType::LogicOr },
+		{ Symbol::DoubleAnd,     BinaryOpType::LogicAnd },
+	};
+
+
+	inline const std::map<Symbol, UnaryOpType> symToUnaryOp 
+	{
+		{ Symbol::Exclamation, UnaryOpType::LogicNot },
+		{ Symbol::Tilde,       UnaryOpType::BitNot },  
+		{ Symbol::Minus,       UnaryOpType::Negation }
+	};
+		
 }
