@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "CuteLib.h"
+#include "CuteCore.h"
 #include "CuteContainer.h"
 
 #include "../internal/logs.h"

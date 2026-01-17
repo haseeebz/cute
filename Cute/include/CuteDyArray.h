@@ -32,7 +32,7 @@ void NAME##_del(cute_Container* con) {                                      \
 }  																			\
 																			\
 void NAME##_init(NAME* self, size_t cap) {                                  \
-    self->items = malloc(sizeof(TYPE) * cap);                               \
+    self->items = (TYPE*)malloc(sizeof(TYPE) * cap);                        \
     self->capacity = cap;                                                   \
     self->size = 0;                                                         \
 	self->header.destructor = NAME##_del;  									\
@@ -52,7 +52,7 @@ int NAME##_resize(NAME* self, size_t new_cap) {                             \
         return 1;                                                           \
     }                                                                       \
                                                                             \
-    TYPE* items = malloc(sizeof(TYPE) * new_cap);                           \
+    TYPE* items = (TYPE*)malloc(sizeof(TYPE) * new_cap);                    \
     for (size_t i = 0; i < item_count; i++) {                               \
         items[i] = self->items[i];                                          \
     }                                                                       \

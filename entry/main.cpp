@@ -1,3 +1,38 @@
+
+extern "C"
+{
+
+#include "CuteContainer.h"
+#include "CuteCore.h"
+#include "CuteIO.h"
+#include "CuteLib.h"
+
+CUTE_DYARRAY_DEF(ArrayInt, int)
+
+void program_main()
+{
+	
+	ArrayInt* array = NULL;
+
+	cute_ContainerManager_newBucket();
+	while (1)
+	{
+		cute_ContainerManager_assign(cute_ContainerManager_new(sizeof(ArrayInt)), (cute_Container**)&array);
+		ArrayInt_init(array, 10);
+		cute_Core_exit(cute_ExitCode_failure);
+	}
+	cute_ContainerManager_throwBucket();
+}
+
+int cute_main()
+{
+	cute_Core_run(program_main);
+	return 0;
+};
+
+
+}
+
 #include "CuteCompiler.hpp"
 #include <iostream>
 
@@ -80,11 +115,18 @@ int main(int argc, char *argv[])
 
 	std::string filepath;
 
-	if (args.has_flag("-h"))
+	if (args.has_flag("h"))
 	{
 		help();
 		return 0;
 	}
+
+	if (args.has_flag("l"))
+	{
+		cute_main();
+		return 0;
+	}
+
 
 	filepath = args.get_option("c");
 
