@@ -26,18 +26,29 @@
 #define CUTE_C_LOR   ||
 
 
-typedef int32_t  cute_I32;
-typedef int64_t  cute_I64;
-typedef uint32_t cute_U32;
-typedef uint64_t cute_U64;
-typedef float    cute_F32;
-typedef double   cute_F64;
+/*
+Base cute lib file. Include this in every single c file that the compiler spits out.
 
-typedef uint8_t  cute_Bool;
-typedef char     cute_Char;
+Functions, struct and global variables are namespaced as:
 
+namespace_subNamespace__##__funcName
+
+namespace_subNamespace__##__funcName__overloadInfo
+
+namespace_subNamespace__##__structName
+
+namespace_subNamespace__##__structName__method
+
+
+The first namespace can be one of the following:
+cute_ >> Stuff defined in this library
+lang_ >> Stuff defined by the stdlib of the compiler
+prog_ >> Stuff defined by the written program
+
+*/
 
 #include "CuteCore.h"
+#include "CuteTypes.h"
 #include "CuteContainer.h"
 #include "CuteArray.h"
 #include "CuteDyArray.h"
