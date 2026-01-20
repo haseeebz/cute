@@ -20,12 +20,12 @@ namespace CtTypes
 	// all data is a container in cute
 	struct ContainerInfo : Info
 	{
-		std::map<std::string, ContainerInfo*> fields;
+		std::vector<ContainerInfo*> fields;
 
 		using Overloads = std::vector<FunctionInfo*>;
 
 		std::map<std::string, Overloads> methods;
-		std::map<std::string, Overloads> constructors;
+		Overloads constructors;
 		FunctionInfo* destructor;
 
 		ContainerInfo() {kind = Kind::Container;};
@@ -40,4 +40,7 @@ namespace CtTypes
 		FunctionInfo() {kind = Kind::Function;};
 	};
 
+
+	inline std::map<std::string ,ContainerInfo*> primitives;
+	void initPrimitives();
 }
