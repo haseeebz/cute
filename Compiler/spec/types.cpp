@@ -97,3 +97,29 @@ void CtTypes::initPrimitives()
     CtTypes::primitives["bool"] = bool_container;
     CtTypes::primitives["byte"] = byte_container;
 }
+
+
+
+void CtScope::addSymbol(std::string s, CtTypes::Info* sym)
+{
+    this->symbols[s] = sym;
+}
+
+CtTypes::Info* CtScope::getSymbol(std::string s)
+{
+    if (this->symbols.contains(s))
+    {
+        return this->symbols[s];
+    }
+    else 
+    {
+        if (this->parent)
+        {
+            return this->parent->getSymbol(s);
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+}

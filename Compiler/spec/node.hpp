@@ -1,6 +1,5 @@
 #include "lang.hpp"
 #include "types.hpp"
-#include "scope.hpp"
 
 #include <cstdint>
 #include <iostream>
@@ -87,12 +86,13 @@ namespace CtNode
 
 	struct Object     : Base{};
 	struct Statement  : Base{};
-	struct Expression : Base{};
+	struct Expression : Base{CtTypes::ContainerInfo* info;};
 
 
 	struct RootProgram : Object
 	{
 		Source* src;
+		CtScope* scope;
 		RootProgram() {{nt = CtNodeType::RootProgram;}};
 		~RootProgram();
 	};
@@ -114,7 +114,6 @@ namespace CtNode
 		std::vector<Declaration*> parameters;
 		StmtBlock* block;
 
-		CtScope* scope;
 		CtTypes::FunctionInfo* info;
 
 		Function() {nt = CtNodeType::Function;};
@@ -151,6 +150,7 @@ namespace CtNode
 		std::string type_id;
 		std::string name;
 		Expression* val = nullptr;
+		CtTypes::ContainerInfo* info;
 
 		Declaration() {nt = CtNodeType::Declaration;};
 		~Declaration();

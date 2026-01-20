@@ -9,8 +9,9 @@ namespace CtTypes
 	struct Info;
 	struct ContainerInfo;
 	struct FunctionInfo;
+	struct VariableInfo;
 
-	enum class Kind {Container, Function};
+	enum class Kind {Container, Function, Variable};
 
 	struct Info
 	{
@@ -40,7 +41,26 @@ namespace CtTypes
 		FunctionInfo() {kind = Kind::Function;};
 	};
 
+	struct VariableInfo : Info
+	{
+		ContainerInfo* type;
+
+		VariableInfo() {kind = Kind::Variable;};
+	};
+
 
 	inline std::map<std::string ,ContainerInfo*> primitives;
 	void initPrimitives();
 }
+
+
+struct CtScope 
+{
+	CtScope* parent = nullptr;
+	std::map<std::string, CtTypes::Info*> symbols;
+
+	CtScope() = default;
+	CtScope(CtScope* parent): parent(parent) {}
+	void addSymbol(std::string s, CtTypes::Info*);
+	CtTypes::Info* getSymbol(std::string s);
+};

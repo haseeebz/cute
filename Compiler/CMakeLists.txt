@@ -1,8 +1,9 @@
 
 file(GLOB SPEC_SRC "${CMAKE_CURRENT_SOURCE_DIR}/spec/*.cpp")
 
-file(GLOB PARSER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/parser/*.cpp")
 file(GLOB TOKENIZER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/tokenizer/*.cpp")
+file(GLOB PARSER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/parser/*.cpp")
+file(GLOB RESOLVER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/resolver/*.cpp")
 
 
 add_library (
@@ -10,8 +11,10 @@ add_library (
 	STATIC
 
 	${SPEC_SRC}
+
+    ${TOKENIZER_SRC}
 	${PARSER_SRC}
-	${TOKENIZER_SRC}
+	${RESOLVER_SRC}
     compiler.cpp 
 )
 

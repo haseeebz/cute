@@ -3,6 +3,7 @@
 CtNode::RootProgram::~RootProgram()
 {
 	delete this->src;
+	delete this->scope;
 }
 
 
@@ -19,7 +20,6 @@ CtNode::Function::~Function()
 {
 	for (auto para: this->parameters) {delete para;}
 	delete this->block;
-	delete this->scope;
 	delete this->info;
 }
 

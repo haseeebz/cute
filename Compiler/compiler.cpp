@@ -9,6 +9,7 @@
 
 #include "spec/node.hpp"
 #include "spec/error.hpp"
+#include "spec/types.hpp"
 
 
 
@@ -25,6 +26,8 @@ void CuteCompiler::compile(std::string filepath, std::string outfile)
 	
 	auto* root = this->parser.parse(filepath);
 	
+	resolver.resolve(root);
+	std::cout << "Resolved successfully!\n";
 	CtNodePrinter printer;
 	printer.print(root);
 	delete root;
