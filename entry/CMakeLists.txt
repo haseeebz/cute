@@ -1,6 +1,6 @@
 
 
-add_executable (
+add_executable(
 	cute
     main.cpp
 )
