@@ -1,8 +1,11 @@
 #include "../spec/node.hpp"
 #include "../spec/types.hpp"
 #include "../spec/error.hpp"
+#include <charconv>
 #include <format>
-
+#include <limits>
+#include <string>
+#include <system_error>
 #include "resolver.hpp"
 
 
@@ -175,13 +178,51 @@ void CtResolver::handleEscape(CtNode::Escape *node)
 
 }
 
+
+inline bool convertInt(CtNode::Int* node)
+{
+    auto result = std::from_chars(
+        node->raw.data(), 
+        node->raw.data() + node->raw.size(), 
+        node->val.i64
+    );
+
+    if (result.ec == std::errc{} && result.ptr == node->raw.data() + node->raw.size())
+    {
+        node->info = CtTypes::primitives["int"];
+        return true;
+    }
+
+    result = std::from_chars(
+        node->raw.data(), 
+        node->raw.data() + node->raw.size(), 
+        node->val.u64
+    );
+
+    if (result.ec == std::errc{} && result.ptr == node->raw.data() + node->raw.size())
+    {
+        node->info = CtTypes::primitives["uint"];
+        return true;
+    }
+
+    return false;
+}
+
+
 void CtResolver::handleInt(CtNode::Int *node)
 {
-    node->info = CtTypes::primitives["int"];
+    if (!convertInt(node))
+    {
+        CtError::raise(
+            CtError::ErrorType::NameError, 
+            std::format("Out of range Int type: {}", node->raw)
+        ); 
+    }
 }
 
 void CtResolver::handleFloat(CtNode::Float *node)
 {
+    node->val.f64 = std::stod(node->raw);
     node->info = CtTypes::primitives["float"];
 }
 
