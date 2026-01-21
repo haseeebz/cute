@@ -21,7 +21,7 @@ namespace CtTypes
 	// all data is a container in cute
 	struct ContainerInfo : Info
 	{
-		std::vector<ContainerInfo*> fields;
+		std::map<std::string, ContainerInfo*> fields;
 
 		using Overloads = std::vector<FunctionInfo*>;
 

@@ -125,7 +125,7 @@ namespace CtNode
 		std::vector<Function*> methods;
 
 		CtScope* scope;
-		CtTypes::FunctionInfo* info;
+		CtTypes::ContainerInfo* info;
 
 		Container() {nt = CtNodeType::Container;};
 		~Container();

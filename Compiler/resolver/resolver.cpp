@@ -85,7 +85,6 @@ void CtResolver::handleFunction(CtNode::Function *node)
 
 void CtResolver::handleContainer(CtNode::Container *node)
 {
-
 }
 
 void CtResolver::handleStmtBlock(CtNode::StmtBlock *node)
