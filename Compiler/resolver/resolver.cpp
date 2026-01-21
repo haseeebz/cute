@@ -237,6 +237,11 @@ void CtResolver::handleBinaryOp(CtNode::BinaryOp *node)
     this->walk(node->right);
 }
 
+void CtResolver::handleUnaryOp(CtNode::UnaryOp *node)
+{
+    this->walk(node->operand);
+}
+
 void CtResolver::handleIdentifier(CtNode::Identifier *node)
 {
     auto sym = this->currentScope->getSymbol(node->val);

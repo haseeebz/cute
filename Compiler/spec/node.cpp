@@ -395,6 +395,20 @@ void CtNodePrinter::handleBinaryOp(CtNode::BinaryOp *node)
 	std::cout << ")\n";
 }
 
+void CtNodePrinter::handleUnaryOp(CtNode::UnaryOp *node)
+{
+	this->printIndent();
+	std::cout << "(UnaryOp \n";
+	this->indent++;
+
+	this->printIndent();
+	std::cout << "op= " << (int)node->op << "\n";
+	this->walk(node->operand);
+
+	this->indent--;
+	this->printIndent();
+	std::cout << ")\n";
+}
 
 void CtNodePrinter::handleIdentifier(CtNode::Identifier *node)
 {

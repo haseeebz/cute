@@ -375,10 +375,10 @@ CtParser::parseExpression(uint prev_precedence, uint depth, CtLang::Symbol delim
 		{
 			lhs = this->parseExpression(0, depth + 1);
 		}
-		else if (tok.val.sym == CtLang::Symbol::Minus)
+		else if (CtLang::symToUnaryOp.contains(tok.val.sym))
 		{
 			lhs = this->parseExpression(CtLang::binaryOpPrecedence.size());
-			lhs = new CtNode::BinaryOp(CtLang::BinaryOpType::Sub, new CtNode::Int("0"), lhs); // works, meh
+			lhs = new CtNode::UnaryOp(CtLang::symToUnaryOp.at(tok.val.sym), lhs); // works, meh
 		}
 		else
 		{

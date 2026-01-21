@@ -23,6 +23,7 @@ class CtResolver : CtNodeWalker<void>
 	void handleFloat(CtNode::Float *node);
 	void handleBool(CtNode::Bool *node);
 	void handleBinaryOp(CtNode::BinaryOp *node);
+	void handleUnaryOp(CtNode::UnaryOp *node);
 	void handleIdentifier(CtNode::Identifier *node);
 	void handleFunctionCall(CtNode::FunctionCall *node);
 	void handleAssignment(CtNode::Assignment *node);

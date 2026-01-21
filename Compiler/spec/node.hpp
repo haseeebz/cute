@@ -329,6 +329,7 @@ class CtNodeWalker
 	virtual returnT handleFloat(CtNode::Float *node) = 0;
 	virtual returnT handleBool(CtNode::Bool *node) = 0;
 	virtual returnT handleBinaryOp(CtNode::BinaryOp *node) = 0;
+	virtual returnT handleUnaryOp(CtNode::UnaryOp *node) = 0;
 	virtual returnT handleIdentifier(CtNode::Identifier *node) = 0;
 	virtual returnT handleFunctionCall(CtNode::FunctionCall *node) = 0;
 	virtual returnT handleAssignment(CtNode::Assignment *node) = 0;
@@ -415,6 +416,10 @@ class CtNodeWalker
 		return handleBinaryOp(static_cast<CtNode::BinaryOp *>(node));
 		break;
 
+		case CtNodeType::UnaryOp:
+		return handleUnaryOp(static_cast<CtNode::UnaryOp *>(node));
+		break;
+
 		case CtNodeType::FunctionCall:
 		return handleFunctionCall(static_cast<CtNode::FunctionCall *>(node));
 		break;
@@ -457,6 +462,7 @@ class CtNodePrinter: public CtNodeWalker<void>
 	void handleFloat(CtNode::Float *node);
 	void handleBool(CtNode::Bool *node);
 	void handleBinaryOp(CtNode::BinaryOp *node);
+	void handleUnaryOp(CtNode::UnaryOp *node);
 	void handleIdentifier(CtNode::Identifier *node);
 	void handleFunctionCall(CtNode::FunctionCall *node);
 	void handleAssignment(CtNode::Assignment *node);
