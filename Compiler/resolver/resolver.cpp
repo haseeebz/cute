@@ -40,30 +40,40 @@ void CtResolver::handleFunction(CtNode::Function *node)
     auto* info = new CtTypes::FunctionInfo();
     this->currentScope->addSymbol(node->name, info);
 
-    auto sym = this->currentScope->getSymbol(node->return_type);
+    auto return_sym = this->currentScope->getSymbol(node->return_type);
 
-    if (!sym) 
+    if (return_sym) 
+    {
+        if (return_sym->kind == CtTypes::Kind::Container)
+        {
+            info->return_type = static_cast<CtTypes::ContainerInfo*>(return_sym);
+        }
+        else
+        {   
+            CtError::raise(
+            CtError::ErrorType::NameError, 
+            std::format("Non-Container type returned: {}", node->return_type)
+            );
+        }
+      
+    }
+    else
     {
         CtError::raise(
             CtError::ErrorType::NameError, 
-            "Unknown return type!"
-        );
+            std::format("Unknown type returned: {}", node->return_type)
+        ); 
     }
 
-    if (sym->kind == CtTypes::Kind::Container)
-    {
-        info->return_type = static_cast<CtTypes::ContainerInfo*>(sym);
-    }
+    
 
     for (auto param: node->parameters)
     {
         this->handleDeclaration(param);
+        // This will guarantee the following:
         auto* sym = this->currentScope->getSymbol(param->name);
-
-        if (sym->kind == CtTypes::Kind::Container)
-        {
-            info->parameters.push_back(static_cast<CtTypes::ContainerInfo*>(sym));
-        }
+        info->parameters.push_back(static_cast<CtTypes::ContainerInfo*>(sym));
+        
     }   
     
     this->handleStmtBlock(node->block);
@@ -97,7 +107,7 @@ void CtResolver::handleDeclaration(CtNode::Declaration *node)
     {
         CtError::raise(
             CtError::ErrorType::NameError, 
-            std::format("Unknown type! {}", node->type_id)
+            std::format("Undefined type: {}", node->type_id)
         ); 
     }
 
@@ -113,30 +123,47 @@ void CtResolver::handleDeclaration(CtNode::Declaration *node)
     {
         CtError::raise(
             CtError::ErrorType::NameError, 
-            "Type is not a container!"
+            std::format("Non-Container type: {}", node->type_id)
         ); 
-    }   
+    }  
+    
+    this->walk(node->val);
 }
+
 
 void CtResolver::handleIf(CtNode::If *node)
 {
+    this->walk(node->condition);
+    this->walk(node->then_block);
 
+    if (node->else_stmt)
+    {
+        this->walk(node->else_stmt);
+    }
 }
+
 
 void CtResolver::handleLoop(CtNode::Loop *node)
 {
-
+    this->walk(node->block);
 }
+
 
 void CtResolver::handleWhile(CtNode::While *node)
 {
-
+    this->walk(node->condition);
+    this->walk(node->block);
 }
+
 
 void CtResolver::handleFor(CtNode::For *node)
 {
-
+    this->walk(node->init);
+    this->walk(node->condition);
+    this->walk(node->step);
+    this->walk(node->block);
 }
+
 
 void CtResolver::handleOut(CtNode::Out *node)
 {
@@ -150,26 +177,48 @@ void CtResolver::handleEscape(CtNode::Escape *node)
 
 void CtResolver::handleInt(CtNode::Int *node)
 {
-
+    node->info = CtTypes::primitives["int"];
 }
 
 void CtResolver::handleFloat(CtNode::Float *node)
 {
-
+    node->info = CtTypes::primitives["float"];
 }
 
 void CtResolver::handleBool(CtNode::Bool *node)
 {
-
+    node->info = CtTypes::primitives["bool"];
 }
 
 void CtResolver::handleBinaryOp(CtNode::BinaryOp *node)
 {
-
+    this->walk(node->left);
+    this->walk(node->right);
 }
 
 void CtResolver::handleIdentifier(CtNode::Identifier *node)
 {
+    auto sym = this->currentScope->getSymbol(node->val);
+
+    if (sym == nullptr)
+    {
+        CtError::raise(
+            CtError::ErrorType::NameError, 
+            std::format("Undefined identifier: {}", node->val)
+        ); 
+    }
+
+    if (sym->kind == CtTypes::Kind::Variable)
+    {
+        node->info = static_cast<CtTypes::ContainerInfo*>(sym);
+    }
+    else
+    {
+        CtError::raise(
+            CtError::ErrorType::NameError, 
+            std::format("Unexpected identifier: {}", node->val)
+        ); 
+    } 
 
 }
 
@@ -180,7 +229,8 @@ void CtResolver::handleFunctionCall(CtNode::FunctionCall *node)
 
 void CtResolver::handleAssignment(CtNode::Assignment *node)
 {
-
+    this->walk(node->name);
+    this->walk(node->value);
 }
 
 void CtResolver::handleTypeCast(CtNode::TypeCast *node)
