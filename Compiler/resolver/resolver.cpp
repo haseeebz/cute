@@ -118,6 +118,14 @@ void CtResolver::handleDeclaration(CtNode::Declaration *node)
     {
         node->info = static_cast<CtTypes::ContainerInfo*>(sym);
 
+        if (this->currentScope->symbols.contains(node->name))
+        {
+            CtError::raise(
+                CtError::ErrorType::NameError, 
+                std::format("Identifier already defined: {}", node->name)
+            ); 
+        }
+
         auto* variable_info = new CtTypes::VariableInfo();
         variable_info->type = node->info;
         this->currentScope->addSymbol(node->name, variable_info);
@@ -130,7 +138,11 @@ void CtResolver::handleDeclaration(CtNode::Declaration *node)
         ); 
     }  
     
-    this->walk(node->val);
+    if (node->val)
+    {
+        this->walk(node->val);
+    }
+    
 }
 
 
