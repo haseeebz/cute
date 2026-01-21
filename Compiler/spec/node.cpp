@@ -91,11 +91,6 @@ CtNode::FunctionCall::~FunctionCall()
 }
 
 
-CtNode::TypeCast::~TypeCast()
-{
-	delete this->expr;
-}
-
 
 
 
@@ -420,25 +415,6 @@ void CtNodePrinter::handleFunctionCall(CtNode::FunctionCall *node)
 	std::cout << "args = \n";
 	this->indent++;
 	for (auto args: node->args) {this->walk(args);}
-	this->indent--;
-
-	this->printIndent();
-	std::cout << ")\n";
-}
-
-
-void CtNodePrinter::handleTypeCast(CtNode::TypeCast *node)
-{
-	this->printIndent();
-	std::cout << "(TypeCast\n";
-
-	this->printIndent();
-	std::cout << "type = " << node->to_type << "\n";
-
-	this->printIndent();
-	std::cout << "expr = \n";
-	this->indent++;
-	this->walk(node->expr);
 	this->indent--;
 
 	this->printIndent();

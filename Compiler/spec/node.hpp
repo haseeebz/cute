@@ -36,8 +36,7 @@ enum class CtNodeType
 	BinaryOp,
 	UnaryOp,
 	FunctionCall,
-	Assignment,
-	TypeCast
+	Assignment
 };
 
 
@@ -76,7 +75,6 @@ namespace CtNode
 	struct UnaryOp;
 	struct FunctionCall;
 	struct Assignment;
-	struct TypeCast;
 
 
 	struct Base
@@ -305,15 +303,6 @@ namespace CtNode
 		~Assignment();
 	};
 
-	struct TypeCast : Expression
-	{
-		std::string to_type;
-		Expression* expr;
-
-		TypeCast() {nt = CtNodeType::TypeCast;};
-		~TypeCast();
-	};
-
 };
 
 
@@ -343,7 +332,6 @@ class CtNodeWalker
 	virtual returnT handleIdentifier(CtNode::Identifier *node) = 0;
 	virtual returnT handleFunctionCall(CtNode::FunctionCall *node) = 0;
 	virtual returnT handleAssignment(CtNode::Assignment *node) = 0;
-	virtual returnT handleTypeCast(CtNode::TypeCast *node) = 0;
 
 	public:
 	
@@ -435,10 +423,6 @@ class CtNodeWalker
 		return handleAssignment(static_cast<CtNode::Assignment *>(node));
 		break;
 
-		case CtNodeType::TypeCast:
-		return handleTypeCast(static_cast<CtNode::TypeCast *>(node));
-		break;
-
 		default:
 		std::cout << "(Undefined Node)" << std::endl;
 		return returnT();
@@ -476,7 +460,6 @@ class CtNodePrinter: public CtNodeWalker<void>
 	void handleIdentifier(CtNode::Identifier *node);
 	void handleFunctionCall(CtNode::FunctionCall *node);
 	void handleAssignment(CtNode::Assignment *node);
-	void handleTypeCast(CtNode::TypeCast *node);
 
 	
 	public:

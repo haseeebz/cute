@@ -26,7 +26,6 @@ class CtResolver : CtNodeWalker<void>
 	void handleIdentifier(CtNode::Identifier *node);
 	void handleFunctionCall(CtNode::FunctionCall *node);
 	void handleAssignment(CtNode::Assignment *node);
-	void handleTypeCast(CtNode::TypeCast *node);
 
 
     CtScope* currentScope;

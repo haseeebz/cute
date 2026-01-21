@@ -380,15 +380,6 @@ CtParser::parseExpression(uint prev_precedence, uint depth, CtLang::Symbol delim
 			lhs = this->parseExpression(CtLang::binaryOpPrecedence.size());
 			lhs = new CtNode::BinaryOp(CtLang::BinaryOpType::Sub, new CtNode::Int("0"), lhs); // works, meh
 		}
-		else if (tok.val.sym == CtLang::Symbol::LeftBraces)
-		{
-			this->tokens->expectWord(&str);
-			this->tokens->expectSymbolSpecific(CtLang::Symbol::RightBraces);
-			auto cast = new CtNode::TypeCast();
-			cast->to_type = str;
-			cast->expr = this->parseExpression(CtLang::binaryOpPrecedence.size()); // grabs the next literal
-			lhs = cast;
-		}
 		else
 		{
 			this->tokens->backtrack();

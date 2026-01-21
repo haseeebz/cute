@@ -274,11 +274,6 @@ void CtResolver::handleAssignment(CtNode::Assignment *node)
     this->walk(node->value);
 }
 
-void CtResolver::handleTypeCast(CtNode::TypeCast *node)
-{
-
-}
-
 
 void CtResolver::resolve(CtNode::RootProgram *root)
 {
