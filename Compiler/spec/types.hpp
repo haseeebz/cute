@@ -29,6 +29,8 @@ namespace CtTypes
 		Overloads constructors;
 		FunctionInfo* destructor;
 
+		std::string repr;
+
 		ContainerInfo() {kind = Kind::Container;};
 	};
 
@@ -38,6 +40,7 @@ namespace CtTypes
 		ContainerInfo* return_type;
 		std::vector<ContainerInfo*> parameters;
 
+		std::string repr;
 		FunctionInfo() {kind = Kind::Function;};
 	};
 
@@ -45,6 +48,7 @@ namespace CtTypes
 	{
 		ContainerInfo* type;
 
+		std::string repr;
 		VariableInfo() {kind = Kind::Variable;};
 	};
 

@@ -18,6 +18,7 @@ add_library (
     compiler.cpp 
 )
 
+target_link_libraries(CuteCompiler PRIVATE CuteLib)
 
 target_compile_options (
     CuteCompiler

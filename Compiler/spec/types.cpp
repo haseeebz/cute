@@ -1,4 +1,7 @@
+#include "CuteTypes.h"
 #include "types.hpp"
+
+
 
 void CtTypes::initPrimitives()
 {
@@ -6,10 +9,15 @@ void CtTypes::initPrimitives()
     FunctionInfo* constructor;
 
     auto* int_container = new ContainerInfo();
+    int_container->repr = CUTE_INT_TYPE;
     auto* uint_container = new ContainerInfo();
+    uint_container->repr = CUTE_UINT_TYPE;
     auto* float_container = new ContainerInfo();
+    float_container->repr = CUTE_FLOAT_TYPE;
     auto* bool_container = new ContainerInfo();
+    bool_container->repr = CUTE_BOOL_TYPE;
     auto* byte_container = new ContainerInfo();
+    byte_container->repr = CUTE_BYTE_TYPE;
 
 
     // int(int)

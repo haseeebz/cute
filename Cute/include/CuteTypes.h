@@ -3,12 +3,12 @@
 
 #include <stdint.h>
 
-#define CREATE_FUNC(name, op, typeA, typeB, returnT, returnTConstructor) \
-inline returnT                                   \
-##name(typeA a, typeB b) {                       \
-    return returnTConstructor(a.val op b.val);   \
-}
 
+#define CUTE_INT_TYPE   "cute_Int"
+#define CUTE_UINT_TYPE  "cute_UInt"
+#define CUTE_FLOAT_TYPE "cute_Float"
+#define CUTE_BOOL_TYPE  "cute_Bool"
+#define CUTE_BYTE_TYPE  "cute_Byte"
 
 typedef struct
 {
