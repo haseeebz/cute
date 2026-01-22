@@ -99,6 +99,7 @@ namespace CtGenNode
 	{
 		std::string name;
 		std::vector<Declaration*> fields;
+		std::vector<Function*> methods;
 
 		Struct() {nt = CtGenNodeType::Function;}
 		~Struct();
