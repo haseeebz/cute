@@ -1,6 +1,15 @@
 #include "node.hpp"
 
+CtGenNode::Root::~Root()
+{
+    delete src;
+}
 
+
+CtGenNode::Source::~Source()
+{
+    for (auto o: objects) delete o;
+}
 
 CtGenNode::Function::~Function() 
 {

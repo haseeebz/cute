@@ -6,6 +6,8 @@
 
 enum class CtGenNodeType
 {
+	Root,
+	Source,
 	Function,
 	Struct,
 	Directive,
@@ -33,6 +35,8 @@ namespace CtGenNode
 	struct Statement;
 	struct Expression;
 	
+	struct Root;
+	struct Source;
 	struct Function;
 	struct Struct;
 	struct Directive;
@@ -57,10 +61,27 @@ namespace CtGenNode
 		CtGenNodeType nt;
 	};
 
+	struct Root : Base
+	{
+		Source* src;
+
+		Root() {nt = CtGenNodeType::Root;}
+
+		~Root();
+	};
+
+	struct Source : Base
+	{
+		std::vector<Object*> objects;
+
+		Source() {nt = CtGenNodeType::Source;}
+
+		~Source();
+	};
+
 	struct Object : Base {};
 	struct Statement : Base {};
 	struct Expression : Base {};
-
 
 	struct Function : Object
 	{
